@@ -34,7 +34,7 @@ Public Class Form1
                 input_folder = FolderBrowserDialog1.SelectedPath
                 If System.IO.Directory.Exists(input_folder) = True Then
                     lblInputDirectory.Text = input_folder
-                    For Each file In New IO.DirectoryInfo(input_folder).GetFiles
+                    For Each file In New IO.DirectoryInfo(input_folder).GetFiles.OrderBy(Function(s) s.FullName)
                         If file.Extension = ".mkv" Or file.Extension = ".ts" Then
                             cbFiles.Items.Add(file.Name)
                             file_count += 1
@@ -228,7 +228,9 @@ Public Class Form1
             .Columns.Add("ID", 30, HorizontalAlignment.Left)
             .Columns.Add("Type", 60, HorizontalAlignment.Left)
             .Columns.Add("Codec", 100, HorizontalAlignment.Left)
-            .Columns.Add("Sprache", 200, HorizontalAlignment.Center)
+            .Columns.Add("Sprache", 80, HorizontalAlignment.Center)
+            .Columns.Add("Frames", 80, HorizontalAlignment.Right)
+            .Columns.Add("Standard", 60, HorizontalAlignment.Left)
         End With
 
     End Sub
@@ -383,64 +385,9 @@ Public Class Form1
             Dim file As String = lblInputDirectory.Text & "\" & cbFiles.SelectedItem
             Dim streams As Xml.XmlNode = VideoFileStreams(file, ffmpeg_path)
 
-            Dim lvItem As New ListViewItem
-
             For z = 0 To streams.ChildNodes.Count - 1
-                'collect data
-                Dim lvData(3) As String
-                lvData(0) = streams.ChildNodes(z).Attributes("index").Value
-                Select Case streams.ChildNodes(z).Attributes("codec_type").Value
-                    Case "video"
-                        lvData(1) = "Video"
-
-                    Case "audio"
-                        lvData(1) = "Audio"
-
-                    Case "subtitle"
-                        lvData(1) = "Untertitel"
-
-                End Select
-
-                Select Case streams.ChildNodes(z).Attributes("codec_name").Value
-                    Case "h264"
-                        lvData(2) = "H.264"
-
-                    Case "hevc"
-                        lvData(2) = "H.265"
-
-                    Case "mpeg2video"
-                        lvData(2) = "MPEG2"
-
-                    Case "dvb_teletext"
-                        lvData(2) = "VideoText"
-
-                    Case "mp2"
-                        lvData(2) = "MP2 Audio"
-
-                    Case "ac3"
-                        lvData(2) = "AC-3"
-
-                    Case "aac"
-                        lvData(2) = "AAC"
-
-                    Case "dts"
-                        lvData(2) = "DTS"
-
-                    Case "truehd"
-                        lvData(2) = "DTS TrueHD"
-
-                    Case "hdmv_pgs_subtitle"
-                        lvData(2) = "PGS"
-
-                End Select
-
-
-
-                'Data in Listview
-                lvItem = New ListViewItem(lvData)
-                lvFileStreams.Items.Add(lvItem)
-
-            Next
+                lvFileStreams.Items.Add(XMLStreamAnalyse(streams.ChildNodes(z)))
+            Next z
 
         End If
     End Sub
