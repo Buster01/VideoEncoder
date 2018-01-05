@@ -13,30 +13,30 @@ Public Class Form1
         If CheckBox1.Checked = True Then
             Label2.Visible = True
             Label2.Text = ""
-            Label1.Text = ""
-            ComboBox7.Items.Clear()
+            lblInputDirectory.Text = ""
+            cbFiles.Items.Clear()
         End If
         If CheckBox1.Checked = False Then
             Label2.Visible = False
             Label2.Text = ""
-            Label1.Text = ""
-            ComboBox7.Items.Clear()
+            lblInputDirectory.Text = ""
+            cbFiles.Items.Clear()
         End If
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
         Dim file_count As Double = 0
         Dim folder_size As Double = 0
-        ComboBox7.Items.Clear()
+        cbFiles.Items.Clear()
 
         If folder = True Then
             If FolderBrowserDialog1.ShowDialog() = DialogResult.OK Then
                 input_folder = FolderBrowserDialog1.SelectedPath
                 If System.IO.Directory.Exists(input_folder) = True Then
-                    Label1.Text = input_folder
+                    lblInputDirectory.Text = input_folder
                     For Each file In New IO.DirectoryInfo(input_folder).GetFiles
                         If file.Extension = ".mkv" Or file.Extension = ".ts" Then
-                            ComboBox7.Items.Add(file.Name)
+                            cbFiles.Items.Add(file.Name)
                             file_count += 1
                             folder_size = folder_size + file.Length
                         End If
@@ -57,8 +57,8 @@ Public Class Form1
                     OpenFileDialog1.FileName = ""
                     input_file = ""
                 Else
-                    Label1.Text = System.IO.Path.GetDirectoryName(input_file).ToString
-                    ComboBox7.Items.Add(System.IO.Path.GetFileName(input_file))
+                    lblInputDirectory.Text = System.IO.Path.GetDirectoryName(input_file).ToString
+                    cbFiles.Items.Add(System.IO.Path.GetFileName(input_file))
                     Dim file_info As New System.IO.FileInfo(input_file)
                     Dim file_size As Double = file_info.Length
 
@@ -69,7 +69,7 @@ Public Class Form1
                 End If
             End If
         End If
-        If ComboBox7.Items.Count > 0 Then ComboBox7.SelectedIndex = 0
+        If cbFiles.Items.Count > 0 Then cbFiles.SelectedIndex = 0
     End Sub
 
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
@@ -143,7 +143,7 @@ Public Class Form1
     End Sub
 
     Private Sub BackgroundWorker1_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs) Handles BackgroundWorker1.RunWorkerCompleted
-        ComboBox7.Enabled = True
+        cbFiles.Enabled = True
         Button3.Enabled = True
     End Sub
 
@@ -220,8 +220,15 @@ Public Class Form1
             .SelectedIndex = 3
         End With
 
-        With ComboBox7
+        With cbFiles
             .Items.Clear()
+        End With
+
+        With lvFileStreams
+            .Columns.Add("ID", 30, HorizontalAlignment.Left)
+            .Columns.Add("Type", 60, HorizontalAlignment.Left)
+            .Columns.Add("Codec", 100, HorizontalAlignment.Left)
+            .Columns.Add("Sprache", 200, HorizontalAlignment.Center)
         End With
 
     End Sub
@@ -279,9 +286,9 @@ Public Class Form1
         If folder = True Then
             If System.IO.Directory.Exists(input_folder) = True And System.IO.Directory.Exists(output_folder) = True Then
                 If Strings.Right(output_folder, 1) <> "\" Then output_folder = output_folder & "\"
-                ComboBox7.Enabled = False
+                cbFiles.Enabled = False
                 Button3.Enabled = False
-                BackgroundWorker1.RunWorkerAsync({ComboBox7.Items.Cast(Of String).ToArray, AudioParameter, VideoParameter})
+                BackgroundWorker1.RunWorkerAsync({cbFiles.Items.Cast(Of String).ToArray, AudioParameter, VideoParameter})
             End If
         End If
     End Sub
@@ -367,6 +374,74 @@ Public Class Form1
                         .SelectedIndex = 5
                     End With
             End Select
+        End If
+    End Sub
+
+    Private Sub ComboBox7_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbFiles.SelectedIndexChanged
+        If cbFiles.Items.Count > 0 Then
+            lvFileStreams.Items.Clear()
+            Dim file As String = lblInputDirectory.Text & "\" & cbFiles.SelectedItem
+            Dim streams As Xml.XmlNode = VideoFileStreams(file, ffmpeg_path)
+
+            Dim lvItem As New ListViewItem
+
+            For z = 0 To streams.ChildNodes.Count - 1
+                'collect data
+                Dim lvData(3) As String
+                lvData(0) = streams.ChildNodes(z).Attributes("index").Value
+                Select Case streams.ChildNodes(z).Attributes("codec_type").Value
+                    Case "video"
+                        lvData(1) = "Video"
+
+                    Case "audio"
+                        lvData(1) = "Audio"
+
+                    Case "subtitle"
+                        lvData(1) = "Untertitel"
+
+                End Select
+
+                Select Case streams.ChildNodes(z).Attributes("codec_name").Value
+                    Case "h264"
+                        lvData(2) = "H.264"
+
+                    Case "hevc"
+                        lvData(2) = "H.265"
+
+                    Case "mpeg2video"
+                        lvData(2) = "MPEG2"
+
+                    Case "dvb_teletext"
+                        lvData(2) = "VideoText"
+
+                    Case "mp2"
+                        lvData(2) = "MP2 Audio"
+
+                    Case "ac3"
+                        lvData(2) = "AC-3"
+
+                    Case "aac"
+                        lvData(2) = "AAC"
+
+                    Case "dts"
+                        lvData(2) = "DTS"
+
+                    Case "truehd"
+                        lvData(2) = "DTS TrueHD"
+
+                    Case "hdmv_pgs_subtitle"
+                        lvData(2) = "PGS"
+
+                End Select
+
+
+
+                'Data in Listview
+                lvItem = New ListViewItem(lvData)
+                lvFileStreams.Items.Add(lvItem)
+
+            Next
+
         End If
     End Sub
 End Class

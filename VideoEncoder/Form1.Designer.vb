@@ -24,9 +24,9 @@ Partial Class Form1
     Private Sub InitializeComponent()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.Label2 = New System.Windows.Forms.Label()
-        Me.ComboBox7 = New System.Windows.Forms.ComboBox()
+        Me.cbFiles = New System.Windows.Forms.ComboBox()
         Me.Button1 = New System.Windows.Forms.Button()
-        Me.Label1 = New System.Windows.Forms.Label()
+        Me.lblInputDirectory = New System.Windows.Forms.Label()
         Me.CheckBox1 = New System.Windows.Forms.CheckBox()
         Me.MenuStrip1 = New System.Windows.Forms.MenuStrip()
         Me.ToolStripMenuItem1 = New System.Windows.Forms.ToolStripMenuItem()
@@ -60,7 +60,7 @@ Partial Class Form1
         Me.Label5 = New System.Windows.Forms.Label()
         Me.ComboBox1 = New System.Windows.Forms.ComboBox()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
-        Me.ListView1 = New System.Windows.Forms.ListView()
+        Me.lvFileStreams = New System.Windows.Forms.ListView()
         Me.GroupBox1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -73,9 +73,9 @@ Partial Class Form1
         'GroupBox1
         '
         Me.GroupBox1.Controls.Add(Me.Label2)
-        Me.GroupBox1.Controls.Add(Me.ComboBox7)
+        Me.GroupBox1.Controls.Add(Me.cbFiles)
         Me.GroupBox1.Controls.Add(Me.Button1)
-        Me.GroupBox1.Controls.Add(Me.Label1)
+        Me.GroupBox1.Controls.Add(Me.lblInputDirectory)
         Me.GroupBox1.Controls.Add(Me.CheckBox1)
         Me.GroupBox1.Location = New System.Drawing.Point(6, 28)
         Me.GroupBox1.Name = "GroupBox1"
@@ -93,14 +93,14 @@ Partial Class Form1
         Me.Label2.TabIndex = 5
         Me.Label2.Text = "Info"
         '
-        'ComboBox7
+        'cbFiles
         '
-        Me.ComboBox7.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.ComboBox7.FormattingEnabled = True
-        Me.ComboBox7.Location = New System.Drawing.Point(24, 50)
-        Me.ComboBox7.Name = "ComboBox7"
-        Me.ComboBox7.Size = New System.Drawing.Size(425, 21)
-        Me.ComboBox7.TabIndex = 4
+        Me.cbFiles.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cbFiles.FormattingEnabled = True
+        Me.cbFiles.Location = New System.Drawing.Point(24, 50)
+        Me.cbFiles.Name = "cbFiles"
+        Me.cbFiles.Size = New System.Drawing.Size(425, 21)
+        Me.cbFiles.TabIndex = 4
         '
         'Button1
         '
@@ -111,14 +111,14 @@ Partial Class Form1
         Me.Button1.Text = "...."
         Me.Button1.UseVisualStyleBackColor = True
         '
-        'Label1
+        'lblInputDirectory
         '
-        Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(68, 23)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(32, 13)
-        Me.Label1.TabIndex = 1
-        Me.Label1.Text = "Pfad:"
+        Me.lblInputDirectory.AutoSize = True
+        Me.lblInputDirectory.Location = New System.Drawing.Point(68, 23)
+        Me.lblInputDirectory.Name = "lblInputDirectory"
+        Me.lblInputDirectory.Size = New System.Drawing.Size(32, 13)
+        Me.lblInputDirectory.TabIndex = 1
+        Me.lblInputDirectory.Text = "Pfad:"
         '
         'CheckBox1
         '
@@ -216,7 +216,7 @@ Partial Class Form1
         Me.GroupBox4.Controls.Add(Me.Label4)
         Me.GroupBox4.Controls.Add(Me.ProgressBar1)
         Me.GroupBox4.Controls.Add(Me.Button3)
-        Me.GroupBox4.Location = New System.Drawing.Point(6, 414)
+        Me.GroupBox4.Location = New System.Drawing.Point(6, 462)
         Me.GroupBox4.Name = "GroupBox4"
         Me.GroupBox4.Size = New System.Drawing.Size(1093, 59)
         Me.GroupBox4.TabIndex = 7
@@ -257,7 +257,7 @@ Partial Class Form1
         Me.GroupBox5.Controls.Add(Me.ComboBox3)
         Me.GroupBox5.Controls.Add(Me.Label8)
         Me.GroupBox5.Controls.Add(Me.Label7)
-        Me.GroupBox5.Location = New System.Drawing.Point(6, 328)
+        Me.GroupBox5.Location = New System.Drawing.Point(6, 377)
         Me.GroupBox5.Name = "GroupBox5"
         Me.GroupBox5.Size = New System.Drawing.Size(533, 84)
         Me.GroupBox5.TabIndex = 8
@@ -346,7 +346,7 @@ Partial Class Form1
         Me.GroupBox6.Controls.Add(Me.Label6)
         Me.GroupBox6.Controls.Add(Me.Label5)
         Me.GroupBox6.Controls.Add(Me.ComboBox1)
-        Me.GroupBox6.Location = New System.Drawing.Point(559, 328)
+        Me.GroupBox6.Location = New System.Drawing.Point(558, 377)
         Me.GroupBox6.Name = "GroupBox6"
         Me.GroupBox6.Size = New System.Drawing.Size(534, 84)
         Me.GroupBox6.TabIndex = 9
@@ -393,28 +393,29 @@ Partial Class Form1
         '
         'GroupBox3
         '
-        Me.GroupBox3.Controls.Add(Me.ListView1)
+        Me.GroupBox3.Controls.Add(Me.lvFileStreams)
         Me.GroupBox3.Location = New System.Drawing.Point(6, 176)
         Me.GroupBox3.Name = "GroupBox3"
-        Me.GroupBox3.Size = New System.Drawing.Size(1093, 146)
+        Me.GroupBox3.Size = New System.Drawing.Size(1093, 195)
         Me.GroupBox3.TabIndex = 10
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "Stream Optionen"
         '
-        'ListView1
+        'lvFileStreams
         '
-        Me.ListView1.Location = New System.Drawing.Point(24, 19)
-        Me.ListView1.Name = "ListView1"
-        Me.ListView1.Size = New System.Drawing.Size(1062, 112)
-        Me.ListView1.TabIndex = 0
-        Me.ListView1.UseCompatibleStateImageBehavior = False
-        Me.ListView1.View = System.Windows.Forms.View.Details
+        Me.lvFileStreams.HoverSelection = True
+        Me.lvFileStreams.Location = New System.Drawing.Point(24, 19)
+        Me.lvFileStreams.Name = "lvFileStreams"
+        Me.lvFileStreams.Size = New System.Drawing.Size(1062, 170)
+        Me.lvFileStreams.TabIndex = 0
+        Me.lvFileStreams.UseCompatibleStateImageBehavior = False
+        Me.lvFileStreams.View = System.Windows.Forms.View.Details
         '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1105, 476)
+        Me.ClientSize = New System.Drawing.Size(1105, 533)
         Me.Controls.Add(Me.GroupBox3)
         Me.Controls.Add(Me.GroupBox6)
         Me.Controls.Add(Me.GroupBox5)
@@ -448,7 +449,7 @@ Partial Class Form1
 
     Friend WithEvents GroupBox1 As GroupBox
     Friend WithEvents Button1 As Button
-    Friend WithEvents Label1 As Label
+    Friend WithEvents lblInputDirectory As Label
     Friend WithEvents CheckBox1 As CheckBox
     Friend WithEvents MenuStrip1 As MenuStrip
     Friend WithEvents ToolStripMenuItem1 As ToolStripMenuItem
@@ -482,7 +483,7 @@ Partial Class Form1
     Friend WithEvents Label10 As Label
     Friend WithEvents Label9 As Label
     Friend WithEvents Label2 As Label
-    Friend WithEvents ComboBox7 As ComboBox
+    Friend WithEvents cbFiles As ComboBox
     Friend WithEvents GroupBox3 As GroupBox
-    Friend WithEvents ListView1 As ListView
+    Friend WithEvents lvFileStreams As ListView
 End Class
