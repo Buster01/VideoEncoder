@@ -68,7 +68,7 @@
     End Function
 
     Public Function XMLStreamAnalyse(ByVal stream As Xml.XmlNode) As ListViewItem
-        Dim StreamData(5) As String
+        Dim StreamData(6) As String
 
 
         'Stream Index

@@ -156,50 +156,6 @@ Public Class Form1
         Me.ProgressBar1.Maximum = 100
         Me.ProgressBar1.Minimum = 0
         ' Audio Optionen
-        ComboBox1.Items.Add("copy")
-        ComboBox1.Items.Add("AAC")
-        ComboBox1.SelectedIndex = 0
-
-        ComboBox2.Items.Add("----------")
-        ComboBox2.Items.Add("128 kbit/s")
-        ComboBox2.Items.Add("192 kbit/s")
-        ComboBox2.Items.Add("256 kbit/s")
-        ComboBox2.Items.Add("320 kbit/s")
-        ComboBox2.Items.Add("384 kbit/s")
-        ComboBox2.Items.Add("448 kbit/s")
-        ComboBox2.SelectedIndex = 0
-        ComboBox2.Enabled = False
-
-        ' Video Optionen
-        With ComboBox3
-            .Items.Add("copy")
-            .Items.Add("x264")
-            .Items.Add("x265")
-            .Items.Add("Intel QSV H.264")
-            .Items.Add("Intel QSV H.265")
-            .Items.Add("NVidia NVenc H.264")
-            .Items.Add("NVidia NVenc H.265")
-            .SelectedIndex = 6
-        End With
-
-        With ComboBox4
-            .Items.Add("1000 kBit/s")
-            .Items.Add("2000 kBit/s")
-            .Items.Add("3000 kBit/s")
-            .Items.Add("3500 kBit/s")
-            .Items.Add("4000 kBit/s")
-            .Items.Add("4500 kBit/s")
-            .Items.Add("5000 kBit/s")
-            .Items.Add("5500 kBit/s")
-            .Items.Add("6000 kBit/s")
-            .Items.Add("6500 kBit/s")
-            .Items.Add("7000 kBit/s")
-            .Items.Add("7500 kBit/s")
-            .Items.Add("8000 kBit/s")
-            .Items.Add("8500 kBit/s")
-            .Items.Add("9000 kBit/s")
-            .SelectedIndex = 3
-        End With
 
         With ComboBox5
             .Items.Add("Main")
@@ -229,8 +185,11 @@ Public Class Form1
             .Columns.Add("Type", 60, HorizontalAlignment.Left)
             .Columns.Add("Codec", 100, HorizontalAlignment.Left)
             .Columns.Add("Sprache", 80, HorizontalAlignment.Center)
-            .Columns.Add("Frames", 80, HorizontalAlignment.Right)
+            .Columns.Add("Frames", 70, HorizontalAlignment.Right)
             .Columns.Add("Standard", 60, HorizontalAlignment.Left)
+            .Columns.Add("Encoder", 130, HorizontalAlignment.Left)
+            .Columns.Add("Bitrate", 100, HorizontalAlignment.Left)
+            .Columns.Add("", 100, HorizontalAlignment.Left)
         End With
 
     End Sub
@@ -241,49 +200,6 @@ Public Class Form1
         Dim VideoParameter As String = " -c:v "
         Dim z As Integer = 0
 
-        ' Audio Parameter
-        Select Case ComboBox1.SelectedItem
-            Case "copy"
-                AudioParameter = " -c:a copy"
-
-            Case "AAC"
-                AudioParameter = " -c:a aac -b:a " & Strings.Left(ComboBox2.SelectedItem, 3) & "k"
-        End Select
-
-        ' VideoParameter
-        Select Case ComboBox3.SelectedItem
-            Case "copy"
-                VideoParameter = VideoParameter & "copy "
-
-            Case "NVidia NVenc H.265"
-                VideoParameter = VideoParameter & "hevc_nvenc "
-
-            Case "NVidia NVenc H.264"
-                VideoParameter = VideoParameter & "nvenc_h264 "
-
-            Case "x264"
-                VideoParameter = VideoParameter & "libx264 "
-
-            Case "x265"
-                VideoParameter = VideoParameter & "libx265 "
-
-            Case "Intel QSV H.264"
-                VideoParameter = VideoParameter & "h264_qsv "
-
-            Case "Intel QSV H.265"
-                VideoParameter = VideoParameter & "hevc_qsv "
-        End Select
-
-        'VideoBiterate, Profile, Level
-        If ComboBox3.SelectedItem <> "copy" Then
-            'bitrate
-            VideoParameter = VideoParameter & "-b:v " & Strings.Left(Replace(Val(ComboBox4.SelectedItem) / 1000, ",", "."), 4).Trim & "M "
-            'profile
-            VideoParameter = VideoParameter & "-profile:v " & ComboBox5.SelectedItem.ToString.ToLower & " "
-            'level
-            VideoParameter = VideoParameter & "-level " & Replace(Val(ComboBox6.SelectedItem), ",", ".")
-
-        End If
 
         If folder = True Then
             If System.IO.Directory.Exists(input_folder) = True And System.IO.Directory.Exists(output_folder) = True Then
@@ -295,90 +211,6 @@ Public Class Form1
         End If
     End Sub
 
-    Private Sub ComboBox1_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox1.SelectedIndexChanged
-        If ComboBox1.SelectedIndex = 0 Then
-            ComboBox2.Enabled = False
-            If ComboBox2.Items.Count > 0 Then ComboBox2.SelectedIndex = 0
-        Else
-            ComboBox2.Enabled = True
-            ComboBox2.SelectedIndex = 1
-        End If
-    End Sub
-
-    Private Sub ComboBox3_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBox3.SelectedIndexChanged
-        If ComboBox6.Items.Count > 0 Then
-            Select Case ComboBox3.SelectedItem
-                Case "copy"
-                    With ComboBox4
-                        .Items.Clear()
-                        .Items.Add("----------")
-                        .SelectedIndex = 0
-                        .Enabled = False
-                    End With
-                    With ComboBox5
-                        .Items.Clear()
-                        .Items.Add("----------")
-                        .SelectedIndex = 0
-                        .Enabled = False
-                    End With
-                    With ComboBox6
-                        .Items.Clear()
-                        .Items.Add("----------")
-                        .SelectedIndex = 0
-                        .Enabled = False
-                    End With
-
-                Case "NVidia NVenc H.265", "Intel QSV H.265", "x265"
-                    ComboBox4.Enabled = True
-                    ComboBox5.Enabled = True
-                    ComboBox6.Enabled = True
-                    ComboBox4.SelectedIndex = 4
-                    With ComboBox5
-                        .Items.Clear()
-                        .Items.Add("Main")
-                        .Items.Add("Main10")
-                        .SelectedIndex = 0
-                    End With
-                    With ComboBox6
-                        .Items.Clear()
-                        .Items.Add("3.1")
-                        .Items.Add("4.0")
-                        .Items.Add("4.1")
-                        .Items.Add("5.0")
-                        .Items.Add("5.1")
-                        .Items.Add("5.2")
-                        .Items.Add("6.0")
-                        .Items.Add("6.1")
-                        .Items.Add("6.2")
-                        .SelectedIndex = 3
-                    End With
-
-                Case "NVidia NVenc H.264", "Intel QSV H.264", "x264"
-                    ComboBox4.Enabled = True
-                    ComboBox5.Enabled = True
-                    ComboBox6.Enabled = True
-                    ComboBox4.SelectedIndex = 10
-                    With ComboBox5
-                        .Items.Clear()
-                        .Items.Add("Baseline")
-                        .Items.Add("Main")
-                        .Items.Add("High")
-                        .SelectedIndex = 2
-                    End With
-                    With ComboBox6
-                        .Items.Clear()
-                        .Items.Add("3.1")
-                        .Items.Add("4.0")
-                        .Items.Add("4.1")
-                        .Items.Add("5.0")
-                        .Items.Add("5.1")
-                        .Items.Add("5.2")
-                        .SelectedIndex = 5
-                    End With
-            End Select
-        End If
-    End Sub
-
     Private Sub ComboBox7_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbFiles.SelectedIndexChanged
         If cbFiles.Items.Count > 0 Then
             lvFileStreams.Items.Clear()
@@ -386,9 +218,87 @@ Public Class Form1
             Dim streams As Xml.XmlNode = VideoFileStreams(file, ffmpeg_path)
 
             For z = 0 To streams.ChildNodes.Count - 1
-                lvFileStreams.Items.Add(XMLStreamAnalyse(streams.ChildNodes(z)))
-            Next z
+                Dim item As New ListViewItem
+                Dim vcCombo As New ComboBox
+                AddHandler vcCombo.SelectedIndexChanged, AddressOf vcCombo_SelectedIndexChanged
+                Dim brCombo As New ComboBox
+                AddHandler brCombo.SelectedIndexChanged, AddressOf brCombo_SelectedIndexChanged
 
+                item = XMLStreamAnalyse(streams.ChildNodes(z))
+                lvFileStreams.Items.Add(item)
+
+                'Fülle VideoEncoder
+                Select Case item.SubItems(1).Text
+                    Case "Video"
+                        With vcCombo
+                            .Items.Add("copy")
+                            .Items.Add("x264")
+                            .Items.Add("x265")
+                            .Items.Add("Intel QSV H.264")
+                            .Items.Add("Intel QSV H.265")
+                            .Items.Add("NVidia NVenc H.264")
+                            .Items.Add("NVidia NVenc H.265")
+                            .SelectedIndex = 0
+                        End With
+
+                        With brCombo
+                            .Items.Add("------")
+                            .SelectedIndex = 0
+                        End With
+
+                    Case "Audio"
+                        With vcCombo
+                            .Items.Add("copy")
+                            .Items.Add("AAC")
+                            .SelectedIndex = 0
+                        End With
+
+                        With brCombo
+                            .Items.Add("------")
+                            .SelectedIndex = 0
+                        End With
+
+                    Case "Untertitel"
+                        With vcCombo
+                            .Items.Add("copy")
+                            .SelectedIndex = 0
+                        End With
+
+                        With brCombo
+                            .Items.Add("------")
+                            .SelectedIndex = 0
+                        End With
+
+                End Select
+
+                vcCombo.DropDownStyle = ComboBoxStyle.DropDownList
+                brCombo.DropDownStyle = ComboBoxStyle.DropDownList
+                vcCombo.Height = item.Bounds.Height
+                vcCombo.Width = lvFileStreams.Columns(6).Width
+                brCombo.Height = item.Bounds.Height
+                brCombo.Width = lvFileStreams.Columns(7).Width
+                vcCombo.Location = New Point(lvFileStreams.Items(z).SubItems(5).Bounds.Right, lvFileStreams.Items(z).SubItems(5).Bounds.Y)
+                brCombo.Location = New Point(lvFileStreams.Items(z).SubItems(6).Bounds.Right, lvFileStreams.Items(z).SubItems(6).Bounds.Y)
+                lvFileStreams.Controls.Add(vcCombo)
+                lvFileStreams.Controls.Add(brCombo)
+
+
+
+
+            Next z
         End If
     End Sub
+
+    Private Sub vcCombo_SelectedIndexChanged(sender As Object, e As EventArgs)
+
+        Dim vcCombo As ComboBox = sender
+        Dim si As String = vcCombo.SelectedItem
+
+    End Sub
+
+    Private Sub brCombo_SelectedIndexChanged(sender As Object, e As EventArgs)
+
+    End Sub
+
+
 End Class
