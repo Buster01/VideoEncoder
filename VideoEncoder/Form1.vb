@@ -82,10 +82,14 @@ Public Class Form1
     End Sub
 
     Private Sub BackgroundWorker1_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs) Handles BackgroundWorker1.DoWork
-        Dim VideoFiles() As String = DirectCast(e.Argument(0), String())
-        Dim AudioProperties As String = DirectCast(e.Argument(1), String)
-        Dim VideoProperties As String = DirectCast(e.Argument(2), String)
 
+        Dim VideoFile As String = DirectCast(e.Argument(0), String)
+        Dim hwDecodingParameter As String = DirectCast(e.Argument(1), String)
+        Dim AudioProperties As String = DirectCast(e.Argument(2), String)
+        Dim VideoProperties As String = DirectCast(e.Argument(3), String)
+        Dim SubtitelParameter As String = DirectCast(e.Argument(4), String)
+
+        Dim stderr As String = ""
         Dim stdout As String = ""
         Dim codecposition As Long = 0
         Dim percent As Integer = 0
@@ -104,42 +108,41 @@ Public Class Form1
         ProcessProperties.RedirectStandardError = True
         ProcessProperties.WindowStyle = ProcessWindowStyle.Normal
 
-        For z = 0 To VideoFiles.Count - 1
-            Dim file As String = input_folder & "\" & VideoFiles(z)
-            Dim duration As Long = VideoDuration(file, ffmpeg_path)
+        Dim duration As Long = VideoDuration(VideoFile, ffmpeg_path)
 
-            ffmpeg_arguments = "-hwaccel dxva2 -y -i " & Chr(34) & file & Chr(34)
-            ffmpeg_arguments = ffmpeg_arguments & AudioProperties
+        ffmpeg_arguments = hwDecodingParameter & " -y -i " & Chr(34) & VideoFile & Chr(34) & " "
+        ffmpeg_arguments = ffmpeg_arguments & AudioProperties
 
-            ffmpeg_arguments = ffmpeg_arguments & " -c:s copy"
+        ffmpeg_arguments = ffmpeg_arguments & " " & SubtitelParameter
 
-            ffmpeg_arguments = ffmpeg_arguments & VideoProperties & " -rc vbr_hq -map 0 "
-            ffmpeg_arguments = ffmpeg_arguments & Chr(34) & output_folder & System.IO.Path.GetFileNameWithoutExtension(file) & ".mkv" & Chr(34)
-            ProcessProperties.Arguments = ffmpeg_arguments
+        ffmpeg_arguments = ffmpeg_arguments & VideoProperties
+        ffmpeg_arguments = ffmpeg_arguments & Chr(34) & output_folder & System.IO.Path.GetFileNameWithoutExtension(VideoFile) & ".mkv" & Chr(34)
+        ProcessProperties.Arguments = ffmpeg_arguments
 
-            Dim myProcess As New Process
-            myProcess = Process.Start(ProcessProperties)
-            Do While Not myProcess.HasExited
-                stdout = myProcess.StandardError.ReadLine
-                output = Split(stdout, "=")
-                If UBound(output) = 7 Then
-                    temp_time = Split(Replace(output(5), "bitrate", "").Trim, ":")
-                    If temp_time(0) >= 0 Then
-                        codecposition = CInt(temp_time(0)) * 3600 ' Stunden
-                        codecposition = codecposition + CInt(temp_time(1)) * 60 'Minuten
-                        codecposition = codecposition + CInt(Replace(temp_time(2), ".", ","))
-                        If codecposition > 0 Then
-                            percent = Math.Round((codecposition / duration) * 100, 0)
-                            If percent > old_percent Then
-                                Me.BackgroundWorker1.ReportProgress(percent)
-                                old_percent = percent
-                            End If
+        Dim myProcess As New Process
+        myProcess = Process.Start(ProcessProperties)
+        Do While Not myProcess.HasExited
+            stdout = myProcess.StandardError.ReadLine
+            ' stderr = myProcess.StandardOutput.ReadLine
+            output = Split(stdout, "=")
+            If UBound(output) = 7 Then
+                temp_time = Split(Replace(output(5), "bitrate", "").Trim, ":")
+                If temp_time(0) >= 0 Then
+                    codecposition = CInt(temp_time(0)) * 3600 ' Stunden
+                    codecposition = codecposition + CInt(temp_time(1)) * 60 'Minuten
+                    codecposition = codecposition + CInt(Replace(temp_time(2), ".", ","))
+                    If codecposition > 0 Then
+                        percent = Math.Round((codecposition / duration) * 100, 0)
+                        If percent > old_percent Then
+                            Me.BackgroundWorker1.ReportProgress(percent)
+                            old_percent = percent
                         End If
                     End If
                 End If
-            Loop
-            myProcess.WaitForExit()
-        Next z
+            End If
+        Loop
+        myProcess.WaitForExit()
+        BackgroundWorker1.CancelAsync()
     End Sub
 
     Private Sub BackgroundWorker1_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs) Handles BackgroundWorker1.RunWorkerCompleted
@@ -203,49 +206,89 @@ Public Class Form1
         Dim hwDecodingParameter As String = ""
         Dim AudioParameter As String = ""
         Dim VideoParameter As String = ""
+        Dim SubtitelParameter As String = ""
         Dim InputFile As String = ""
         Dim z As Integer = 0
+        Dim AudioStream As Integer = 0
+        Dim SubtitelStream As Integer = 0
 
         'Decoder Parameter
-        If CheckBox3.Checked = True Then hwDecodingParameter = " -hwaccel dxva2 "
+        If CheckBox3.Checked = True Then hwDecodingParameter = "-hwaccel dxva2"
 
         For Each stream_item As ListViewItem In lvFileStreams.Items
             'Audio Encoder Paramater
             Dim s_id As String = ""
             Dim s_codec As String = ""
+            Dim s_bitrate As String = ""
             Dim vcCombo As ComboBox
+            Dim brCombo As ComboBox
 
-
+            ' Finde Combobox mit Codec Auswahl
             For Each vc_ctrl In lvFileStreams.Controls.Find("vcCombo" & z.ToString, True)
                 vcCombo = vc_ctrl
             Next
-
-            If stream_item.SubItems(1).Text = "Audio" Then
-                s_id = stream_item.SubItems(0).Text
-                s_codec = vcCombo.SelectedItem
-
-
-
-            End If
-
-
-
-                z += 1
+            'Finde Combobx mit Bitrate
+            For Each br_ctrl In lvFileStreams.Controls.Find("brCombo" & z.ToString, True)
+                brCombo = br_ctrl
             Next
 
+            s_id = stream_item.SubItems(0).Text
+            s_codec = vcCombo.SelectedItem.ToString.ToLower
+            s_bitrate = Strings.Left(brCombo.SelectedItem, 4).Trim & "k"
 
+            ' Audio Parameter
+            If stream_item.SubItems(1).Text = "Audio" Then
+                If s_codec = "copy" Then
+                    AudioParameter = AudioParameter & "-c:a:" & AudioStream.ToString.Trim & " copy "
+                Else
+                    AudioParameter = AudioParameter & "-c:a:" & AudioStream.ToString.Trim & " " & s_codec & " -b:a:" & AudioStream.ToString.Trim & " " & s_bitrate & " "
+                End If
+                audiostream += 1
+            End If
+            ' Video Parameter
+            If stream_item.SubItems(1).Text = "Video" Then
+                If s_codec = "copy" Then
+                    VideoParameter = "-c:v copy"
+                Else
+                    Select Case s_codec
+                        Case "x264"
+                            VideoParameter = "-c:v libx264"
 
+                        Case "x265"
+                            VideoParameter = "-c:v libx265"
 
+                        Case "intel qsv H.264"
+                            VideoParameter = "-c:v h264_qsv"
 
+                        Case "intel qsv H.265"
+                            VideoParameter = "-c:v hevc_qsv"
 
-            If System.IO.Directory.Exists(input_folder) = True And System.IO.Directory.Exists(output_folder) = True Then
+                        Case "nvidia nvenc h.264"
+                            VideoParameter = "-c:v nvenc_h264"
+
+                        Case "nvidia nvenc h.265"
+                            VideoParameter = "-c:v hevc_nvenc"
+
+                    End Select
+                    VideoParameter = VideoParameter & " -profile:v " & ComboBox5.SelectedItem.ToString.ToLower & " -level " & ComboBox6.SelectedItem & " -b:v " & s_bitrate
+                    If CheckBox2.Checked = True Then VideoParameter = VideoParameter & " -rc vbr_hq "
+                End If
+            End If
+            'Untertitel Parameter
+            If stream_item.SubItems(1).Text = "Untertitel" Then
+                SubtitelParameter = SubtitelParameter & "-c:s:" & SubtitelStream.ToString.Trim & " copy "
+                SubtitelStream += 1
+            End If
+            z += 1
+        Next
+
+        If System.IO.Directory.Exists(input_folder) = True And System.IO.Directory.Exists(output_folder) = True Then
             If Strings.Right(output_folder, 1) <> "\" Then output_folder = output_folder & "\"
-            If Strings.Right(input_folder, 1) <> "\" Then input_folder = input_folder & "\" & cbFiles.SelectedItem Else input_folder = input_folder & cbFiles.SelectedItem
+            If Strings.Right(input_folder, 1) <> "\" Then input_file = input_folder & "\" & cbFiles.SelectedItem Else input_file = input_folder & cbFiles.SelectedItem
 
             cbFiles.Enabled = False
             ' Button3.Enabled = False
-            InputFile = input_folder
-            'BackgroundWorker1.RunWorkerAsync({InputFile, hwDecodingParameter, AudioParameter, VideoParameter, output_folder})
+            BackgroundWorker1.RunWorkerAsync({input_file, hwDecodingParameter, AudioParameter, VideoParameter, SubtitelParameter, output_folder})
         End If
     End Sub
 
