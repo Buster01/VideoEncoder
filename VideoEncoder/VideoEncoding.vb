@@ -52,6 +52,7 @@
         ProcessProperties.RedirectStandardError = True
         ProcessProperties.WindowStyle = ProcessWindowStyle.Normal
         ProcessProperties.Arguments = ffprobe_arguments
+        ProcessProperties.CreateNoWindow = True
 
         ffprobeProcess = Process.Start(ProcessProperties)
         out_tmp = ffprobeProcess.StandardOutput.ReadToEnd()
@@ -69,7 +70,6 @@
 
     Public Function XMLStreamAnalyse(ByVal stream As Xml.XmlNode) As ListViewItem
         Dim StreamData(6) As String
-
 
         'Stream Index
         StreamData(0) = stream.Attributes("index").Value
@@ -146,8 +146,6 @@
                 Case "7.1"
                     StreamData(2) = StreamData(2) & " (7.1)"
             End Select
-
-
         End If
 
         'Stream Sprache ermitteln

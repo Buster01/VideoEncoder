@@ -52,6 +52,8 @@ Partial Class Form1
         Me.Label9 = New System.Windows.Forms.Label()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
         Me.lvFileStreams = New System.Windows.Forms.ListView()
+        Me.CheckBox2 = New System.Windows.Forms.CheckBox()
+        Me.CheckBox3 = New System.Windows.Forms.CheckBox()
         Me.GroupBox1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -69,7 +71,7 @@ Partial Class Form1
         Me.GroupBox1.Controls.Add(Me.CheckBox1)
         Me.GroupBox1.Location = New System.Drawing.Point(6, 28)
         Me.GroupBox1.Name = "GroupBox1"
-        Me.GroupBox1.Size = New System.Drawing.Size(1093, 80)
+        Me.GroupBox1.Size = New System.Drawing.Size(752, 80)
         Me.GroupBox1.TabIndex = 0
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Quelle"
@@ -115,7 +117,7 @@ Partial Class Form1
         Me.CheckBox1.AutoSize = True
         Me.CheckBox1.Checked = True
         Me.CheckBox1.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.CheckBox1.Location = New System.Drawing.Point(974, 22)
+        Me.CheckBox1.Location = New System.Drawing.Point(633, 22)
         Me.CheckBox1.Name = "CheckBox1"
         Me.CheckBox1.Size = New System.Drawing.Size(112, 17)
         Me.CheckBox1.TabIndex = 0
@@ -127,7 +129,7 @@ Partial Class Form1
         Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem1, Me.ToolStripMenuItem2})
         Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip1.Name = "MenuStrip1"
-        Me.MenuStrip1.Size = New System.Drawing.Size(1105, 24)
+        Me.MenuStrip1.Size = New System.Drawing.Size(769, 24)
         Me.MenuStrip1.TabIndex = 1
         Me.MenuStrip1.Text = "MenuStrip1"
         '
@@ -171,9 +173,9 @@ Partial Class Form1
         '
         Me.GroupBox2.Controls.Add(Me.Label3)
         Me.GroupBox2.Controls.Add(Me.Button2)
-        Me.GroupBox2.Location = New System.Drawing.Point(6, 106)
+        Me.GroupBox2.Location = New System.Drawing.Point(6, 114)
         Me.GroupBox2.Name = "GroupBox2"
-        Me.GroupBox2.Size = New System.Drawing.Size(1093, 64)
+        Me.GroupBox2.Size = New System.Drawing.Size(752, 64)
         Me.GroupBox2.TabIndex = 2
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "Ziel"
@@ -206,16 +208,16 @@ Partial Class Form1
         Me.GroupBox4.Controls.Add(Me.Label4)
         Me.GroupBox4.Controls.Add(Me.ProgressBar1)
         Me.GroupBox4.Controls.Add(Me.Button3)
-        Me.GroupBox4.Location = New System.Drawing.Point(6, 462)
+        Me.GroupBox4.Location = New System.Drawing.Point(6, 445)
         Me.GroupBox4.Name = "GroupBox4"
-        Me.GroupBox4.Size = New System.Drawing.Size(1093, 59)
+        Me.GroupBox4.Size = New System.Drawing.Size(752, 59)
         Me.GroupBox4.TabIndex = 7
         Me.GroupBox4.TabStop = False
         '
         'Label4
         '
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(902, 29)
+        Me.Label4.Location = New System.Drawing.Point(560, 27)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(24, 13)
         Me.Label4.TabIndex = 6
@@ -223,14 +225,14 @@ Partial Class Form1
         '
         'ProgressBar1
         '
-        Me.ProgressBar1.Location = New System.Drawing.Point(24, 25)
+        Me.ProgressBar1.Location = New System.Drawing.Point(24, 19)
         Me.ProgressBar1.Name = "ProgressBar1"
-        Me.ProgressBar1.Size = New System.Drawing.Size(872, 23)
+        Me.ProgressBar1.Size = New System.Drawing.Size(530, 29)
         Me.ProgressBar1.TabIndex = 5
         '
         'Button3
         '
-        Me.Button3.Location = New System.Drawing.Point(950, 21)
+        Me.Button3.Location = New System.Drawing.Point(608, 19)
         Me.Button3.Name = "Button3"
         Me.Button3.Size = New System.Drawing.Size(137, 29)
         Me.Button3.TabIndex = 4
@@ -239,13 +241,15 @@ Partial Class Form1
         '
         'GroupBox5
         '
+        Me.GroupBox5.Controls.Add(Me.CheckBox3)
+        Me.GroupBox5.Controls.Add(Me.CheckBox2)
         Me.GroupBox5.Controls.Add(Me.ComboBox6)
         Me.GroupBox5.Controls.Add(Me.ComboBox5)
         Me.GroupBox5.Controls.Add(Me.Label10)
         Me.GroupBox5.Controls.Add(Me.Label9)
-        Me.GroupBox5.Location = New System.Drawing.Point(6, 377)
+        Me.GroupBox5.Location = New System.Drawing.Point(6, 385)
         Me.GroupBox5.Name = "GroupBox5"
-        Me.GroupBox5.Size = New System.Drawing.Size(1093, 67)
+        Me.GroupBox5.Size = New System.Drawing.Size(752, 54)
         Me.GroupBox5.TabIndex = 8
         Me.GroupBox5.TabStop = False
         Me.GroupBox5.Text = "Video Optionen"
@@ -257,7 +261,7 @@ Partial Class Form1
         Me.ComboBox6.FormattingEnabled = True
         Me.ComboBox6.Location = New System.Drawing.Point(276, 19)
         Me.ComboBox6.Name = "ComboBox6"
-        Me.ComboBox6.Size = New System.Drawing.Size(121, 23)
+        Me.ComboBox6.Size = New System.Drawing.Size(51, 23)
         Me.ComboBox6.TabIndex = 7
         '
         'ComboBox5
@@ -291,9 +295,9 @@ Partial Class Form1
         'GroupBox3
         '
         Me.GroupBox3.Controls.Add(Me.lvFileStreams)
-        Me.GroupBox3.Location = New System.Drawing.Point(6, 176)
+        Me.GroupBox3.Location = New System.Drawing.Point(6, 184)
         Me.GroupBox3.Name = "GroupBox3"
-        Me.GroupBox3.Size = New System.Drawing.Size(1093, 195)
+        Me.GroupBox3.Size = New System.Drawing.Size(752, 195)
         Me.GroupBox3.TabIndex = 10
         Me.GroupBox3.TabStop = False
         Me.GroupBox3.Text = "Stream Optionen"
@@ -303,16 +307,40 @@ Partial Class Form1
         Me.lvFileStreams.HoverSelection = True
         Me.lvFileStreams.Location = New System.Drawing.Point(24, 19)
         Me.lvFileStreams.Name = "lvFileStreams"
-        Me.lvFileStreams.Size = New System.Drawing.Size(1062, 170)
+        Me.lvFileStreams.Size = New System.Drawing.Size(721, 170)
         Me.lvFileStreams.TabIndex = 0
         Me.lvFileStreams.UseCompatibleStateImageBehavior = False
         Me.lvFileStreams.View = System.Windows.Forms.View.Details
+        '
+        'CheckBox2
+        '
+        Me.CheckBox2.AutoSize = True
+        Me.CheckBox2.Checked = True
+        Me.CheckBox2.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.CheckBox2.Location = New System.Drawing.Point(395, 22)
+        Me.CheckBox2.Name = "CheckBox2"
+        Me.CheckBox2.Size = New System.Drawing.Size(156, 17)
+        Me.CheckBox2.TabIndex = 8
+        Me.CheckBox2.Text = "VBR High Quality Encoding"
+        Me.CheckBox2.UseVisualStyleBackColor = True
+        '
+        'CheckBox3
+        '
+        Me.CheckBox3.AutoSize = True
+        Me.CheckBox3.Checked = True
+        Me.CheckBox3.CheckState = System.Windows.Forms.CheckState.Checked
+        Me.CheckBox3.Location = New System.Drawing.Point(608, 22)
+        Me.CheckBox3.Name = "CheckBox3"
+        Me.CheckBox3.Size = New System.Drawing.Size(116, 17)
+        Me.CheckBox3.TabIndex = 9
+        Me.CheckBox3.Text = "Hardware Decoder"
+        Me.CheckBox3.UseVisualStyleBackColor = True
         '
         'Form1
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(1105, 533)
+        Me.ClientSize = New System.Drawing.Size(769, 513)
         Me.Controls.Add(Me.GroupBox3)
         Me.Controls.Add(Me.GroupBox5)
         Me.Controls.Add(Me.GroupBox4)
@@ -324,7 +352,7 @@ Partial Class Form1
         Me.MaximizeBox = False
         Me.Name = "Form1"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
-        Me.Text = "Majos Video Encoder"
+        Me.Text = "Video Encoder"
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
         Me.MenuStrip1.ResumeLayout(False)
@@ -371,4 +399,6 @@ Partial Class Form1
     Friend WithEvents cbFiles As ComboBox
     Friend WithEvents GroupBox3 As GroupBox
     Friend WithEvents lvFileStreams As ListView
+    Friend WithEvents CheckBox2 As CheckBox
+    Friend WithEvents CheckBox3 As CheckBox
 End Class

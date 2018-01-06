@@ -158,22 +158,15 @@ Public Class Form1
         ' Audio Optionen
 
         With ComboBox5
-            .Items.Add("Main")
-            .Items.Add("Main10")
+            .Items.Add("------")
             .SelectedIndex = 0
+            .Enabled = False
         End With
 
         With ComboBox6
-            .Items.Add("3.1")
-            .Items.Add("4.0")
-            .Items.Add("4.1")
-            .Items.Add("5.0")
-            .Items.Add("5.1")
-            .Items.Add("5.2")
-            .Items.Add("6.0")
-            .Items.Add("6.1")
-            .Items.Add("6.2")
-            .SelectedIndex = 3
+            .Items.Add("------")
+            .SelectedIndex = 0
+            .Enabled = False
         End With
 
         With cbFiles
@@ -186,10 +179,9 @@ Public Class Form1
             .Columns.Add("Codec", 100, HorizontalAlignment.Left)
             .Columns.Add("Sprache", 80, HorizontalAlignment.Center)
             .Columns.Add("Frames", 70, HorizontalAlignment.Right)
-            .Columns.Add("Standard", 60, HorizontalAlignment.Left)
+            .Columns.Add("Standard", 100, HorizontalAlignment.Left)
             .Columns.Add("Encoder", 130, HorizontalAlignment.Left)
             .Columns.Add("Bitrate", 100, HorizontalAlignment.Left)
-            .Columns.Add("", 100, HorizontalAlignment.Left)
         End With
 
     End Sub
@@ -223,7 +215,7 @@ Public Class Form1
                 Dim vcCombo As New ComboBox
                 AddHandler vcCombo.SelectedIndexChanged, AddressOf vcCombo_SelectedIndexChanged
                 Dim brCombo As New ComboBox
-                AddHandler brCombo.SelectedIndexChanged, AddressOf brCombo_SelectedIndexChanged
+                Dim defcheck As New CheckBox
 
                 item = XMLStreamAnalyse(streams.ChildNodes(z))
                 lvFileStreams.Items.Add(item)
@@ -272,24 +264,34 @@ Public Class Form1
 
                 End Select
 
+                If item.SubItems(5).Text = "True" Then
+                    defcheck.Checked = True
+                Else
+                    defcheck.Checked = False
+                End If
+
                 vcCombo.DropDownStyle = ComboBoxStyle.DropDownList
                 brCombo.DropDownStyle = ComboBoxStyle.DropDownList
+                defcheck.Height = item.Bounds.Height
+                defcheck.Width = lvFileStreams.Columns(5).Width - 42
                 vcCombo.Height = item.Bounds.Height
-                vcCombo.Width = lvFileStreams.Columns(6).Width
+                vcCombo.Width = lvFileStreams.Columns(6).Width - 2
                 brCombo.Height = item.Bounds.Height
-                brCombo.Width = lvFileStreams.Columns(7).Width
+                brCombo.Width = lvFileStreams.Columns(7).Width - 2
+                defcheck.Location = New Point(lvFileStreams.Items(z).SubItems(4).Bounds.Right + 40, lvFileStreams.Items(z).SubItems(4).Bounds.Y)
                 vcCombo.Location = New Point(lvFileStreams.Items(z).SubItems(5).Bounds.Right, lvFileStreams.Items(z).SubItems(5).Bounds.Y)
                 brCombo.Location = New Point(lvFileStreams.Items(z).SubItems(6).Bounds.Right, lvFileStreams.Items(z).SubItems(6).Bounds.Y)
                 vcCombo.Parent = lvFileStreams
                 brCombo.Parent = lvFileStreams
                 vcCombo.Name = "vcCombo" & z.ToString.Trim
                 brCombo.Name = "brCombo" & z.ToString.Trim
+                defcheck.Name = "defCheck" & z.ToString.Trim
+                lvFileStreams.Controls.Add(defcheck)
                 lvFileStreams.Controls.Add(vcCombo)
                 lvFileStreams.Controls.Add(brCombo)
 
-
-
-
+                lvFileStreams.Items(z).SubItems(5).Text = ""
+                lvFileStreams.Items(z).SubItems(6).Text = ""
             Next z
         End If
     End Sub
@@ -299,8 +301,8 @@ Public Class Form1
         Dim vcCombo As ComboBox = sender
         If vcCombo.Name = "" Then Exit Sub
         Dim brC As String = "br" & Mid(vcCombo.Name, 3)
-
         Dim si As String = vcCombo.SelectedItem
+        Dim typ As String = lvFileStreams.Items(CInt(Replace(vcCombo.Name.ToString, "vcCombo", ""))).SubItems(1).Text
 
         For Each ctrl In lvFileStreams.Controls.Find(brC, True)
 
@@ -311,6 +313,14 @@ Public Class Form1
                 Case "copy"
                     brCombo.Items.Add("------")
                     brCombo.SelectedIndex = 0
+                    If typ = "Video" Then
+                        With ComboBox5
+                            .Items.Clear()
+                            .Items.Add("------")
+                            .SelectedIndex = 0
+                            .Enabled = False
+                        End With
+                    End If
 
                 Case "AAC"
                     brCombo.Items.Add("128 kBit/s")
@@ -341,8 +351,33 @@ Public Class Form1
                     brCombo.Items.Add("9000 kBit/s")
                     brCombo.Items.Add("9500 kBit/s")
                     brCombo.SelectedIndex = 8
+                    'h.264 Profile
+                    With ComboBox5
+                        .Items.Clear()
+                        .Items.Add("Baseline")
+                        .Items.Add("Main")
+                        .Items.Add("High")
+                        .Items.Add("High10")
+                        .SelectedIndex = 2
+                        .Enabled = True
+                    End With
+                    'h264 level
+                    With ComboBox6
+                        .Items.Clear()
+                        .Items.Add("3")
+                        .Items.Add("3.1")
+                        .Items.Add("3.2")
+                        .Items.Add("4")
+                        .Items.Add("4.1")
+                        .Items.Add("4.2")
+                        .Items.Add("5")
+                        .Items.Add("5.1")
+                        .Items.Add("5.2")
+                        .SelectedIndex = 5
+                        .Enabled = True
+                    End With
 
-                Case Else
+                Case "x265", "Intel QSV H.265", "NVidia NVenc H.265"
                     brCombo.Items.Add("1000 kBit/s")
                     brCombo.Items.Add("2000 kBit/s")
                     brCombo.Items.Add("2500 kBit/s")
@@ -361,19 +396,36 @@ Public Class Form1
                     brCombo.Items.Add("9000 kBit/s")
                     brCombo.Items.Add("9500 kBit/s")
                     brCombo.SelectedIndex = 4
+                    'profle h.265
+                    With ComboBox5
+                        .Items.Clear()
+                        .Items.Add("Main")
+                        .Items.Add("Main10")
+                        .SelectedIndex = 1
+                        .Enabled = True
+                    End With
+                    'level h.265
+                    With ComboBox6
+                        .Items.Clear()
+                        .Items.Add("3")
+                        .Items.Add("3.1")
+                        .Items.Add("4")
+                        .Items.Add("4.1")
+                        .Items.Add("5")
+                        .Items.Add("5.1")
+                        .Items.Add("5.2")
+                        .Items.Add("6")
+                        .Items.Add("6.1")
+                        .Items.Add("6.2")
+                        .SelectedIndex = 4
+                        .Enabled = True
+                    End With
 
             End Select
             Exit For
         Next
-
-
-
-
     End Sub
 
-    Private Sub brCombo_SelectedIndexChanged(sender As Object, e As EventArgs)
-
-    End Sub
 
 
 End Class
