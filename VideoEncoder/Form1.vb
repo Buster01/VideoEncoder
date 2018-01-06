@@ -187,19 +187,55 @@ Public Class Form1
     End Sub
 
     Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
+        If input_folder = "" Then
+            MsgBox("Bitte ein Quellpfad wählen!", vbInformation, "keine Quellpfad!")
+            Exit Sub
+        End If
+        If output_folder = "" Then
+            MsgBox("Bitte ein Zielpfad wählen!", vbInformation, "keine Zielpfad!")
+            Exit Sub
+        End If
+        If cbFiles.SelectedItem = "" Then
+            MsgBox("Quellpfad enhält keine Videodateien!", vbInformation, "keine Videodateien!")
+            Exit Sub
+        End If
         Dim VideoFiles As New List(Of String)
+        Dim hwDecodingParameter As String = ""
         Dim AudioParameter As String = ""
-        Dim VideoParameter As String = " -c:v "
+        Dim VideoParameter As String = ""
+        Dim InputFile As String = ""
         Dim z As Integer = 0
 
+        'Decoder Parameter
+        If CheckBox3.Checked = True Then hwDecodingParameter = " -hwaccel dxva2 "
 
-        If folder = True Then
-            If System.IO.Directory.Exists(input_folder) = True And System.IO.Directory.Exists(output_folder) = True Then
-                If Strings.Right(output_folder, 1) <> "\" Then output_folder = output_folder & "\"
-                cbFiles.Enabled = False
-                Button3.Enabled = False
-                BackgroundWorker1.RunWorkerAsync({cbFiles.Items.Cast(Of String).ToArray, AudioParameter, VideoParameter})
+        For Each item In lvFileStreams.Items
+            'Audio Encoder Paramater
+            If item.SubItems(1).Text = "Audio" Then
+
+
+
+
             End If
+
+
+
+
+        Next
+
+
+
+
+
+
+        If System.IO.Directory.Exists(input_folder) = True And System.IO.Directory.Exists(output_folder) = True Then
+            If Strings.Right(output_folder, 1) <> "\" Then output_folder = output_folder & "\"
+            If Strings.Right(input_folder, 1) <> "\" Then input_folder = input_folder & "\" & cbFiles.SelectedItem Else input_folder = input_folder & cbFiles.SelectedItem
+
+            cbFiles.Enabled = False
+            Button3.Enabled = False
+            InputFile = input_folder
+            BackgroundWorker1.RunWorkerAsync({InputFile, hwDecodingParameter, AudioParameter, VideoParameter, output_folder})
         End If
     End Sub
 
