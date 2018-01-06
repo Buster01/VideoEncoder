@@ -280,6 +280,10 @@ Public Class Form1
                 brCombo.Width = lvFileStreams.Columns(7).Width
                 vcCombo.Location = New Point(lvFileStreams.Items(z).SubItems(5).Bounds.Right, lvFileStreams.Items(z).SubItems(5).Bounds.Y)
                 brCombo.Location = New Point(lvFileStreams.Items(z).SubItems(6).Bounds.Right, lvFileStreams.Items(z).SubItems(6).Bounds.Y)
+                vcCombo.Parent = lvFileStreams
+                brCombo.Parent = lvFileStreams
+                vcCombo.Name = "vcCombo" & z.ToString.Trim
+                brCombo.Name = "brCombo" & z.ToString.Trim
                 lvFileStreams.Controls.Add(vcCombo)
                 lvFileStreams.Controls.Add(brCombo)
 
@@ -293,7 +297,55 @@ Public Class Form1
     Private Sub vcCombo_SelectedIndexChanged(sender As Object, e As EventArgs)
 
         Dim vcCombo As ComboBox = sender
+        If vcCombo.Name = "" Then Exit Sub
+        Dim brC As String = "br" & Mid(vcCombo.Name, 3)
+
         Dim si As String = vcCombo.SelectedItem
+
+        For Each ctrl In lvFileStreams.Controls.Find(brC, True)
+
+            Dim brCombo As ComboBox = ctrl
+            brCombo.Items.Clear()
+
+            Select Case si
+                Case "copy"
+                    brCombo.Items.Add("------")
+                    brCombo.SelectedIndex = 0
+
+                Case "AAC"
+                    brCombo.Items.Add("128 kBit/s")
+                    brCombo.Items.Add("192 kBit/s")
+                    brCombo.Items.Add("256 kBit/s")
+                    brCombo.Items.Add("320 kBit/s")
+                    brCombo.Items.Add("448 kBit/s")
+                    brCombo.SelectedIndex = 0
+
+                Case Else
+                    brCombo.Items.Add("1000 kBit/s")
+                    brCombo.Items.Add("2000 kBit/s")
+                    brCombo.Items.Add("2500 kBit/s")
+                    brCombo.Items.Add("3000 kBit/s")
+                    brCombo.Items.Add("3500 kBit/s")
+                    brCombo.Items.Add("4000 kBit/s")
+                    brCombo.Items.Add("4500 kBit/s")
+                    brCombo.Items.Add("5000 kBit/s")
+                    brCombo.Items.Add("5500 kBit/s")
+                    brCombo.Items.Add("6000 kBit/s")
+                    brCombo.Items.Add("6500 kBit/s")
+                    brCombo.Items.Add("7000 kBit/s")
+                    brCombo.Items.Add("7500 kBit/s")
+                    brCombo.Items.Add("8000 kBit/s")
+                    brCombo.Items.Add("8500 kBit/s")
+                    brCombo.Items.Add("9000 kBit/s")
+                    brCombo.Items.Add("9500 kBit/s")
+                    brCombo.SelectedIndex = 4
+
+            End Select
+            Exit For
+        Next
+
+
+
 
     End Sub
 
@@ -303,3 +355,4 @@ Public Class Form1
 
 
 End Class
+
