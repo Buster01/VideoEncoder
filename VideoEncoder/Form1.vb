@@ -214,6 +214,7 @@ Public Class Form1
     Private Sub ComboBox7_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbFiles.SelectedIndexChanged
         If cbFiles.Items.Count > 0 Then
             lvFileStreams.Items.Clear()
+            lvFileStreams.Controls.Clear()
             Dim file As String = lblInputDirectory.Text & "\" & cbFiles.SelectedItem
             Dim streams As Xml.XmlNode = VideoFileStreams(file, ffmpeg_path)
 
