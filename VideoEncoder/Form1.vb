@@ -317,8 +317,30 @@ Public Class Form1
                     brCombo.Items.Add("192 kBit/s")
                     brCombo.Items.Add("256 kBit/s")
                     brCombo.Items.Add("320 kBit/s")
+                    brCombo.Items.Add("384 kBit/s")
                     brCombo.Items.Add("448 kBit/s")
-                    brCombo.SelectedIndex = 0
+                    brCombo.Items.Add("512 kBit/s")
+                    brCombo.SelectedIndex = 1
+
+                Case "x264", "Intel QSV H.264", "NVidia NVenc H.264"
+                    brCombo.Items.Add("1000 kBit/s")
+                    brCombo.Items.Add("2000 kBit/s")
+                    brCombo.Items.Add("2500 kBit/s")
+                    brCombo.Items.Add("3000 kBit/s")
+                    brCombo.Items.Add("3500 kBit/s")
+                    brCombo.Items.Add("4000 kBit/s")
+                    brCombo.Items.Add("4500 kBit/s")
+                    brCombo.Items.Add("5000 kBit/s")
+                    brCombo.Items.Add("5500 kBit/s")
+                    brCombo.Items.Add("6000 kBit/s")
+                    brCombo.Items.Add("6500 kBit/s")
+                    brCombo.Items.Add("7000 kBit/s")
+                    brCombo.Items.Add("7500 kBit/s")
+                    brCombo.Items.Add("8000 kBit/s")
+                    brCombo.Items.Add("8500 kBit/s")
+                    brCombo.Items.Add("9000 kBit/s")
+                    brCombo.Items.Add("9500 kBit/s")
+                    brCombo.SelectedIndex = 8
 
                 Case Else
                     brCombo.Items.Add("1000 kBit/s")
