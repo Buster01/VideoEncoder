@@ -252,9 +252,9 @@ Public Class Form1
                 End If
                 'Default Stream
                 If defckb.Checked = True Then
-                    AudioParameter = AudioParameter & "-disposition:a:" & AudioStream.ToString.Trim & " default"
+                    AudioParameter = AudioParameter & "-disposition:a:" & AudioStream.ToString.Trim & " default "
                 Else
-                    AudioParameter = AudioParameter & "-disposition:a:" & AudioStream.ToString.Trim & " none"
+                    AudioParameter = AudioParameter & "-disposition:a:" & AudioStream.ToString.Trim & " none "
                 End If
 
                 AudioStream += 1
@@ -285,16 +285,17 @@ Public Class Form1
 
                     End Select
                     VideoParameter = VideoParameter & " -profile:v " & ComboBox5.SelectedItem.ToString.ToLower & " -level " & ComboBox6.SelectedItem & " -b:v " & s_bitrate
-                    If CheckBox2.Checked = True Then VideoParameter = VideoParameter & " -rc vbr_hq "
+                    If CheckBox2.Checked = True Then VideoParameter = VideoParameter & " -rc vbr_hq"
+                    If CheckBox4.Checked = True Then VideoParameter = VideoParameter & " -max_muxing_queue_size 3000 "
                 End If
             End If
             'Untertitel Parameter
             If stream_item.SubItems(1).Text = "Untertitel" Then
                 SubtitelParameter = SubtitelParameter & "-c:s:" & SubtitelStream.ToString.Trim & " copy "
                 If defckb.Checked = True Then
-                    SubtitelParameter = SubtitelParameter & "-disposition:s:" & SubtitelStream.ToString.Trim & " default"
+                    SubtitelParameter = SubtitelParameter & "-disposition:s:" & SubtitelStream.ToString.Trim & " default "
                 Else
-                    SubtitelParameter = SubtitelParameter & "-disposition:s:" & SubtitelStream.ToString.Trim & " none"
+                    SubtitelParameter = SubtitelParameter & "-disposition:s:" & SubtitelStream.ToString.Trim & " none "
                 End If
                 SubtitelStream += 1
             End If
@@ -307,7 +308,7 @@ Public Class Form1
 
             cbFiles.Enabled = False
             Button3.Enabled = False
-            BackgroundWorker1.RunWorkerAsync({input_file, hwDecodingParameter, AudioParameter, VideoParameter, SubtitelParameter, output_folder})
+            BackgroundWorker1.RunWorkerAsync({input_file, hwDecodingParameter, AudioParameter, VideoParameter & "-map 0 ", SubtitelParameter, output_folder})
         End If
     End Sub
 
@@ -325,6 +326,7 @@ Public Class Form1
                 AddHandler vcCombo.SelectedIndexChanged, AddressOf vcCombo_SelectedIndexChanged
                 Dim brCombo As New ComboBox
                 Dim defcheck As New CheckBox
+                AddHandler defcheck.CheckStateChanged, AddressOf defcheck_CheckedStateChanged
 
                 item = XMLStreamAnalyse(streams.ChildNodes(z))
                 lvFileStreams.Items.Add(item)
@@ -533,6 +535,10 @@ Public Class Form1
             End Select
             Exit For
         Next
+    End Sub
+
+    Private Sub defcheck_CheckedStateChanged(sender As Object, e As EventArgs)
+
     End Sub
 
 
