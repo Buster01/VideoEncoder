@@ -148,6 +148,8 @@ Public Class Form1
     Private Sub BackgroundWorker1_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs) Handles BackgroundWorker1.RunWorkerCompleted
         cbFiles.Enabled = True
         Button3.Enabled = True
+        Me.Label4.Text = "0 %"
+        Me.ProgressBar1.Value = 0
     End Sub
 
     Private Sub BackgroundWorker1_ProgressChanged(sender As Object, e As ProgressChangedEventArgs) Handles BackgroundWorker1.ProgressChanged
@@ -222,6 +224,7 @@ Public Class Form1
             Dim s_bitrate As String = ""
             Dim vcCombo As ComboBox
             Dim brCombo As ComboBox
+            Dim defckb As CheckBox
 
             ' Finde Combobox mit Codec Auswahl
             For Each vc_ctrl In lvFileStreams.Controls.Find("vcCombo" & z.ToString, True)
@@ -230,6 +233,10 @@ Public Class Form1
             'Finde Combobx mit Bitrate
             For Each br_ctrl In lvFileStreams.Controls.Find("brCombo" & z.ToString, True)
                 brCombo = br_ctrl
+            Next
+            ' Finde "Standard - Checkbox
+            For Each def_ckbox In lvFileStreams.Controls.Find("defCheck" & z.ToString, True)
+                defckb = def_ckbox
             Next
 
             s_id = stream_item.SubItems(0).Text
@@ -243,7 +250,14 @@ Public Class Form1
                 Else
                     AudioParameter = AudioParameter & "-c:a:" & AudioStream.ToString.Trim & " " & s_codec & " -b:a:" & AudioStream.ToString.Trim & " " & s_bitrate & " "
                 End If
-                audiostream += 1
+                'Default Stream
+                If defckb.Checked = True Then
+                    AudioParameter = AudioParameter & "-disposition:a:" & AudioStream.ToString.Trim & " default"
+                Else
+                    AudioParameter = AudioParameter & "-disposition:a:" & AudioStream.ToString.Trim & " none"
+                End If
+
+                AudioStream += 1
             End If
             ' Video Parameter
             If stream_item.SubItems(1).Text = "Video" Then
@@ -277,6 +291,11 @@ Public Class Form1
             'Untertitel Parameter
             If stream_item.SubItems(1).Text = "Untertitel" Then
                 SubtitelParameter = SubtitelParameter & "-c:s:" & SubtitelStream.ToString.Trim & " copy "
+                If defckb.Checked = True Then
+                    SubtitelParameter = SubtitelParameter & "-disposition:s:" & SubtitelStream.ToString.Trim & " default"
+                Else
+                    SubtitelParameter = SubtitelParameter & "-disposition:s:" & SubtitelStream.ToString.Trim & " none"
+                End If
                 SubtitelStream += 1
             End If
             z += 1
@@ -287,7 +306,7 @@ Public Class Form1
             If Strings.Right(input_folder, 1) <> "\" Then input_file = input_folder & "\" & cbFiles.SelectedItem Else input_file = input_folder & cbFiles.SelectedItem
 
             cbFiles.Enabled = False
-            ' Button3.Enabled = False
+            Button3.Enabled = False
             BackgroundWorker1.RunWorkerAsync({input_file, hwDecodingParameter, AudioParameter, VideoParameter, SubtitelParameter, output_folder})
         End If
     End Sub
