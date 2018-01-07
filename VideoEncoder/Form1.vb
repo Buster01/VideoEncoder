@@ -106,7 +106,8 @@ Public Class Form1
         ProcessProperties.UseShellExecute = False
         ProcessProperties.RedirectStandardOutput = False
         ProcessProperties.RedirectStandardError = True
-        ProcessProperties.WindowStyle = ProcessWindowStyle.Normal
+        ProcessProperties.WindowStyle = ProcessWindowStyle.Hidden
+        ProcessProperties.CreateNoWindow = True
 
         Dim duration As Long = VideoDuration(VideoFile, ffmpeg_path)
 
@@ -262,7 +263,7 @@ Public Class Form1
             ' Video Parameter
             If stream_item.SubItems(1).Text = "Video" Then
                 If s_codec = "copy" Then
-                    VideoParameter = "-c:v copy"
+                    VideoParameter = "-c:v copy "
                 Else
                     Select Case s_codec
                         Case "x264"
@@ -512,7 +513,7 @@ Public Class Form1
                         .Items.Clear()
                         .Items.Add("Main")
                         .Items.Add("Main10")
-                        .SelectedIndex = 1
+                        .SelectedIndex = 0
                         .Enabled = True
                     End With
                     'level h.265
@@ -538,7 +539,27 @@ Public Class Form1
     End Sub
 
     Private Sub defcheck_CheckedStateChanged(sender As Object, e As EventArgs)
+        If lvFileStreams.Items.Count = 0 Then Exit Sub
+        Dim AudioDefault As Integer = 0
+        Dim UntertitelDefault As Integer = 0
 
+        ' Prüfen op nur ein Default pro Streamtyp
+        For z = 0 To lvFileStreams.Items.Count - 1
+            For Each ctrl In lvFileStreams.Controls.Find("defCheck" & z.ToString.Trim, True)
+                Dim defCheckBox As CheckBox = ctrl
+
+                Select Case lvFileStreams.Items(z).SubItems(1).Text
+                    Case "Video"
+
+                    Case "Audio"
+                        If AudioDefault = 0 And defCheckBox.Checked = True Then AudioDefault += 1 Else defCheckBox.Checked = False
+
+                    Case "Untertitel"
+                        If UntertitelDefault = 0 And defCheckBox.Checked = True Then UntertitelDefault += 1 Else defCheckBox.Checked = False
+
+                End Select
+            Next
+        Next z
     End Sub
 
 

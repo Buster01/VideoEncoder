@@ -17,7 +17,8 @@
         ProcessProperties.UseShellExecute = False
         ProcessProperties.RedirectStandardOutput = True
         ProcessProperties.RedirectStandardError = True
-        ProcessProperties.WindowStyle = ProcessWindowStyle.Normal
+        ProcessProperties.WindowStyle = ProcessWindowStyle.Hidden
+        ProcessProperties.CreateNoWindow = True
         ProcessProperties.Arguments = ffprobe_arguments
 
         ffprobeProcess = Process.Start(ProcessProperties)

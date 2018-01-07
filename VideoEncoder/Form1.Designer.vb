@@ -343,9 +343,9 @@ Partial Class Form1
         Me.CheckBox4.AutoSize = True
         Me.CheckBox4.Location = New System.Drawing.Point(517, 22)
         Me.CheckBox4.Name = "CheckBox4"
-        Me.CheckBox4.Size = New System.Drawing.Size(94, 17)
+        Me.CheckBox4.Size = New System.Drawing.Size(82, 17)
         Me.CheckBox4.TabIndex = 10
-        Me.CheckBox4.Text = "Puffer DTS7.1"
+        Me.CheckBox4.Text = "DTS 7.1 Fix"
         Me.CheckBox4.UseVisualStyleBackColor = True
         '
         'Form1
