@@ -96,6 +96,8 @@ Public Class Form1
         Dim old_percent As Integer = 0
         Dim output() As String
         Dim temp_time() As String
+        Dim pos As String = 0
+        Dim ffmpeg_out(7) As String
 
         Dim p_ffmpeg As New Process
         Dim ffmpeg_arguments As String = ""
@@ -125,22 +127,57 @@ Public Class Form1
         Do While Not myProcess.HasExited
             stdout = myProcess.StandardError.ReadLine
             ' stderr = myProcess.StandardOutput.ReadLine
-            output = Split(stdout, "=")
-            If UBound(output) = 7 Then
-                temp_time = Split(Replace(output(5), "bitrate", "").Trim, ":")
-                If temp_time(0) >= 0 Then
-                    codecposition = CInt(temp_time(0)) * 3600 ' Stunden
-                    codecposition = codecposition + CInt(temp_time(1)) * 60 'Minuten
-                    codecposition = codecposition + CInt(Replace(temp_time(2), ".", ","))
-                    If codecposition > 0 Then
-                        percent = Math.Round((codecposition / duration) * 100, 0)
-                        If percent > old_percent Then
-                            Me.BackgroundWorker1.ReportProgress(percent)
-                            old_percent = percent
+            If Strings.Left(stdout, 5).ToString.ToLower = "frame" Then
+                pos = InStr(stdout, "fps=")
+                If pos > 0 Then
+                    'frames
+                    ffmpeg_out(0) = Mid(stdout, 7, pos - 7).Trim
+                    stdout = Mid(stdout, pos)
+                    pos = InStr(stdout, "q=")
+                    If pos > 0 Then
+                        'fps
+                        ffmpeg_out(1) = Mid(stdout, 5, pos - 5).Trim
+                        stdout = Mid(stdout, pos)
+                        pos = InStr(stdout, "size=")
+                        If pos > 0 Then
+                            'Quality
+                            ffmpeg_out(2) = Mid(stdout, 6, pos - 6).Trim
+                            stdout = Mid(stdout, pos)
+                            pos = InStr(stdout, "time=")
+                            If pos > 0 Then
+                                'size
+                                ffmpeg_out(3) = Mid(stdout, 6, pos - 6).Trim
+                                Replace(ffmpeg_out(3), "kb", "")
+                                stdout = Mid(stdout, pos)
+                                pos = InStr(stdout, "bitrate=")
+                                If pos > 0 Then
+                                    'Time
+                                    ffmpeg_out(4) = Mid(stdout, 6, pos - 6).Trim
+                                    stdout = Mid(stdout, pos)
+                                    pos = InStr(stdout, "speed=")
+                                    If pos > 0 Then
+                                        'Bitrate
+                                        ffmpeg_out(5) = Mid(stdout, 9, pos - 9).Trim
+                                        ffmpeg_out(5) = Replace(ffmpeg_out(5), "kbits/s", "")
+                                        stdout = Mid(stdout, pos)
+                                        'Speed
+                                        ffmpeg_out(6) = Mid(stdout, 7).Trim
+                                        ffmpeg_out(6) = Replace(ffmpeg_out(6), "x", "")
+                                    End If
+                                End If
+                            End If
                         End If
                     End If
+
                 End If
+
+
             End If
+
+
+
+
+
         Loop
         myProcess.WaitForExit()
         BackgroundWorker1.CancelAsync()
