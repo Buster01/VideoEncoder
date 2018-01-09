@@ -1,6 +1,6 @@
 ﻿Imports System.ComponentModel
 
-Public Class Form1
+Public Class Main
     Dim input_file As String = ""
     Dim input_folder As String = ""
     Dim output_folder As String = ""
