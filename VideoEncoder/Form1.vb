@@ -6,6 +6,7 @@ Public Class Form1
     Dim output_folder As String = ""
     Dim folder As Boolean = False
     Dim ffmpeg_path As String = "C:\ffmpeg\"
+    Dim ffmpeg_out(7) As String
 
 
     Private Sub CheckBox1_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBox1.CheckedChanged
@@ -91,13 +92,11 @@ Public Class Form1
 
         Dim stderr As String = ""
         Dim stdout As String = ""
-        Dim codecposition As Long = 0
-        Dim percent As Integer = 0
-        Dim old_percent As Integer = 0
-        Dim output() As String
-        Dim temp_time() As String
         Dim pos As String = 0
-        Dim ffmpeg_out(7) As String
+        Dim duration As Long = VideoDuration(VideoFile, ffmpeg_path)
+        Dim coder_pos As Long = 0
+        Dim prozent As Decimal = 0.0
+        Dim old_prozent As Decimal = 0.0
 
         Dim p_ffmpeg As New Process
         Dim ffmpeg_arguments As String = ""
@@ -110,8 +109,6 @@ Public Class Form1
         ProcessProperties.RedirectStandardError = True
         ProcessProperties.WindowStyle = ProcessWindowStyle.Hidden
         ProcessProperties.CreateNoWindow = True
-
-        Dim duration As Long = VideoDuration(VideoFile, ffmpeg_path)
 
         ffmpeg_arguments = hwDecodingParameter & " -y -i " & Chr(34) & VideoFile & Chr(34) & " "
         ffmpeg_arguments = ffmpeg_arguments & AudioProperties
@@ -163,21 +160,19 @@ Public Class Form1
                                         'Speed
                                         ffmpeg_out(6) = Mid(stdout, 7).Trim
                                         ffmpeg_out(6) = Replace(ffmpeg_out(6), "x", "")
+                                        coder_pos = (CDec(Mid(ffmpeg_out(4), 1, 2)) * 3600) + (CDec(Mid(ffmpeg_out(4), 4, 2) * 60)) + CDec(Replace(Strings.Mid(ffmpeg_out(4), 7), ".", ","))
+                                        prozent = (coder_pos / duration) * 100
+                                        If Math.Round(prozent, 1) > Math.Round(old_prozent, 1) Then
+                                            BackgroundWorker1.ReportProgress(Math.Round(prozent, 1))
+                                            old_prozent = prozent
+                                        End If
                                     End If
                                 End If
                             End If
                         End If
                     End If
-
                 End If
-
-
             End If
-
-
-
-
-
         Loop
         myProcess.WaitForExit()
         BackgroundWorker1.CancelAsync()
@@ -192,7 +187,7 @@ Public Class Form1
 
     Private Sub BackgroundWorker1_ProgressChanged(sender As Object, e As ProgressChangedEventArgs) Handles BackgroundWorker1.ProgressChanged
         Me.ProgressBar1.Value = e.ProgressPercentage
-        Me.Label4.Text = e.ProgressPercentage & "%"
+        Me.Label4.Text = e.ProgressPercentage & " %"
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -260,9 +255,9 @@ Public Class Form1
             Dim s_id As String = ""
             Dim s_codec As String = ""
             Dim s_bitrate As String = ""
-            Dim vcCombo As ComboBox
-            Dim brCombo As ComboBox
-            Dim defckb As CheckBox
+            Dim vcCombo As New ComboBox
+            Dim brCombo As New ComboBox
+            Dim defckb As New CheckBox
 
             ' Finde Combobox mit Codec Auswahl
             For Each vc_ctrl In lvFileStreams.Controls.Find("vcCombo" & z.ToString, True)
@@ -323,7 +318,7 @@ Public Class Form1
 
                     End Select
                     VideoParameter = VideoParameter & " -profile:v " & ComboBox5.SelectedItem.ToString.ToLower & " -level " & ComboBox6.SelectedItem & " -b:v " & s_bitrate
-                    If CheckBox2.Checked = True Then VideoParameter = VideoParameter & " -rc vbr_hq"
+                    If CheckBox2.Checked = True Then VideoParameter = VideoParameter & " -rc vbr_hq "
                     If CheckBox4.Checked = True Then VideoParameter = VideoParameter & " -max_muxing_queue_size 3000 "
                 End If
             End If

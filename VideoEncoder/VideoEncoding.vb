@@ -59,8 +59,7 @@
         out_tmp = ffprobeProcess.StandardOutput.ReadToEnd()
         stderr = ffprobeProcess.StandardError.ReadToEnd()
 
-        Dim ErrorNode As Xml.XmlNode
-        If Len(out_tmp) <= 10 Then Return ErrorNode
+        If Len(out_tmp) <= 10 Then Return Nothing
         Dim stdout As Xml.XmlDocument = New Xml.XmlDocument()
         stdout.LoadXml(out_tmp)
 
