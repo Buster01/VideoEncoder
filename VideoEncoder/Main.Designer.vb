@@ -40,10 +40,6 @@ Partial Class Main
         Me.Label3 = New System.Windows.Forms.Label()
         Me.Button2 = New System.Windows.Forms.Button()
         Me.FolderBrowserDialog2 = New System.Windows.Forms.FolderBrowserDialog()
-        Me.BackgroundWorker1 = New System.ComponentModel.BackgroundWorker()
-        Me.GroupBox4 = New System.Windows.Forms.GroupBox()
-        Me.Label4 = New System.Windows.Forms.Label()
-        Me.ProgressBar1 = New System.Windows.Forms.ProgressBar()
         Me.Button3 = New System.Windows.Forms.Button()
         Me.GroupBox5 = New System.Windows.Forms.GroupBox()
         Me.cbDeInterlace = New System.Windows.Forms.ComboBox()
@@ -57,10 +53,10 @@ Partial Class Main
         Me.Label9 = New System.Windows.Forms.Label()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
         Me.lvFileStreams = New System.Windows.Forms.ListView()
+        Me.Button4 = New System.Windows.Forms.Button()
         Me.GroupBox1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
-        Me.GroupBox4.SuspendLayout()
         Me.GroupBox5.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
         Me.SuspendLayout()
@@ -132,7 +128,7 @@ Partial Class Main
         Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ToolStripMenuItem1, Me.ToolStripMenuItem2})
         Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
         Me.MenuStrip1.Name = "MenuStrip1"
-        Me.MenuStrip1.Size = New System.Drawing.Size(769, 24)
+        Me.MenuStrip1.Size = New System.Drawing.Size(764, 24)
         Me.MenuStrip1.TabIndex = 1
         Me.MenuStrip1.Text = "MenuStrip1"
         '
@@ -201,45 +197,13 @@ Partial Class Main
         Me.Button2.Text = "...."
         Me.Button2.UseVisualStyleBackColor = True
         '
-        'BackgroundWorker1
-        '
-        Me.BackgroundWorker1.WorkerReportsProgress = True
-        Me.BackgroundWorker1.WorkerSupportsCancellation = True
-        '
-        'GroupBox4
-        '
-        Me.GroupBox4.Controls.Add(Me.Label4)
-        Me.GroupBox4.Controls.Add(Me.ProgressBar1)
-        Me.GroupBox4.Controls.Add(Me.Button3)
-        Me.GroupBox4.Location = New System.Drawing.Point(6, 485)
-        Me.GroupBox4.Name = "GroupBox4"
-        Me.GroupBox4.Size = New System.Drawing.Size(752, 59)
-        Me.GroupBox4.TabIndex = 7
-        Me.GroupBox4.TabStop = False
-        '
-        'Label4
-        '
-        Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(560, 27)
-        Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(24, 13)
-        Me.Label4.TabIndex = 6
-        Me.Label4.Text = "0 %"
-        '
-        'ProgressBar1
-        '
-        Me.ProgressBar1.Location = New System.Drawing.Point(24, 19)
-        Me.ProgressBar1.Name = "ProgressBar1"
-        Me.ProgressBar1.Size = New System.Drawing.Size(530, 29)
-        Me.ProgressBar1.TabIndex = 5
-        '
         'Button3
         '
-        Me.Button3.Location = New System.Drawing.Point(608, 19)
+        Me.Button3.Location = New System.Drawing.Point(603, 485)
         Me.Button3.Name = "Button3"
-        Me.Button3.Size = New System.Drawing.Size(137, 29)
+        Me.Button3.Size = New System.Drawing.Size(155, 29)
         Me.Button3.TabIndex = 4
-        Me.Button3.Text = "Start Video Endcoding"
+        Me.Button3.Text = "zur Auftragsliste hinzufügen"
         Me.Button3.UseVisualStyleBackColor = True
         '
         'GroupBox5
@@ -282,7 +246,7 @@ Partial Class Main
         'CheckBox4
         '
         Me.CheckBox4.AutoSize = True
-        Me.CheckBox4.Location = New System.Drawing.Point(531, 22)
+        Me.CheckBox4.Location = New System.Drawing.Point(532, 57)
         Me.CheckBox4.Name = "CheckBox4"
         Me.CheckBox4.Size = New System.Drawing.Size(82, 17)
         Me.CheckBox4.TabIndex = 10
@@ -294,7 +258,7 @@ Partial Class Main
         Me.CheckBox3.AutoSize = True
         Me.CheckBox3.Checked = True
         Me.CheckBox3.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.CheckBox3.Location = New System.Drawing.Point(629, 22)
+        Me.CheckBox3.Location = New System.Drawing.Point(629, 57)
         Me.CheckBox3.Name = "CheckBox3"
         Me.CheckBox3.Size = New System.Drawing.Size(116, 17)
         Me.CheckBox3.TabIndex = 9
@@ -306,7 +270,7 @@ Partial Class Main
         Me.CheckBox2.AutoSize = True
         Me.CheckBox2.Checked = True
         Me.CheckBox2.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.CheckBox2.Location = New System.Drawing.Point(360, 22)
+        Me.CheckBox2.Location = New System.Drawing.Point(360, 57)
         Me.CheckBox2.Name = "CheckBox2"
         Me.CheckBox2.Size = New System.Drawing.Size(156, 17)
         Me.CheckBox2.TabIndex = 8
@@ -371,14 +335,24 @@ Partial Class Main
         Me.lvFileStreams.UseCompatibleStateImageBehavior = False
         Me.lvFileStreams.View = System.Windows.Forms.View.Details
         '
+        'Button4
+        '
+        Me.Button4.Location = New System.Drawing.Point(6, 485)
+        Me.Button4.Name = "Button4"
+        Me.Button4.Size = New System.Drawing.Size(138, 29)
+        Me.Button4.TabIndex = 11
+        Me.Button4.Text = "Auftragsliste anzeigen"
+        Me.Button4.UseVisualStyleBackColor = True
+        '
         'Main
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(769, 545)
+        Me.ClientSize = New System.Drawing.Size(764, 521)
+        Me.Controls.Add(Me.Button4)
+        Me.Controls.Add(Me.Button3)
         Me.Controls.Add(Me.GroupBox3)
         Me.Controls.Add(Me.GroupBox5)
-        Me.Controls.Add(Me.GroupBox4)
         Me.Controls.Add(Me.GroupBox2)
         Me.Controls.Add(Me.GroupBox1)
         Me.Controls.Add(Me.MenuStrip1)
@@ -394,8 +368,6 @@ Partial Class Main
         Me.MenuStrip1.PerformLayout()
         Me.GroupBox2.ResumeLayout(False)
         Me.GroupBox2.PerformLayout()
-        Me.GroupBox4.ResumeLayout(False)
-        Me.GroupBox4.PerformLayout()
         Me.GroupBox5.ResumeLayout(False)
         Me.GroupBox5.PerformLayout()
         Me.GroupBox3.ResumeLayout(False)
@@ -420,11 +392,7 @@ Partial Class Main
     Friend WithEvents Label3 As Label
     Friend WithEvents Button2 As Button
     Friend WithEvents FolderBrowserDialog2 As FolderBrowserDialog
-    Friend WithEvents BackgroundWorker1 As System.ComponentModel.BackgroundWorker
-    Friend WithEvents GroupBox4 As GroupBox
-    Friend WithEvents ProgressBar1 As ProgressBar
     Friend WithEvents Button3 As Button
-    Friend WithEvents Label4 As Label
     Friend WithEvents GroupBox5 As GroupBox
     Friend WithEvents ComboBox6 As ComboBox
     Friend WithEvents ComboBox5 As ComboBox
@@ -439,4 +407,5 @@ Partial Class Main
     Friend WithEvents CheckBox4 As CheckBox
     Friend WithEvents cbDeInterlace As ComboBox
     Friend WithEvents Label1 As Label
+    Friend WithEvents Button4 As Button
 End Class

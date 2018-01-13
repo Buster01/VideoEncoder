@@ -65,6 +65,30 @@ Namespace My
                 Me("FFmpegPath") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0, 0")>  _
+        Public Property WorkingListPosition() As Global.System.Drawing.Point
+            Get
+                Return CType(Me("WorkingListPosition"),Global.System.Drawing.Point)
+            End Get
+            Set
+                Me("WorkingListPosition") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("0, 0")>  _
+        Public Property WorkingListSize() As Global.System.Drawing.Size
+            Get
+                Return CType(Me("WorkingListSize"),Global.System.Drawing.Size)
+            End Get
+            Set
+                Me("WorkingListSize") = value
+            End Set
+        End Property
     End Class
 End Namespace
 

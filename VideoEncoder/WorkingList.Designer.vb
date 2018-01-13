@@ -23,20 +23,21 @@ Partial Class WorkingList
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
-        Me.ListView1 = New System.Windows.Forms.ListView()
+        Me.lvWorkingList = New System.Windows.Forms.ListView()
         Me.MenuStrip1 = New System.Windows.Forms.MenuStrip()
         Me.ListeToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.FertigeAufträgeEntfernenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AlleAufträgeEntfernenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StartToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.PauseToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.BgWffmpeg = New System.ComponentModel.BackgroundWorker()
         Me.GroupBox1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         Me.SuspendLayout()
         '
         'GroupBox1
         '
-        Me.GroupBox1.Controls.Add(Me.ListView1)
+        Me.GroupBox1.Controls.Add(Me.lvWorkingList)
         Me.GroupBox1.Location = New System.Drawing.Point(6, 27)
         Me.GroupBox1.Name = "GroupBox1"
         Me.GroupBox1.Size = New System.Drawing.Size(886, 549)
@@ -44,13 +45,13 @@ Partial Class WorkingList
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Aufträge"
         '
-        'ListView1
+        'lvWorkingList
         '
-        Me.ListView1.Location = New System.Drawing.Point(6, 19)
-        Me.ListView1.Name = "ListView1"
-        Me.ListView1.Size = New System.Drawing.Size(874, 523)
-        Me.ListView1.TabIndex = 0
-        Me.ListView1.UseCompatibleStateImageBehavior = False
+        Me.lvWorkingList.Location = New System.Drawing.Point(6, 19)
+        Me.lvWorkingList.Name = "lvWorkingList"
+        Me.lvWorkingList.Size = New System.Drawing.Size(874, 523)
+        Me.lvWorkingList.TabIndex = 0
+        Me.lvWorkingList.UseCompatibleStateImageBehavior = False
         '
         'MenuStrip1
         '
@@ -92,6 +93,11 @@ Partial Class WorkingList
         Me.PauseToolStripMenuItem.Size = New System.Drawing.Size(50, 20)
         Me.PauseToolStripMenuItem.Text = "Pause"
         '
+        'BgWffmpeg
+        '
+        Me.BgWffmpeg.WorkerReportsProgress = True
+        Me.BgWffmpeg.WorkerSupportsCancellation = True
+        '
         'WorkingList
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -101,6 +107,7 @@ Partial Class WorkingList
         Me.Controls.Add(Me.MenuStrip1)
         Me.MainMenuStrip = Me.MenuStrip1
         Me.Name = "WorkingList"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.Manual
         Me.Text = "VideoEncoder Aufgabenliste"
         Me.GroupBox1.ResumeLayout(False)
         Me.MenuStrip1.ResumeLayout(False)
@@ -111,11 +118,12 @@ Partial Class WorkingList
     End Sub
 
     Friend WithEvents GroupBox1 As GroupBox
-    Friend WithEvents ListView1 As ListView
+    Friend WithEvents lvWorkingList As ListView
     Friend WithEvents MenuStrip1 As MenuStrip
     Friend WithEvents ListeToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents FertigeAufträgeEntfernenToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents AlleAufträgeEntfernenToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents StartToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents PauseToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents BgWffmpeg As System.ComponentModel.BackgroundWorker
 End Class

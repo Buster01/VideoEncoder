@@ -83,117 +83,21 @@ Public Class Main
         End If
     End Sub
 
-    Private Sub BackgroundWorker1_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs) Handles BackgroundWorker1.DoWork
+    Private Sub BackgroundWorker1_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs)
 
-        Dim VideoFile As String = DirectCast(e.Argument(0), String)
-        Dim hwDecodingParameter As String = DirectCast(e.Argument(1), String)
-        Dim AudioProperties As String = DirectCast(e.Argument(2), String)
-        Dim VideoProperties As String = DirectCast(e.Argument(3), String)
-        Dim SubtitelParameter As String = DirectCast(e.Argument(4), String)
 
-        Dim stderr As String = ""
-        Dim stdout As String = ""
-        Dim pos As String = 0
-        Dim duration As Long = VideoDuration(VideoFile, ffmpeg_path)
-        Dim coder_pos As Long = 0
-        Dim prozent As Decimal = 0.0
-        Dim old_prozent As Decimal = 0.0
-
-        Dim p_ffmpeg As New Process
-        Dim ffmpeg_arguments As String = ""
-        Dim ProcessProperties As New ProcessStartInfo
-
-        ProcessProperties.FileName = ffmpeg_path & "ffmpeg.exe"
-        ProcessProperties.WorkingDirectory = ffmpeg_path
-        ProcessProperties.UseShellExecute = False
-        ProcessProperties.RedirectStandardOutput = False
-        ProcessProperties.RedirectStandardError = True
-        ProcessProperties.WindowStyle = ProcessWindowStyle.Hidden
-        ProcessProperties.CreateNoWindow = True
-
-        ffmpeg_arguments = hwDecodingParameter & " -y -i " & Chr(34) & VideoFile & Chr(34) & " "
-        ffmpeg_arguments = ffmpeg_arguments & AudioProperties
-
-        ffmpeg_arguments = ffmpeg_arguments & " " & SubtitelParameter
-
-        ffmpeg_arguments = ffmpeg_arguments & VideoProperties
-        ffmpeg_arguments = ffmpeg_arguments & Chr(34) & output_folder & System.IO.Path.GetFileNameWithoutExtension(VideoFile) & ".mkv" & Chr(34)
-        ProcessProperties.Arguments = ffmpeg_arguments
-
-        Dim myProcess As New Process
-        myProcess = Process.Start(ProcessProperties)
-        Do While Not myProcess.HasExited
-            stdout = myProcess.StandardError.ReadLine
-            ' stderr = myProcess.StandardOutput.ReadLine
-            If Strings.Left(stdout, 5).ToString.ToLower = "frame" Then
-                pos = InStr(stdout, "fps=")
-                If pos > 0 Then
-                    'frames
-                    ffmpeg_out(0) = Mid(stdout, 7, pos - 7).Trim
-                    stdout = Mid(stdout, pos)
-                    pos = InStr(stdout, "q=")
-                    If pos > 0 Then
-                        'fps
-                        ffmpeg_out(1) = Mid(stdout, 5, pos - 5).Trim
-                        stdout = Mid(stdout, pos)
-                        pos = InStr(stdout, "size=")
-                        If pos > 0 Then
-                            'Quality
-                            ffmpeg_out(2) = Mid(stdout, 6, pos - 6).Trim
-                            stdout = Mid(stdout, pos)
-                            pos = InStr(stdout, "time=")
-                            If pos > 0 Then
-                                'size
-                                ffmpeg_out(3) = Mid(stdout, 6, pos - 6).Trim
-                                Replace(ffmpeg_out(3), "kb", "")
-                                stdout = Mid(stdout, pos)
-                                pos = InStr(stdout, "bitrate=")
-                                If pos > 0 Then
-                                    'Time
-                                    ffmpeg_out(4) = Mid(stdout, 6, pos - 6).Trim
-                                    stdout = Mid(stdout, pos)
-                                    pos = InStr(stdout, "speed=")
-                                    If pos > 0 Then
-                                        'Bitrate
-                                        ffmpeg_out(5) = Mid(stdout, 9, pos - 9).Trim
-                                        ffmpeg_out(5) = Replace(ffmpeg_out(5), "kbits/s", "")
-                                        stdout = Mid(stdout, pos)
-                                        'Speed
-                                        ffmpeg_out(6) = Mid(stdout, 7).Trim
-                                        ffmpeg_out(6) = Replace(ffmpeg_out(6), "x", "")
-                                        coder_pos = (CDec(Mid(ffmpeg_out(4), 1, 2)) * 3600) + (CDec(Mid(ffmpeg_out(4), 4, 2) * 60)) + CDec(Replace(Strings.Mid(ffmpeg_out(4), 7), ".", ","))
-                                        prozent = (coder_pos / duration) * 100
-                                        If Math.Round(prozent, 1) > Math.Round(old_prozent, 1) Then
-                                            BackgroundWorker1.ReportProgress(Math.Round(prozent, 1))
-                                            old_prozent = prozent
-                                        End If
-                                    End If
-                                End If
-                            End If
-                        End If
-                    End If
-                End If
-            End If
-        Loop
-        myProcess.WaitForExit()
-        BackgroundWorker1.CancelAsync()
     End Sub
 
-    Private Sub BackgroundWorker1_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs) Handles BackgroundWorker1.RunWorkerCompleted
+    Private Sub BackgroundWorker1_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
         cbFiles.Enabled = True
         Button3.Enabled = True
-        Me.Label4.Text = "0 %"
-        Me.ProgressBar1.Value = 0
     End Sub
 
-    Private Sub BackgroundWorker1_ProgressChanged(sender As Object, e As ProgressChangedEventArgs) Handles BackgroundWorker1.ProgressChanged
-        Me.ProgressBar1.Value = e.ProgressPercentage
-        Me.Label4.Text = e.ProgressPercentage & " %"
+    Private Sub BackgroundWorker1_ProgressChanged(sender As Object, e As ProgressChangedEventArgs)
+
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Me.ProgressBar1.Maximum = 100
-        Me.ProgressBar1.Minimum = 0
         ' Audio Optionen
 
         With ComboBox5
@@ -251,113 +155,12 @@ Public Class Main
             MsgBox("Quellpfad enhält keine Videodateien!", vbInformation, "keine Videodateien!")
             Exit Sub
         End If
-        Dim VideoFiles As New List(Of String)
-        Dim hwDecodingParameter As String = ""
-        Dim AudioParameter As String = ""
-        Dim VideoParameter As String = ""
-        Dim SubtitelParameter As String = ""
-        Dim InputFile As String = ""
-        Dim z As Integer = 0
-        Dim AudioStream As Integer = 0
-        Dim SubtitelStream As Integer = 0
-
-        'Decoder Parameter
-        If CheckBox3.Checked = True Then hwDecodingParameter = "-hwaccel dxva2"
-
-        For Each stream_item As ListViewItem In lvFileStreams.Items
-            'Audio Encoder Paramater
-            Dim s_id As String = ""
-            Dim s_codec As String = ""
-            Dim s_bitrate As String = ""
-            Dim vcCombo As New ComboBox
-            Dim brCombo As New ComboBox
-            Dim defckb As New CheckBox
-
-            ' Finde Combobox mit Codec Auswahl
-            For Each vc_ctrl In lvFileStreams.Controls.Find("vcCombo" & z.ToString, True)
-                vcCombo = vc_ctrl
-            Next
-            'Finde Combobx mit Bitrate
-            For Each br_ctrl In lvFileStreams.Controls.Find("brCombo" & z.ToString, True)
-                brCombo = br_ctrl
-            Next
-            ' Finde "Standard - Checkbox
-            For Each def_ckbox In lvFileStreams.Controls.Find("defCheck" & z.ToString, True)
-                defckb = def_ckbox
-            Next
-
-            s_id = stream_item.SubItems(0).Text
-            s_codec = vcCombo.SelectedItem.ToString.ToLower
-            s_bitrate = Strings.Left(brCombo.SelectedItem, 4).Trim & "k"
-
-            ' Audio Parameter
-            If stream_item.SubItems(1).Text = "Audio" Then
-                If s_codec = "copy" Then
-                    AudioParameter = AudioParameter & "-c:a:" & AudioStream.ToString.Trim & " copy "
-                Else
-                    AudioParameter = AudioParameter & "-c:a:" & AudioStream.ToString.Trim & " " & s_codec & " -b:a:" & AudioStream.ToString.Trim & " " & s_bitrate & " "
-                End If
-                'Default Stream
-                If defckb.Checked = True Then
-                    AudioParameter = AudioParameter & "-disposition:a:" & AudioStream.ToString.Trim & " default "
-                Else
-                    AudioParameter = AudioParameter & "-disposition:a:" & AudioStream.ToString.Trim & " none "
-                End If
-
-                AudioStream += 1
-            End If
-            ' Video Parameter
-            If stream_item.SubItems(1).Text = "Video" Then
-                If s_codec = "copy" Then
-                    VideoParameter = "-c:v copy "
-                Else
-                    Select Case s_codec
-                        Case "x264"
-                            VideoParameter = "-c:v libx264"
-
-                        Case "x265"
-                            VideoParameter = "-c:v libx265"
-
-                        Case "intel qsv H.264"
-                            VideoParameter = "-c:v h264_qsv"
-
-                        Case "intel qsv H.265"
-                            VideoParameter = "-c:v hevc_qsv"
-
-                        Case "nvidia nvenc h.264"
-                            VideoParameter = "-c:v nvenc_h264"
-
-                        Case "nvidia nvenc h.265"
-                            VideoParameter = "-c:v hevc_nvenc"
-
-                    End Select
-                    VideoParameter = VideoParameter & " -profile:v " & ComboBox5.SelectedItem.ToString.ToLower & " -level " & ComboBox6.SelectedItem & " -b:v " & s_bitrate
-                    If CheckBox2.Checked = True Then VideoParameter = VideoParameter & " -rc vbr_hq "
-                    If CheckBox4.Checked = True Then VideoParameter = VideoParameter & " -max_muxing_queue_size 3000 "
-                    If cbDeInterlace.SelectedItem = "yadif" Then VideoParameter = VideoParameter & "-vf yadif=1 "
-                End If
-                End If
-            'Untertitel Parameter
-            If stream_item.SubItems(1).Text = "Untertitel" Then
-                SubtitelParameter = SubtitelParameter & "-c:s:" & SubtitelStream.ToString.Trim & " copy "
-                If defckb.Checked = True Then
-                    SubtitelParameter = SubtitelParameter & "-disposition:s:" & SubtitelStream.ToString.Trim & " default "
-                Else
-                    SubtitelParameter = SubtitelParameter & "-disposition:s:" & SubtitelStream.ToString.Trim & " none "
-                End If
-                SubtitelStream += 1
-            End If
-            z += 1
-        Next
-
-        If System.IO.Directory.Exists(input_folder) = True And System.IO.Directory.Exists(output_folder) = True Then
-            If Strings.Right(output_folder, 1) <> "\" Then output_folder = output_folder & "\"
-            If Strings.Right(input_folder, 1) <> "\" Then input_file = input_folder & "\" & cbFiles.SelectedItem Else input_file = input_folder & cbFiles.SelectedItem
-
-            cbFiles.Enabled = False
-            Button3.Enabled = False
-            BackgroundWorker1.RunWorkerAsync({input_file, hwDecodingParameter, AudioParameter, VideoParameter & "-map 0 ", SubtitelParameter, output_folder})
+        If ffmpeg_path.Length = 0 Then
+            MsgBox("Bitte wählen Sie ein Pfad zum FFmpeg!", vbCritical, "FFmpeg Pfad")
+            Einstellungen.Show()
+            Exit Sub
         End If
+
     End Sub
 
     Private Sub ComboBox7_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbFiles.SelectedIndexChanged
@@ -610,22 +413,144 @@ Public Class Main
     End Sub
 
     Private Sub BeendenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BeendenToolStripMenuItem.Click
-        If BackgroundWorker1.IsBusy = True Then
-            BackgroundWorker1.CancelAsync()
+        If WorkingList.BgWffmpeg.IsBusy = True Then
+            WorkingList.BgWffmpeg.CancelAsync()
             Threading.Thread.Sleep(500)
         End If
         End
     End Sub
 
     Private Sub Main_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
-        If BackgroundWorker1.IsBusy = True Then
-            BackgroundWorker1.CancelAsync()
+        If WorkingList.BgWffmpeg.IsBusy = True Then
+            WorkingList.BgWffmpeg.CancelAsync()
             Threading.Thread.Sleep(500)
         End If
     End Sub
 
     Private Sub EinstellungenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EinstellungenToolStripMenuItem.Click
         Einstellungen.Show()
+    End Sub
+
+
+
+
+
+
+
+
+    Public Sub test()
+        Dim VideoFiles As New List(Of String)
+        Dim hwDecodingParameter As String = ""
+        Dim AudioParameter As String = ""
+        Dim VideoParameter As String = ""
+        Dim SubtitelParameter As String = ""
+        Dim InputFile As String = ""
+        Dim z As Integer = 0
+        Dim AudioStream As Integer = 0
+        Dim SubtitelStream As Integer = 0
+
+        'Decoder Parameter
+        If CheckBox3.Checked = True Then hwDecodingParameter = "-hwaccel dxva2"
+
+        For Each stream_item As ListViewItem In lvFileStreams.Items
+            'Audio Encoder Paramater
+            Dim s_id As String = ""
+            Dim s_codec As String = ""
+            Dim s_bitrate As String = ""
+            Dim vcCombo As New ComboBox
+            Dim brCombo As New ComboBox
+            Dim defckb As New CheckBox
+
+            ' Finde Combobox mit Codec Auswahl
+            For Each vc_ctrl In lvFileStreams.Controls.Find("vcCombo" & z.ToString, True)
+                vcCombo = vc_ctrl
+            Next
+            'Finde Combobx mit Bitrate
+            For Each br_ctrl In lvFileStreams.Controls.Find("brCombo" & z.ToString, True)
+                brCombo = br_ctrl
+            Next
+            ' Finde "Standard - Checkbox
+            For Each def_ckbox In lvFileStreams.Controls.Find("defCheck" & z.ToString, True)
+                defckb = def_ckbox
+            Next
+
+            s_id = stream_item.SubItems(0).Text
+            s_codec = vcCombo.SelectedItem.ToString.ToLower
+            s_bitrate = Strings.Left(brCombo.SelectedItem, 4).Trim & "k"
+
+            ' Audio Parameter
+            If stream_item.SubItems(1).Text = "Audio" Then
+                If s_codec = "copy" Then
+                    AudioParameter = AudioParameter & "-c:a:" & AudioStream.ToString.Trim & " copy "
+                Else
+                    AudioParameter = AudioParameter & "-c:a:" & AudioStream.ToString.Trim & " " & s_codec & " -b:a:" & AudioStream.ToString.Trim & " " & s_bitrate & " "
+                End If
+                'Default Stream
+                If defckb.Checked = True Then
+                    AudioParameter = AudioParameter & "-disposition:a:" & AudioStream.ToString.Trim & " default "
+                Else
+                    AudioParameter = AudioParameter & "-disposition:a:" & AudioStream.ToString.Trim & " none "
+                End If
+
+                AudioStream += 1
+            End If
+            ' Video Parameter
+            If stream_item.SubItems(1).Text = "Video" Then
+                If s_codec = "copy" Then
+                    VideoParameter = "-c:v copy "
+                Else
+                    Select Case s_codec
+                        Case "x264"
+                            VideoParameter = "-c:v libx264"
+
+                        Case "x265"
+                            VideoParameter = "-c:v libx265"
+
+                        Case "intel qsv H.264"
+                            VideoParameter = "-c:v h264_qsv"
+
+                        Case "intel qsv H.265"
+                            VideoParameter = "-c:v hevc_qsv"
+
+                        Case "nvidia nvenc h.264"
+                            VideoParameter = "-c:v nvenc_h264"
+
+                        Case "nvidia nvenc h.265"
+                            VideoParameter = "-c:v hevc_nvenc"
+
+                    End Select
+                    VideoParameter = VideoParameter & " -profile:v " & ComboBox5.SelectedItem.ToString.ToLower & " -level " & ComboBox6.SelectedItem & " -b:v " & s_bitrate
+                    If CheckBox2.Checked = True Then VideoParameter = VideoParameter & " -rc vbr_hq "
+                    If CheckBox4.Checked = True Then VideoParameter = VideoParameter & " -max_muxing_queue_size 3000 "
+                    If cbDeInterlace.SelectedItem = "yadif" Then VideoParameter = VideoParameter & "-vf yadif=1 "
+                End If
+            End If
+            'Untertitel Parameter
+            If stream_item.SubItems(1).Text = "Untertitel" Then
+                SubtitelParameter = SubtitelParameter & "-c:s:" & SubtitelStream.ToString.Trim & " copy "
+                If defckb.Checked = True Then
+                    SubtitelParameter = SubtitelParameter & "-disposition:s:" & SubtitelStream.ToString.Trim & " default "
+                Else
+                    SubtitelParameter = SubtitelParameter & "-disposition:s:" & SubtitelStream.ToString.Trim & " none "
+                End If
+                SubtitelStream += 1
+            End If
+            z += 1
+        Next
+
+        If System.IO.Directory.Exists(input_folder) = True And System.IO.Directory.Exists(output_folder) = True Then
+            If Strings.Right(output_folder, 1) <> "\" Then output_folder = output_folder & "\"
+            If Strings.Right(input_folder, 1) <> "\" Then input_file = input_folder & "\" & cbFiles.SelectedItem Else input_file = input_folder & cbFiles.SelectedItem
+
+            cbFiles.Enabled = False
+            Button3.Enabled = False
+            WorkingList.BgWffmpeg.RunWorkerAsync({input_file, hwDecodingParameter, AudioParameter, VideoParameter & "-map 0 ", SubtitelParameter, output_folder})
+        End If
+    End Sub
+
+    Private Sub Button4_Click(sender As Object, e As EventArgs) Handles Button4.Click
+        WorkingList.Location = My.Settings.WorkingListPosition
+        WorkingList.Show()
     End Sub
 End Class
 
