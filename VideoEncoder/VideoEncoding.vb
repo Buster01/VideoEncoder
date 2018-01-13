@@ -108,7 +108,10 @@
                     StreamData(2) = "MP2 Audio"
 
                 Case "ac3"
-                    StreamData(2) = "AC-3"
+                    StreamData(2) = "Dolby Digital"
+
+                Case "eac3"
+                    StreamData(2) = "Dolby Digital+"
 
                 Case "aac"
                     StreamData(2) = "AAC"

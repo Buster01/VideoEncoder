@@ -214,12 +214,17 @@ Public Class Main
         With lvFileStreams
             .Columns.Add("ID", 30, HorizontalAlignment.Left)
             .Columns.Add("Type", 60, HorizontalAlignment.Left)
-            .Columns.Add("Codec", 100, HorizontalAlignment.Left)
+            .Columns.Add("Codec", 120, HorizontalAlignment.Left)
             .Columns.Add("Sprache", 80, HorizontalAlignment.Center)
             .Columns.Add("Frames", 70, HorizontalAlignment.Right)
             .Columns.Add("Standard", 100, HorizontalAlignment.Left)
             .Columns.Add("Encoder", 130, HorizontalAlignment.Left)
             .Columns.Add("Bitrate", 100, HorizontalAlignment.Left)
+        End With
+
+        With cbDeInterlace
+            .Items.Add("------")
+            .Items.Add("yadif")
         End With
 
     End Sub
@@ -320,8 +325,9 @@ Public Class Main
                     VideoParameter = VideoParameter & " -profile:v " & ComboBox5.SelectedItem.ToString.ToLower & " -level " & ComboBox6.SelectedItem & " -b:v " & s_bitrate
                     If CheckBox2.Checked = True Then VideoParameter = VideoParameter & " -rc vbr_hq "
                     If CheckBox4.Checked = True Then VideoParameter = VideoParameter & " -max_muxing_queue_size 3000 "
+                    If cbDeInterlace.SelectedItem = "yadif" Then VideoParameter = VideoParameter & "-vf yadif=1 "
                 End If
-            End If
+                End If
             'Untertitel Parameter
             If stream_item.SubItems(1).Text = "Untertitel" Then
                 SubtitelParameter = SubtitelParameter & "-c:s:" & SubtitelStream.ToString.Trim & " copy "

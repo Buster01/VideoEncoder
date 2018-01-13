@@ -23,13 +23,13 @@ Partial Class WorkingList
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
-        Me.MenuStrip1 = New System.Windows.Forms.MenuStrip()
         Me.ListView1 = New System.Windows.Forms.ListView()
-        Me.StartToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
-        Me.PauseToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.MenuStrip1 = New System.Windows.Forms.MenuStrip()
         Me.ListeToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.FertigeAufträgeEntfernenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.AlleAufträgeEntfernenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.StartToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.PauseToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.GroupBox1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         Me.SuspendLayout()
@@ -42,16 +42,7 @@ Partial Class WorkingList
         Me.GroupBox1.Size = New System.Drawing.Size(886, 549)
         Me.GroupBox1.TabIndex = 0
         Me.GroupBox1.TabStop = False
-        Me.GroupBox1.Text = "GroupBox1"
-        '
-        'MenuStrip1
-        '
-        Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ListeToolStripMenuItem, Me.StartToolStripMenuItem, Me.PauseToolStripMenuItem})
-        Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
-        Me.MenuStrip1.Name = "MenuStrip1"
-        Me.MenuStrip1.Size = New System.Drawing.Size(899, 24)
-        Me.MenuStrip1.TabIndex = 1
-        Me.MenuStrip1.Text = "MenuStrip1"
+        Me.GroupBox1.Text = "Aufträge"
         '
         'ListView1
         '
@@ -61,17 +52,14 @@ Partial Class WorkingList
         Me.ListView1.TabIndex = 0
         Me.ListView1.UseCompatibleStateImageBehavior = False
         '
-        'StartToolStripMenuItem
+        'MenuStrip1
         '
-        Me.StartToolStripMenuItem.Name = "StartToolStripMenuItem"
-        Me.StartToolStripMenuItem.Size = New System.Drawing.Size(43, 20)
-        Me.StartToolStripMenuItem.Text = "Start"
-        '
-        'PauseToolStripMenuItem
-        '
-        Me.PauseToolStripMenuItem.Name = "PauseToolStripMenuItem"
-        Me.PauseToolStripMenuItem.Size = New System.Drawing.Size(50, 20)
-        Me.PauseToolStripMenuItem.Text = "Pause"
+        Me.MenuStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ListeToolStripMenuItem, Me.StartToolStripMenuItem, Me.PauseToolStripMenuItem})
+        Me.MenuStrip1.Location = New System.Drawing.Point(0, 0)
+        Me.MenuStrip1.Name = "MenuStrip1"
+        Me.MenuStrip1.Size = New System.Drawing.Size(899, 24)
+        Me.MenuStrip1.TabIndex = 1
+        Me.MenuStrip1.Text = "MenuStrip1"
         '
         'ListeToolStripMenuItem
         '
@@ -91,6 +79,18 @@ Partial Class WorkingList
         Me.AlleAufträgeEntfernenToolStripMenuItem.Name = "AlleAufträgeEntfernenToolStripMenuItem"
         Me.AlleAufträgeEntfernenToolStripMenuItem.Size = New System.Drawing.Size(213, 22)
         Me.AlleAufträgeEntfernenToolStripMenuItem.Text = "Alle Aufträge entfernen"
+        '
+        'StartToolStripMenuItem
+        '
+        Me.StartToolStripMenuItem.Name = "StartToolStripMenuItem"
+        Me.StartToolStripMenuItem.Size = New System.Drawing.Size(43, 20)
+        Me.StartToolStripMenuItem.Text = "Start"
+        '
+        'PauseToolStripMenuItem
+        '
+        Me.PauseToolStripMenuItem.Name = "PauseToolStripMenuItem"
+        Me.PauseToolStripMenuItem.Size = New System.Drawing.Size(50, 20)
+        Me.PauseToolStripMenuItem.Text = "Pause"
         '
         'WorkingList
         '

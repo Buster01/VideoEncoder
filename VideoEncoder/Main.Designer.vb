@@ -46,6 +46,7 @@ Partial Class Main
         Me.ProgressBar1 = New System.Windows.Forms.ProgressBar()
         Me.Button3 = New System.Windows.Forms.Button()
         Me.GroupBox5 = New System.Windows.Forms.GroupBox()
+        Me.CheckBox4 = New System.Windows.Forms.CheckBox()
         Me.CheckBox3 = New System.Windows.Forms.CheckBox()
         Me.CheckBox2 = New System.Windows.Forms.CheckBox()
         Me.ComboBox6 = New System.Windows.Forms.ComboBox()
@@ -54,7 +55,8 @@ Partial Class Main
         Me.Label9 = New System.Windows.Forms.Label()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
         Me.lvFileStreams = New System.Windows.Forms.ListView()
-        Me.CheckBox4 = New System.Windows.Forms.CheckBox()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.cbDeInterlace = New System.Windows.Forms.ComboBox()
         Me.GroupBox1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -209,7 +211,7 @@ Partial Class Main
         Me.GroupBox4.Controls.Add(Me.Label4)
         Me.GroupBox4.Controls.Add(Me.ProgressBar1)
         Me.GroupBox4.Controls.Add(Me.Button3)
-        Me.GroupBox4.Location = New System.Drawing.Point(6, 445)
+        Me.GroupBox4.Location = New System.Drawing.Point(6, 485)
         Me.GroupBox4.Name = "GroupBox4"
         Me.GroupBox4.Size = New System.Drawing.Size(752, 59)
         Me.GroupBox4.TabIndex = 7
@@ -242,6 +244,8 @@ Partial Class Main
         '
         'GroupBox5
         '
+        Me.GroupBox5.Controls.Add(Me.cbDeInterlace)
+        Me.GroupBox5.Controls.Add(Me.Label1)
         Me.GroupBox5.Controls.Add(Me.CheckBox4)
         Me.GroupBox5.Controls.Add(Me.CheckBox3)
         Me.GroupBox5.Controls.Add(Me.CheckBox2)
@@ -251,10 +255,20 @@ Partial Class Main
         Me.GroupBox5.Controls.Add(Me.Label9)
         Me.GroupBox5.Location = New System.Drawing.Point(6, 385)
         Me.GroupBox5.Name = "GroupBox5"
-        Me.GroupBox5.Size = New System.Drawing.Size(752, 54)
+        Me.GroupBox5.Size = New System.Drawing.Size(752, 94)
         Me.GroupBox5.TabIndex = 8
         Me.GroupBox5.TabStop = False
         Me.GroupBox5.Text = "Video Optionen"
+        '
+        'CheckBox4
+        '
+        Me.CheckBox4.AutoSize = True
+        Me.CheckBox4.Location = New System.Drawing.Point(531, 22)
+        Me.CheckBox4.Name = "CheckBox4"
+        Me.CheckBox4.Size = New System.Drawing.Size(82, 17)
+        Me.CheckBox4.TabIndex = 10
+        Me.CheckBox4.Text = "DTS 7.1 Fix"
+        Me.CheckBox4.UseVisualStyleBackColor = True
         '
         'CheckBox3
         '
@@ -273,7 +287,7 @@ Partial Class Main
         Me.CheckBox2.AutoSize = True
         Me.CheckBox2.Checked = True
         Me.CheckBox2.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.CheckBox2.Location = New System.Drawing.Point(338, 22)
+        Me.CheckBox2.Location = New System.Drawing.Point(360, 22)
         Me.CheckBox2.Name = "CheckBox2"
         Me.CheckBox2.Size = New System.Drawing.Size(156, 17)
         Me.CheckBox2.TabIndex = 8
@@ -285,7 +299,7 @@ Partial Class Main
         Me.ComboBox6.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBox6.Font = New System.Drawing.Font("Courier New", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ComboBox6.FormattingEnabled = True
-        Me.ComboBox6.Location = New System.Drawing.Point(249, 19)
+        Me.ComboBox6.Location = New System.Drawing.Point(284, 19)
         Me.ComboBox6.Name = "ComboBox6"
         Me.ComboBox6.Size = New System.Drawing.Size(51, 23)
         Me.ComboBox6.TabIndex = 7
@@ -295,7 +309,7 @@ Partial Class Main
         Me.ComboBox5.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBox5.Font = New System.Drawing.Font("Courier New", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ComboBox5.FormattingEnabled = True
-        Me.ComboBox5.Location = New System.Drawing.Point(60, 19)
+        Me.ComboBox5.Location = New System.Drawing.Point(104, 19)
         Me.ComboBox5.Name = "ComboBox5"
         Me.ComboBox5.Size = New System.Drawing.Size(121, 23)
         Me.ComboBox5.TabIndex = 6
@@ -303,7 +317,7 @@ Partial Class Main
         'Label10
         '
         Me.Label10.AutoSize = True
-        Me.Label10.Location = New System.Drawing.Point(207, 23)
+        Me.Label10.Location = New System.Drawing.Point(242, 23)
         Me.Label10.Name = "Label10"
         Me.Label10.Size = New System.Drawing.Size(36, 13)
         Me.Label10.TabIndex = 5
@@ -338,21 +352,29 @@ Partial Class Main
         Me.lvFileStreams.UseCompatibleStateImageBehavior = False
         Me.lvFileStreams.View = System.Windows.Forms.View.Details
         '
-        'CheckBox4
+        'Label1
         '
-        Me.CheckBox4.AutoSize = True
-        Me.CheckBox4.Location = New System.Drawing.Point(517, 22)
-        Me.CheckBox4.Name = "CheckBox4"
-        Me.CheckBox4.Size = New System.Drawing.Size(82, 17)
-        Me.CheckBox4.TabIndex = 10
-        Me.CheckBox4.Text = "DTS 7.1 Fix"
-        Me.CheckBox4.UseVisualStyleBackColor = True
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(21, 57)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(64, 13)
+        Me.Label1.TabIndex = 11
+        Me.Label1.Text = "Deinterlace:"
         '
-        'Form1
+        'cbDeInterlace
+        '
+        Me.cbDeInterlace.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cbDeInterlace.FormattingEnabled = True
+        Me.cbDeInterlace.Location = New System.Drawing.Point(104, 54)
+        Me.cbDeInterlace.Name = "cbDeInterlace"
+        Me.cbDeInterlace.Size = New System.Drawing.Size(121, 21)
+        Me.cbDeInterlace.TabIndex = 12
+        '
+        'Main
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(769, 513)
+        Me.ClientSize = New System.Drawing.Size(769, 545)
         Me.Controls.Add(Me.GroupBox3)
         Me.Controls.Add(Me.GroupBox5)
         Me.Controls.Add(Me.GroupBox4)
@@ -362,7 +384,7 @@ Partial Class Main
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog
         Me.MainMenuStrip = Me.MenuStrip1
         Me.MaximizeBox = False
-        Me.Name = "Form1"
+        Me.Name = "Main"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
         Me.Text = "Video Encoder"
         Me.GroupBox1.ResumeLayout(False)
@@ -414,4 +436,6 @@ Partial Class Main
     Friend WithEvents CheckBox2 As CheckBox
     Friend WithEvents CheckBox3 As CheckBox
     Friend WithEvents CheckBox4 As CheckBox
+    Friend WithEvents cbDeInterlace As ComboBox
+    Friend WithEvents Label1 As Label
 End Class
