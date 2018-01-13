@@ -5,7 +5,7 @@ Public Class Main
     Dim input_folder As String = ""
     Dim output_folder As String = ""
     Dim folder As Boolean = False
-    Dim ffmpeg_path As String = "C:\ffmpeg\"
+    Dim ffmpeg_path As String = My.Settings.FFmpegPath
     Dim ffmpeg_out(7) As String
     Public CodecQueue() As List(Of String)
 
@@ -228,6 +228,13 @@ Public Class Main
             .Items.Add("yadif")
             .SelectedIndex = 0
         End With
+
+        If ffmpeg_path = "" Then
+            MsgBox("Bitte wählen Sie ein Pfad zum FFmpeg!", vbCritical, "FFmpeg Pfad")
+            Einstellungen.Show()
+        Else
+            ffmpeg_path = ffmpeg_path & "\"
+        End If
 
     End Sub
 
