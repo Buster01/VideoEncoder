@@ -46,6 +46,8 @@ Partial Class Main
         Me.ProgressBar1 = New System.Windows.Forms.ProgressBar()
         Me.Button3 = New System.Windows.Forms.Button()
         Me.GroupBox5 = New System.Windows.Forms.GroupBox()
+        Me.cbDeInterlace = New System.Windows.Forms.ComboBox()
+        Me.Label1 = New System.Windows.Forms.Label()
         Me.CheckBox4 = New System.Windows.Forms.CheckBox()
         Me.CheckBox3 = New System.Windows.Forms.CheckBox()
         Me.CheckBox2 = New System.Windows.Forms.CheckBox()
@@ -55,8 +57,6 @@ Partial Class Main
         Me.Label9 = New System.Windows.Forms.Label()
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
         Me.lvFileStreams = New System.Windows.Forms.ListView()
-        Me.Label1 = New System.Windows.Forms.Label()
-        Me.cbDeInterlace = New System.Windows.Forms.ComboBox()
         Me.GroupBox1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -146,13 +146,13 @@ Partial Class Main
         'EinstellungenToolStripMenuItem
         '
         Me.EinstellungenToolStripMenuItem.Name = "EinstellungenToolStripMenuItem"
-        Me.EinstellungenToolStripMenuItem.Size = New System.Drawing.Size(145, 22)
+        Me.EinstellungenToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.EinstellungenToolStripMenuItem.Text = "Einstellungen"
         '
         'BeendenToolStripMenuItem
         '
         Me.BeendenToolStripMenuItem.Name = "BeendenToolStripMenuItem"
-        Me.BeendenToolStripMenuItem.Size = New System.Drawing.Size(145, 22)
+        Me.BeendenToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
         Me.BeendenToolStripMenuItem.Text = "Beenden"
         '
         'ToolStripMenuItem2
@@ -260,6 +260,24 @@ Partial Class Main
         Me.GroupBox5.TabStop = False
         Me.GroupBox5.Text = "Video Optionen"
         '
+        'cbDeInterlace
+        '
+        Me.cbDeInterlace.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cbDeInterlace.FormattingEnabled = True
+        Me.cbDeInterlace.Location = New System.Drawing.Point(104, 54)
+        Me.cbDeInterlace.Name = "cbDeInterlace"
+        Me.cbDeInterlace.Size = New System.Drawing.Size(121, 21)
+        Me.cbDeInterlace.TabIndex = 12
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(21, 57)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(64, 13)
+        Me.Label1.TabIndex = 11
+        Me.Label1.Text = "Deinterlace:"
+        '
         'CheckBox4
         '
         Me.CheckBox4.AutoSize = True
@@ -351,24 +369,6 @@ Partial Class Main
         Me.lvFileStreams.TabIndex = 0
         Me.lvFileStreams.UseCompatibleStateImageBehavior = False
         Me.lvFileStreams.View = System.Windows.Forms.View.Details
-        '
-        'Label1
-        '
-        Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(21, 57)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(64, 13)
-        Me.Label1.TabIndex = 11
-        Me.Label1.Text = "Deinterlace:"
-        '
-        'cbDeInterlace
-        '
-        Me.cbDeInterlace.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cbDeInterlace.FormattingEnabled = True
-        Me.cbDeInterlace.Location = New System.Drawing.Point(104, 54)
-        Me.cbDeInterlace.Name = "cbDeInterlace"
-        Me.cbDeInterlace.Size = New System.Drawing.Size(121, 21)
-        Me.cbDeInterlace.TabIndex = 12
         '
         'Main
         '

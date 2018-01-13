@@ -7,6 +7,7 @@ Public Class Main
     Dim folder As Boolean = False
     Dim ffmpeg_path As String = "C:\ffmpeg\"
     Dim ffmpeg_out(7) As String
+    Public CodecQueue() As List(Of String)
 
 
     Private Sub CheckBox1_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBox1.CheckedChanged
@@ -225,6 +226,7 @@ Public Class Main
         With cbDeInterlace
             .Items.Add("------")
             .Items.Add("yadif")
+            .SelectedIndex = 0
         End With
 
     End Sub
@@ -600,7 +602,27 @@ Public Class Main
         Next z
     End Sub
 
+    Private Sub BeendenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BeendenToolStripMenuItem.Click
+        If BackgroundWorker1.IsBusy = True Then
+            BackgroundWorker1.CancelAsync()
+        End If
 
+        Threading.Thread.Sleep(1000)
+        End
 
+    End Sub
+
+    Private Sub Main_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+        If BackgroundWorker1.IsBusy = True Then
+            BackgroundWorker1.CancelAsync()
+        End If
+
+        Threading.Thread.Sleep(500)
+        End
+    End Sub
+
+    Private Sub EinstellungenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EinstellungenToolStripMenuItem.Click
+        Einstellungen.Show()
+    End Sub
 End Class
 
