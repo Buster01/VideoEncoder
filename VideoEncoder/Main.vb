@@ -612,20 +612,16 @@ Public Class Main
     Private Sub BeendenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles BeendenToolStripMenuItem.Click
         If BackgroundWorker1.IsBusy = True Then
             BackgroundWorker1.CancelAsync()
+            Threading.Thread.Sleep(500)
         End If
-
-        Threading.Thread.Sleep(1000)
         End
-
     End Sub
 
     Private Sub Main_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
         If BackgroundWorker1.IsBusy = True Then
             BackgroundWorker1.CancelAsync()
+            Threading.Thread.Sleep(500)
         End If
-
-        Threading.Thread.Sleep(500)
-        End
     End Sub
 
     Private Sub EinstellungenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EinstellungenToolStripMenuItem.Click

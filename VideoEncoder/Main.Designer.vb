@@ -146,13 +146,13 @@ Partial Class Main
         'EinstellungenToolStripMenuItem
         '
         Me.EinstellungenToolStripMenuItem.Name = "EinstellungenToolStripMenuItem"
-        Me.EinstellungenToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.EinstellungenToolStripMenuItem.Size = New System.Drawing.Size(145, 22)
         Me.EinstellungenToolStripMenuItem.Text = "Einstellungen"
         '
         'BeendenToolStripMenuItem
         '
         Me.BeendenToolStripMenuItem.Name = "BeendenToolStripMenuItem"
-        Me.BeendenToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.BeendenToolStripMenuItem.Size = New System.Drawing.Size(145, 22)
         Me.BeendenToolStripMenuItem.Text = "Beenden"
         '
         'ToolStripMenuItem2
@@ -263,10 +263,11 @@ Partial Class Main
         'cbDeInterlace
         '
         Me.cbDeInterlace.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cbDeInterlace.Font = New System.Drawing.Font("Courier New", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.cbDeInterlace.FormattingEnabled = True
         Me.cbDeInterlace.Location = New System.Drawing.Point(104, 54)
         Me.cbDeInterlace.Name = "cbDeInterlace"
-        Me.cbDeInterlace.Size = New System.Drawing.Size(121, 21)
+        Me.cbDeInterlace.Size = New System.Drawing.Size(121, 23)
         Me.cbDeInterlace.TabIndex = 12
         '
         'Label1
