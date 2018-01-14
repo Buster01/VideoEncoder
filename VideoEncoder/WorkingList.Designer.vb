@@ -52,6 +52,7 @@ Partial Class WorkingList
         Me.lvWorkingList.Size = New System.Drawing.Size(874, 523)
         Me.lvWorkingList.TabIndex = 0
         Me.lvWorkingList.UseCompatibleStateImageBehavior = False
+        Me.lvWorkingList.View = System.Windows.Forms.View.Details
         '
         'MenuStrip1
         '

@@ -277,6 +277,7 @@ Public Class Main
         Next
 
         CodecQueue.DocumentElement.AppendChild(EncOrder)
+        Call WorkingList.UpdateWorkingList()
 
     End Sub
 

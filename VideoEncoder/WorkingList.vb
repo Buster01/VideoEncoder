@@ -114,6 +114,18 @@ Public Class WorkingList
         GroupBox1.Width = Me.Size.Width - 30
         lvWorkingList.Height = GroupBox1.Size.Height - 30
         lvWorkingList.Width = GroupBox1.Size.Width - 15
+
+        With lvWorkingList
+            .Columns.Add("ID", 30, HorizontalAlignment.Left)
+            .Columns.Add("Datei", 60, HorizontalAlignment.Left)
+            .Columns.Add("test", 120, HorizontalAlignment.Left)
+            .Columns.Add("Sprache", 80, HorizontalAlignment.Center)
+            .Columns.Add("Frames", 70, HorizontalAlignment.Right)
+            .Columns.Add("Standard", 100, HorizontalAlignment.Left)
+            .Columns.Add("Encoder", 130, HorizontalAlignment.Left)
+            .Columns.Add("Bitrate", 100, HorizontalAlignment.Left)
+        End With
+
     End Sub
 
     Private Sub WorkingList_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
@@ -130,4 +142,36 @@ Public Class WorkingList
         lvWorkingList.Height = GroupBox1.Size.Height - 30
         lvWorkingList.Width = GroupBox1.Size.Width - 15
     End Sub
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    Public Function UpdateWorkingList()
+        lvWorkingList.Items.Clear()
+        lvWorkingList.Controls.Clear()
+        Dim t As String = ""
+
+        Dim order As Xml.XmlNode = Main.CodecQueue.SelectSingleNode("WorkingQueue")
+
+        For Each CodingOrder As Xml.XmlNode In order.ChildNodes
+            Dim item As New ListViewItem(CodingOrder.Attributes("id").Value)
+            lvWorkingList.Items.Add(item)
+
+
+
+        Next
+
+
+
+    End Function
 End Class
