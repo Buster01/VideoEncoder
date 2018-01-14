@@ -126,6 +126,7 @@ Public Class WorkingList
             .Columns.Add("Bitrate", 100, HorizontalAlignment.Left)
         End With
 
+        Call UpdateWorkingList()
     End Sub
 
     Private Sub WorkingList_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
@@ -159,13 +160,19 @@ Public Class WorkingList
     Public Function UpdateWorkingList()
         lvWorkingList.Items.Clear()
         lvWorkingList.Controls.Clear()
-        Dim t As String = ""
+        Dim WorkingListInfo(6) As String
 
         Dim order As Xml.XmlNode = Main.CodecQueue.SelectSingleNode("WorkingQueue")
 
         For Each CodingOrder As Xml.XmlNode In order.ChildNodes
-            Dim item As New ListViewItem(CodingOrder.Attributes("id").Value)
+            Dim item As New ListViewItem
+            WorkingListInfo(0) = CodingOrder.Attributes("id").Value
+            WorkingListInfo(1) = CodingOrder.Attributes("InputFile").Value
+            WorkingListInfo(2) = CodingOrder.Attributes("OutputPath").Value
+
+            item = New ListViewItem(WorkingListInfo)
             lvWorkingList.Items.Add(item)
+
 
 
 

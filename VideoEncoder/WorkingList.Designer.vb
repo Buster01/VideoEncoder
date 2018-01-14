@@ -47,7 +47,9 @@ Partial Class WorkingList
         '
         'lvWorkingList
         '
+        Me.lvWorkingList.FullRowSelect = True
         Me.lvWorkingList.Location = New System.Drawing.Point(6, 19)
+        Me.lvWorkingList.MultiSelect = False
         Me.lvWorkingList.Name = "lvWorkingList"
         Me.lvWorkingList.Size = New System.Drawing.Size(874, 523)
         Me.lvWorkingList.TabIndex = 0

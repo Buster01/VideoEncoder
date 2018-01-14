@@ -197,8 +197,13 @@ Public Class Main
         EncOrder.Attributes.Append(EncoderStreamAttrHWdecoding)
 
         'Order InputFile
+        Dim EncoderInputFolder As Xml.XmlAttribute = CodecQueue.CreateAttribute("InputFolder")
+        EncoderInputFolder.Value = input_folder
+        EncOrder.Attributes.Append(EncoderInputFolder)
+
+        'Order InputFile
         Dim EncoderInputFile As Xml.XmlAttribute = CodecQueue.CreateAttribute("InputFile")
-        EncoderInputFile.Value = input_folder & "\" & cbFiles.SelectedItem
+        EncoderInputFile.Value = cbFiles.SelectedItem
         EncOrder.Attributes.Append(EncoderInputFile)
 
         'Order Output Path
