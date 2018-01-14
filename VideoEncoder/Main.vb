@@ -7,7 +7,8 @@ Public Class Main
     Dim folder As Boolean = False
     Dim ffmpeg_path As String = My.Settings.FFmpegPath
     Dim ffmpeg_out(7) As String
-    Public CodecQueue() As List(Of String)
+    Public CodecQueue As New Xml.XmlDocument
+
 
 
     Private Sub CheckBox1_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBox1.CheckedChanged
@@ -83,11 +84,6 @@ Public Class Main
         End If
     End Sub
 
-    Private Sub BackgroundWorker1_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs)
-
-
-    End Sub
-
     Private Sub BackgroundWorker1_RunWorkerCompleted(sender As Object, e As RunWorkerCompletedEventArgs)
         cbFiles.Enabled = True
         Button3.Enabled = True
@@ -98,8 +94,13 @@ Public Class Main
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        ' Audio Optionen
+        ' Encoding Queue erzeugen
+        Dim FirstNode As Xml.XmlNode
+        CodecQueue.CreateXmlDeclaration("1.0", "UTF-8", "")
+        FirstNode = CodecQueue.CreateElement("WorkingQueue")
+        CodecQueue.AppendChild(FirstNode)
 
+        ' Audio Optionen
         With ComboBox5
             .Items.Add("------")
             .SelectedIndex = 0
@@ -143,6 +144,11 @@ Public Class Main
     End Sub
 
     Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
+        Dim qid As Long = 0
+        Dim chNodes As Long = 0
+        Dim z As Long = 0
+        Dim CodecQueueChild As Xml.XmlNode = CodecQueue.SelectSingleNode("WorkingQueue")
+
         If input_folder = "" Then
             MsgBox("Bitte ein Quellpfad wählen!", vbInformation, "keine Quellpfad!")
             Exit Sub
@@ -160,6 +166,117 @@ Public Class Main
             Einstellungen.Show()
             Exit Sub
         End If
+
+        ' letzte id in Encodingliste ermittlen
+        If CodecQueueChild.ChildNodes.Count = 0 Then
+            qid = 0
+        Else
+            For chNodes = 0 To CodecQueueChild.ChildNodes.Count - 1
+                If CodecQueueChild.ChildNodes(chNodes).Name = "Order" Then
+                    If CodecQueueChild.ChildNodes(chNodes).Attributes("id").Value > qid Then qid = CodecQueueChild.ChildNodes(chNodes).Attributes("id").Value
+                End If
+            Next
+            qid += 1
+        End If
+
+        ' neuer Eintrag in Endcodingliste hinzufügen
+        'Order id generieren
+        Dim EncOrder As Xml.XmlNode = CodecQueue.CreateElement("Order")
+        Dim EncOrderAttrID As Xml.XmlAttribute = CodecQueue.CreateAttribute("id")
+        EncOrderAttrID.Value = qid
+
+        'Order Status
+        Dim EncOrderAttrState As Xml.XmlAttribute = CodecQueue.CreateAttribute("State")
+        EncOrderAttrState.Value = "waiting"
+        EncOrder.Attributes.Append(EncOrderAttrState)
+
+        'Order Parameter HW Decoding
+        Dim EncoderStreamAttrHWdecoding As Xml.XmlAttribute = CodecQueue.CreateAttribute("HWdecoding")
+        EncoderStreamAttrHWdecoding.Value = CheckBox3.Checked
+        EncOrder.Attributes.Append(EncOrderAttrID)
+        EncOrder.Attributes.Append(EncoderStreamAttrHWdecoding)
+
+        'Order InputFile
+        Dim EncoderInputFile As Xml.XmlAttribute = CodecQueue.CreateAttribute("InputFile")
+        EncoderInputFile.Value = input_folder & "\" & cbFiles.SelectedItem
+        EncOrder.Attributes.Append(EncoderInputFile)
+
+        'Order Output Path
+        Dim EncoderOutputPath As Xml.XmlAttribute = CodecQueue.CreateAttribute("OutputPath")
+        EncoderOutputPath.Value = output_folder
+        EncOrder.Attributes.Append(EncoderOutputPath)
+
+        'Codec Profil
+        Dim EncoderVideoProfil As Xml.XmlAttribute = CodecQueue.CreateAttribute("CodecProfil")
+        EncoderVideoProfil.Value = ComboBox5.SelectedItem
+        EncOrder.Attributes.Append(EncoderVideoProfil)
+
+        'Codec level
+        Dim EncoderVideoLevel As Xml.XmlAttribute = CodecQueue.CreateAttribute("CodecLevel")
+        EncoderVideoLevel.Value = ComboBox6.SelectedItem
+        EncOrder.Attributes.Append(EncoderVideoLevel)
+
+        ' VBR HQ Encoding
+        Dim EncoderVBRhqEncoding As Xml.XmlAttribute = CodecQueue.CreateAttribute("CodecHQEncoding")
+        EncoderVBRhqEncoding.Value = CheckBox2.Checked
+        EncOrder.Attributes.Append(EncoderVBRhqEncoding)
+
+        'Codec Filter DeInterlace
+        Dim EncoderDeinterlace As Xml.XmlAttribute = CodecQueue.CreateAttribute("CodecDeinterlace")
+        EncoderDeinterlace.Value = cbDeInterlace.SelectedItem
+        EncOrder.Attributes.Append(EncoderDeinterlace)
+
+        'DTS Fix
+        Dim EncoderDTSfix As Xml.XmlAttribute = CodecQueue.CreateAttribute("CodecDeinterlace")
+        EncoderDTSfix.Value = CheckBox4.Checked
+        EncOrder.Attributes.Append(EncoderDTSfix)
+
+        'Listview mit Streams auslesen
+        For Each stream_item As ListViewItem In lvFileStreams.Items
+            Dim EncOrderStream As Xml.XmlNode = CodecQueue.CreateElement("Stream")
+            ' Stream ID
+            Dim EncoderStreamAttrID As Xml.XmlAttribute = CodecQueue.CreateAttribute("StreamID")
+            EncoderStreamAttrID.Value = stream_item.SubItems(0).Text
+            EncOrderStream.Attributes.Append(EncoderStreamAttrID)
+
+            'Stream Type
+            Dim EncoderStreamAttrType As Xml.XmlAttribute = CodecQueue.CreateAttribute("StreamType")
+            EncoderStreamAttrType.Value = stream_item.SubItems(1).Text
+            EncOrderStream.Attributes.Append(EncoderStreamAttrType)
+
+            'Codec, Bitrate,default
+            Dim vcCombo As New ComboBox
+            Dim EncoderStreamAttrCodec As Xml.XmlAttribute = CodecQueue.CreateAttribute("StreamCodec")
+            Dim brCombo As New ComboBox
+            Dim EncoderStreamAttrBitrate As Xml.XmlAttribute = CodecQueue.CreateAttribute("StreamBitrate")
+            Dim defckb As New CheckBox
+            Dim EncoderStramAttrDefault As Xml.XmlAttribute = CodecQueue.CreateAttribute("StreamDefault")
+
+            ' Finde Combobox mit Codec Auswahl
+            For Each vc_ctrl In lvFileStreams.Controls.Find("vcCombo" & z.ToString, True)
+                vcCombo = vc_ctrl
+            Next
+            EncoderStreamAttrCodec.Value = vcCombo.SelectedItem
+            EncOrderStream.Attributes.Append(EncoderStreamAttrCodec)
+
+            'Finde Combobx mit Bitrate
+            For Each br_ctrl In lvFileStreams.Controls.Find("brCombo" & z.ToString, True)
+                brCombo = br_ctrl
+            Next
+            EncoderStreamAttrBitrate.Value = brCombo.SelectedItem
+            EncOrderStream.Attributes.Append(EncoderStreamAttrBitrate)
+
+            ' Finde "Standard - Checkbox
+            For Each def_ckbox In lvFileStreams.Controls.Find("defCheck" & z.ToString, True)
+                defckb = def_ckbox
+            Next
+            EncoderStramAttrDefault.Value = defckb.Checked
+            EncOrderStream.Attributes.Append(EncoderStramAttrDefault)
+            EncOrder.AppendChild(EncOrderStream)
+            z += 1
+        Next
+
+        CodecQueue.DocumentElement.AppendChild(EncOrder)
 
     End Sub
 
@@ -552,5 +669,6 @@ Public Class Main
         WorkingList.Location = My.Settings.WorkingListPosition
         WorkingList.Show()
     End Sub
+
 End Class
 
