@@ -117,13 +117,13 @@ Public Class WorkingList
 
         With lvWorkingList
             .Columns.Add("ID", 30, HorizontalAlignment.Left)
-            .Columns.Add("Datei", 60, HorizontalAlignment.Left)
-            .Columns.Add("test", 120, HorizontalAlignment.Left)
-            .Columns.Add("Sprache", 80, HorizontalAlignment.Center)
-            .Columns.Add("Frames", 70, HorizontalAlignment.Right)
-            .Columns.Add("Standard", 100, HorizontalAlignment.Left)
-            .Columns.Add("Encoder", 130, HorizontalAlignment.Left)
-            .Columns.Add("Bitrate", 100, HorizontalAlignment.Left)
+            .Columns.Add("Quelle", 240, HorizontalAlignment.Left)
+            .Columns.Add("Ziel", 120, HorizontalAlignment.Left)
+            .Columns.Add("Video", 150, HorizontalAlignment.Center)
+            .Columns.Add("Audio", 150, HorizontalAlignment.Center)
+            .Columns.Add("Untertitel", 100, HorizontalAlignment.Left)
+            .Columns.Add("Deinterlace", 70, HorizontalAlignment.Left)
+            .Columns.Add("Status", 130, HorizontalAlignment.Center)
         End With
 
         Call UpdateWorkingList()
@@ -165,16 +165,41 @@ Public Class WorkingList
         Dim order As Xml.XmlNode = Main.CodecQueue.SelectSingleNode("WorkingQueue")
 
         For Each CodingOrder As Xml.XmlNode In order.ChildNodes
+
             Dim item As New ListViewItem
             WorkingListInfo(0) = CodingOrder.Attributes("id").Value
             WorkingListInfo(1) = CodingOrder.Attributes("InputFile").Value
             WorkingListInfo(2) = CodingOrder.Attributes("OutputPath").Value
 
+            For Each stream As Xml.XmlNode In CodingOrder.ChildNodes
+
+                If stream.Attributes("StreamType").Value = "Video" Then
+                    WorkingListInfo(3) = stream.Attributes("StreamCodec").Value
+                    If stream.Attributes("StreamCodec").Value <> "copy" Then
+                        WorkingListInfo(3) = WorkingListInfo(3) & " (" & stream.Attributes("StreamBitrate").Value & ")"
+                    End If
+                    WorkingListInfo(3) = Replace(WorkingListInfo(3), "NVidia", "").Trim
+                End If
+
+                If stream.Attributes("StreamType").Value = "Audio" Then
+                    If stream.Attributes("StreamCodec").Value <> "copy" Then
+                        WorkingListInfo(4) = WorkingListInfo(4) & stream.Attributes("StreamID").Value & "." & stream.Attributes("StreamCodec").Value & " (" & stream.Attributes("StreamBitrate").Value & ") | "
+                    Else
+                        WorkingListInfo(4) = WorkingListInfo(4) & stream.Attributes("StreamID").Value & "." & stream.Attributes("StreamCodec").Value & " | "
+                    End If
+                End If
+
+            Next
+
+            WorkingListInfo(4) = Strings.Left(WorkingListInfo(4), WorkingListInfo(4).Length - 2).Trim
             item = New ListViewItem(WorkingListInfo)
-            lvWorkingList.Items.Add(item)
 
-
-
+            If CodingOrder.Attributes("State").Value <> "delete" Then
+                lvWorkingList.Items.Add(item)
+            End If
+            For z = 0 To 6
+                WorkingListInfo(z) = ""
+            Next z
 
         Next
 
