@@ -282,7 +282,7 @@ Public Class Main
         Next
 
         CodecQueue.DocumentElement.AppendChild(EncOrder)
-        Call WorkingList.UpdateWorkingList()
+        If WorkingList.Visible = True Then WorkingList.UpdateWorkingList()
 
     End Sub
 

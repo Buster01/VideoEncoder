@@ -119,12 +119,13 @@ Public Class WorkingList
             .Columns.Add("ID", 30, HorizontalAlignment.Left)
             .Columns.Add("Quelle", 240, HorizontalAlignment.Left)
             .Columns.Add("Ziel", 120, HorizontalAlignment.Left)
-            .Columns.Add("Video", 150, HorizontalAlignment.Center)
-            .Columns.Add("Audio", 150, HorizontalAlignment.Center)
-            .Columns.Add("Untertitel", 120, HorizontalAlignment.Center)
-            .Columns.Add("HW Decoder", 80, HorizontalAlignment.Center)
-            .Columns.Add("Deinterlace", 70, HorizontalAlignment.Center)
+            .Columns.Add("Video", 150, HorizontalAlignment.Left)
+            .Columns.Add("Audio", 150, HorizontalAlignment.Left)
+            .Columns.Add("Untertitel", 120, HorizontalAlignment.Left)
+            .Columns.Add("HW Decoder", 90, HorizontalAlignment.Center)
+            .Columns.Add("Deinterlace", 80, HorizontalAlignment.Center)
             .Columns.Add("Status", 80, HorizontalAlignment.Center)
+            .Font = New System.Drawing.Font("Microsoft Sans Serif", 9, System.Drawing.FontStyle.Regular)
         End With
 
         Call UpdateWorkingList()
@@ -158,15 +159,19 @@ Public Class WorkingList
 
 
 
-    Public Function UpdateWorkingList()
+    Public Sub UpdateWorkingList()
         lvWorkingList.Items.Clear()
         lvWorkingList.Controls.Clear()
 
         Dim order As Xml.XmlNode = Main.CodecQueue.SelectSingleNode("WorkingQueue")
+        Dim z As Long = 0
 
         For Each CodingOrder As Xml.XmlNode In order.ChildNodes
-            Dim WorkingListInfo(7) As String
+            Dim WorkingListInfo(8) As String
             Dim item As New ListViewItem
+            Dim btnStopDelete As New Button
+            AddHandler btnStopDelete.Click, AddressOf btnStopDelete_SelectedIndexChanged
+
             WorkingListInfo(0) = CodingOrder.Attributes("id").Value
             WorkingListInfo(1) = CodingOrder.Attributes("InputFile").Value
             WorkingListInfo(2) = CodingOrder.Attributes("OutputPath").Value
@@ -208,6 +213,7 @@ Public Class WorkingList
             End If
             'DeInterlace
             WorkingListInfo(7) = CodingOrder.Attributes("CodecDeinterlace").Value
+            WorkingListInfo(8) = " "
 
             If WorkingListInfo(4).Length > 0 Then WorkingListInfo(4) = Strings.Left(WorkingListInfo(4), WorkingListInfo(4).Length - 2).Trim
             If WorkingListInfo(5).Length > 0 Then WorkingListInfo(5) = Strings.Left(WorkingListInfo(5), WorkingListInfo(5).Length - 2).Trim
@@ -215,10 +221,68 @@ Public Class WorkingList
 
             If CodingOrder.Attributes("State").Value <> "delete" Then
                 lvWorkingList.Items.Add(item)
+                btnStopDelete.Text = "X"
+                btnStopDelete.TextAlign = ContentAlignment.TopCenter
+                btnStopDelete.Height = item.Bounds.Height
+                btnStopDelete.Width = item.SubItems(8).Bounds.Width
+                btnStopDelete.Name = "btnStopDelete" & CodingOrder.Attributes("id").Value.ToString.Trim
+                btnStopDelete.Location = New Point(item.SubItems(7).Bounds.Right, item.SubItems(7).Bounds.Y)
+                btnStopDelete.Font = New System.Drawing.Font("Microsoft Sans Serif", 7, System.Drawing.FontStyle.Regular)
+                lvWorkingList.Controls.Add(btnStopDelete)
+                z += 1
+            End If
+        Next
+    End Sub
+
+    Private Sub lvWorkingList_ColumnWidthChanging(sender As Object, e As ColumnWidthChangingEventArgs) Handles lvWorkingList.ColumnWidthChanging
+        Dim btnStopDelete As New Button
+        Dim z As Long = 0
+
+        For Each lvWorkingListItem As ListViewItem In lvWorkingList.Items
+            For Each lvi_ctrl In lvWorkingList.Controls.Find("btnStopDelete" & z.ToString, True)
+                btnStopDelete = lvi_ctrl
+                btnStopDelete.Width = lvWorkingListItem.SubItems(8).Bounds.Width
+                btnStopDelete.Location = New Point(lvWorkingListItem.SubItems(7).Bounds.Right, lvWorkingListItem.SubItems(7).Bounds.Y)
+                Exit For
+            Next
+            z += 1
+        Next
+    End Sub
+
+    Public Sub btnStopDelete_SelectedIndexChanged(sender As Object, e As EventArgs)
+        Dim btnStopDelete As Button = sender
+        If btnStopDelete.Name = "" Then Exit Sub
+
+        Dim row As ListViewItem
+        Dim OrderID As Long = CLng(Replace(btnStopDelete.Name, "btnStopDelete", ""))
+        Dim order As Xml.XmlNode = Main.CodecQueue.SelectSingleNode("WorkingQueue")
+
+        'Eintrag löschen
+        For Each row In lvWorkingList.Items
+            If CLng(row.Text.ToString) = OrderID Then
+                lvWorkingList.Controls.Remove(btnStopDelete)
+                row.Remove()
+                Exit For
             End If
         Next
 
+        'Button an richtig stelle
+        For Each lvWorkingListItem As ListViewItem In lvWorkingList.Items
+            For Each lvi_ctrl In lvWorkingList.Controls.Find("btnStopDelete" & lvWorkingListItem.SubItems(0).Text.ToString.Trim, True)
+                btnStopDelete = lvi_ctrl
+                btnStopDelete.Width = lvWorkingListItem.SubItems(8).Bounds.Width
+                btnStopDelete.Location = New Point(lvWorkingListItem.SubItems(7).Bounds.Right, lvWorkingListItem.SubItems(7).Bounds.Y)
+                Exit For
+            Next
+        Next
 
+        'Encoding Auftrag löschen
+        For Each CodingOrder As Xml.XmlNode In order.ChildNodes
+            If CodingOrder.Attributes("id").Value = OrderID Then
+                order.RemoveChild(CodingOrder)
+                Exit For
+            End If
+        Next
 
-    End Function
+    End Sub
 End Class
