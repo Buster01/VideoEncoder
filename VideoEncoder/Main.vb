@@ -228,11 +228,11 @@ Public Class Main
 
         'Codec Filter DeInterlace
         Dim EncoderDeinterlace As Xml.XmlAttribute = CodecQueue.CreateAttribute("CodecDeinterlace")
-        EncoderDeinterlace.Value = cbDeInterlace.SelectedItem
+        EncoderDeinterlace.Value = cbDeInterlace.SelectedItem.ToString
         EncOrder.Attributes.Append(EncoderDeinterlace)
 
         'DTS Fix
-        Dim EncoderDTSfix As Xml.XmlAttribute = CodecQueue.CreateAttribute("CodecDeinterlace")
+        Dim EncoderDTSfix As Xml.XmlAttribute = CodecQueue.CreateAttribute("CodecDTSFix")
         EncoderDTSfix.Value = CheckBox4.Checked
         EncOrder.Attributes.Append(EncoderDTSfix)
 
