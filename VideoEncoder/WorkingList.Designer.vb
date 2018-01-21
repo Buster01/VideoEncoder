@@ -22,6 +22,7 @@ Partial Class WorkingList
     'Das Bearbeiten mit dem Code-Editor ist nicht möglich.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.lvWorkingList = New System.Windows.Forms.ListView()
         Me.MenuStrip1 = New System.Windows.Forms.MenuStrip()
@@ -31,6 +32,7 @@ Partial Class WorkingList
         Me.StartToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.PauseToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.BgWffmpeg = New System.ComponentModel.BackgroundWorker()
+        Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
         Me.GroupBox1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         Me.SuspendLayout()
@@ -101,6 +103,9 @@ Partial Class WorkingList
         Me.BgWffmpeg.WorkerReportsProgress = True
         Me.BgWffmpeg.WorkerSupportsCancellation = True
         '
+        'Timer1
+        '
+        '
         'WorkingList
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -129,4 +134,5 @@ Partial Class WorkingList
     Friend WithEvents StartToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents PauseToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents BgWffmpeg As System.ComponentModel.BackgroundWorker
+    Friend WithEvents Timer1 As Timer
 End Class
