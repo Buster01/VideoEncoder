@@ -11,6 +11,8 @@
         Dim out_tmp As String = ""
         Dim stderr As String = ""
 
+        If Strings.Right(ffmpeg_path, 1) <> "\" Then ffmpeg_path = ffmpeg_path & "\"
+
 
         ProcessProperties.FileName = ffmpeg_path & "ffprobe.exe"
         ProcessProperties.WorkingDirectory = ffmpeg_path

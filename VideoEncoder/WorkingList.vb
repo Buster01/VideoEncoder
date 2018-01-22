@@ -9,6 +9,7 @@ Public Class WorkingList
         If IsNothing(OrderNode) = True Then Exit Sub
 
         Dim ffmpeg_path As String = My.Settings.FFmpegPath
+        If Strings.Right(ffmpeg_path, 1) <> "\" Then ffmpeg_path = ffmpeg_path & "\"
         Dim HWEncoding As String = ""
         Dim DeInterlace As String = ""
         Dim DTSFix As String = ""
@@ -76,7 +77,7 @@ Public Class WorkingList
                                 FFVideoParameter = "-c:v hevc_qsv "
 
                             Case "nvidia nvenc h.264"
-                                FFVideoParameter = "-c:v nvenc_h264 "
+                                FFVideoParameter = "-c:v h264_nvenc "
 
                             Case "nvidia nvenc h.265"
                                 FFVideoParameter = "-c:v hevc_nvenc "
@@ -90,7 +91,7 @@ Public Class WorkingList
                     If ACodec = "copy" Then
                         FFAdudioParameter = FFAdudioParameter & "-c:a:" & AudioStreamID.ToString.Trim & " copy "
                     Else
-                        FFAdudioParameter = FFAdudioParameter & "-c:a:" & AudioStreamID.ToString.Trim & " " & ACodec.ToLower & "  -b:a:" & AudioStreamID.ToString.Trim & " " & Strings.Mid(streams.Attributes("StreamBitrate").Value, 1, 3).ToString & "k "
+                        FFAdudioParameter = FFAdudioParameter & "-c:a:" & AudioStreamID.ToString.Trim & " " & ACodec.ToLower & " -b:a:" & AudioStreamID.ToString.Trim & " " & Strings.Mid(streams.Attributes("StreamBitrate").Value, 1, 3).ToString & "k "
                     End If
                     If streams.Attributes("StreamDefault").Value Then
                         FFAdudioParameter = FFAdudioParameter & "-disposition:a:" & AudioStreamID.ToString.Trim & " default "
@@ -123,20 +124,75 @@ Public Class WorkingList
         ProcessProperties.WindowStyle = ProcessWindowStyle.Hidden
         ProcessProperties.CreateNoWindow = True
 
-        ffmpeg_arguments = HWEncoding & " -y -i " & Chr(34) & VideoFile & Chr(34) & " "
+        ffmpeg_arguments = HWEncoding & "-y -i " & Chr(34) & VideoFile & Chr(34) & " "
         ffmpeg_arguments = ffmpeg_arguments & FFAdudioParameter
 
-        ffmpeg_arguments = ffmpeg_arguments & " " & FFSubtitleParameter
+        ffmpeg_arguments = ffmpeg_arguments & FFSubtitleParameter
 
         ffmpeg_arguments = ffmpeg_arguments & FFVideoParameter
         ffmpeg_arguments = ffmpeg_arguments & Chr(34) & OutputFile & Chr(34)
+        ProcessProperties.Arguments = ffmpeg_arguments
 
-
-
-
-
-
-        OutputFile = OutputFile
+        Dim ffmpeg_out(6) As String
+        Dim myProcess As New Process
+        myProcess = Process.Start(ProcessProperties)
+        Do While Not myProcess.HasExited
+            stdout = myProcess.StandardError.ReadLine
+            'stderr = myProcess.StandardOutput.ReadLine
+            If Strings.Left(stdout, 5).ToString.ToLower = "frame" Then
+                pos = InStr(stdout, "fps=")
+                If pos > 0 Then
+                    'frames
+                    ffmpeg_out(0) = Mid(stdout, 7, pos - 7).Trim
+                    stdout = Mid(stdout, pos)
+                    pos = InStr(stdout, "q=")
+                    If pos > 0 Then
+                        'fps
+                        ffmpeg_out(1) = Mid(stdout, 5, pos - 5).Trim
+                        stdout = Mid(stdout, pos)
+                        pos = InStr(stdout, "size=")
+                        If pos > 0 Then
+                            'Quality
+                            ffmpeg_out(2) = Mid(stdout, 6, pos - 6).Trim
+                            stdout = Mid(stdout, pos)
+                            pos = InStr(stdout, "time=")
+                            If pos > 0 Then
+                                'size
+                                ffmpeg_out(3) = Mid(stdout, 6, pos - 6).Trim
+                                Replace(ffmpeg_out(3), "kb", "")
+                                stdout = Mid(stdout, pos)
+                                pos = InStr(stdout, "bitrate=")
+                                If pos > 0 Then
+                                    'Time
+                                    ffmpeg_out(4) = Mid(stdout, 6, pos - 6).Trim
+                                    stdout = Mid(stdout, pos)
+                                    pos = InStr(stdout, "speed=")
+                                    If pos > 0 Then
+                                        'Bitrate
+                                        ffmpeg_out(5) = Mid(stdout, 9, pos - 9).Trim
+                                        ffmpeg_out(5) = Replace(ffmpeg_out(5), "kbits/s", "")
+                                        stdout = Mid(stdout, pos)
+                                        'Speed
+                                        ffmpeg_out(6) = Mid(stdout, 7).Trim
+                                        ffmpeg_out(6) = Replace(ffmpeg_out(6), "x", "")
+                                        coder_pos = (CDec(Mid(ffmpeg_out(4), 1, 2)) * 3600) + (CDec(Mid(ffmpeg_out(4), 4, 2) * 60)) + CDec(Replace(Strings.Mid(ffmpeg_out(4), 7), ".", ","))
+                                        prozent = (coder_pos / duration) * 100
+                                        If Math.Round(prozent, 1) > Math.Round(old_prozent, 1) Then
+                                            BgWffmpeg.ReportProgress(Nothing, {ffmpeg_out})
+                                            old_prozent = prozent
+                                        End If
+                                    End If
+                                End If
+                            End If
+                        End If
+                    End If
+                End If
+            End If
+        Loop
+        stdout = stdout & myProcess.StandardError.ReadLine
+        stderr = myProcess.StandardOutput.ReadLine
+        myProcess.WaitForExit()
+        BgWffmpeg.CancelAsync()
     End Sub
 
     Private Sub WorkingList_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
@@ -241,7 +297,7 @@ Public Class WorkingList
             WorkingListInfo(8) = " "
 
             If WorkingListInfo(4).Length > 0 Then WorkingListInfo(4) = Strings.Left(WorkingListInfo(4), WorkingListInfo(4).Length - 2).Trim
-            If WorkingListInfo(5).Length > 0 Then WorkingListInfo(5) = Strings.Left(WorkingListInfo(5), WorkingListInfo(5).Length - 2).Trim
+            If IsNothing(WorkingListInfo(5)) = False Then If WorkingListInfo(5).Length > 0 Then WorkingListInfo(5) = Strings.Left(WorkingListInfo(5), WorkingListInfo(5).Length - 2).Trim
             item = New ListViewItem(WorkingListInfo)
 
             If CodingOrder.Attributes("State").Value <> "delete" Then
@@ -374,13 +430,16 @@ Public Class WorkingList
                 tmpNode = OrderDoc.CreateElement("Order")
                 tmpNode = OrderDoc.ImportNode(CodingOrder, True)
 
-
-
-
                 OrderDoc.AppendChild(tmpNode)
                 BgWffmpeg.RunWorkerAsync(OrderDoc.OuterXml.ToString)
                 Exit For
             End If
         Next
+    End Sub
+
+    Private Sub BgWffmpeg_ProgressChanged(sender As Object, e As ProgressChangedEventArgs) Handles BgWffmpeg.ProgressChanged
+        Dim t() As String
+
+        t = DirectCast(e.UserState(0), String())
     End Sub
 End Class
