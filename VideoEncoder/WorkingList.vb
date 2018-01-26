@@ -3,6 +3,7 @@
 Public Class WorkingList
     Private Sub BgWffmpeg_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs) Handles BgWffmpeg.DoWork
         Dim Order As New Xml.XmlDocument
+        Dim OrderID As String = ""
         Order.LoadXml(e.Argument)
 
         Dim OrderNode As Xml.XmlNode = Order.SelectSingleNode("Order")
@@ -50,6 +51,7 @@ Public Class WorkingList
             OutputFile = OutputFile & "\" & System.IO.Path.GetFileNameWithoutExtension(VideoFile) & ".mkv"
         End If
 
+        OrderID = OrderNode.Attributes("id").Value
         If OrderNode.Attributes("CodecHQEncoding").Value = True Then HWEncoding = "-hwaccel dxva2 " Else HWEncoding = ""
         If OrderNode.Attributes("CodecDeinterlace").Value = "yadif" Then DeInterlace = "-vf yadif=1 " Else DeInterlace = ""
         If OrderNode.Attributes("CodecDTSFix").Value = True Then DTSFix = "-max_muxing_queue_size 3000 " Else DTSFix = ""
@@ -133,7 +135,7 @@ Public Class WorkingList
         ffmpeg_arguments = ffmpeg_arguments & Chr(34) & OutputFile & Chr(34)
         ProcessProperties.Arguments = ffmpeg_arguments
 
-        Dim ffmpeg_out(6) As String
+        Dim ffmpeg_out(8) As String
         Dim myProcess As New Process
         myProcess = Process.Start(ProcessProperties)
         Do While Not myProcess.HasExited
@@ -178,6 +180,8 @@ Public Class WorkingList
                                         coder_pos = (CDec(Mid(ffmpeg_out(4), 1, 2)) * 3600) + (CDec(Mid(ffmpeg_out(4), 4, 2) * 60)) + CDec(Replace(Strings.Mid(ffmpeg_out(4), 7), ".", ","))
                                         prozent = (coder_pos / duration) * 100
                                         If Math.Round(prozent, 1) > Math.Round(old_prozent, 1) Then
+                                            ffmpeg_out(7) = duration
+                                            ffmpeg_out(8) = OrderID
                                             BgWffmpeg.ReportProgress(Nothing, {ffmpeg_out})
                                             old_prozent = prozent
                                         End If
@@ -190,7 +194,7 @@ Public Class WorkingList
             End If
         Loop
         stdout = stdout & myProcess.StandardError.ReadLine
-        stderr = myProcess.StandardOutput.ReadLine
+        ' stderr = myProcess.StandardOutput.ReadLine
         myProcess.WaitForExit()
         BgWffmpeg.CancelAsync()
     End Sub
@@ -441,5 +445,7 @@ Public Class WorkingList
         Dim t() As String
 
         t = DirectCast(e.UserState(0), String())
+
+        t = t
     End Sub
 End Class
