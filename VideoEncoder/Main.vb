@@ -136,7 +136,7 @@ Public Class Main
 
         If ffmpeg_path = "" Then
             MsgBox("Bitte wählen Sie ein Pfad zum FFmpeg!", vbCritical, "FFmpeg Pfad")
-            Einstellungen.Show()
+            Settings.Show()
         Else
             ffmpeg_path = ffmpeg_path & "\"
         End If
@@ -163,7 +163,7 @@ Public Class Main
         End If
         If ffmpeg_path.Length = 0 Then
             MsgBox("Bitte wählen Sie ein Pfad zum FFmpeg!", vbCritical, "FFmpeg Pfad")
-            Einstellungen.Show()
+            Settings.Show()
             Exit Sub
         End If
 
@@ -551,7 +551,7 @@ Public Class Main
     End Sub
 
     Private Sub EinstellungenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EinstellungenToolStripMenuItem.Click
-        Einstellungen.Show()
+        Settings.Show()
     End Sub
 
     Private Sub Button4_Click(sender As Object, e As EventArgs) Handles Button4.Click

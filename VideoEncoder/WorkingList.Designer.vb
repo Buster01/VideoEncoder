@@ -24,7 +24,6 @@ Partial Class WorkingList
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
-        Me.lvWorkingList = New System.Windows.Forms.ListView()
         Me.MenuStrip1 = New System.Windows.Forms.MenuStrip()
         Me.ListeToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.FertigeAufträgeEntfernenToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -33,30 +32,21 @@ Partial Class WorkingList
         Me.PauseToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.BgWffmpeg = New System.ComponentModel.BackgroundWorker()
         Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
+        Me.dgvWorkingListView = New System.Windows.Forms.DataGridView()
         Me.GroupBox1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
+        CType(Me.dgvWorkingListView, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'GroupBox1
         '
-        Me.GroupBox1.Controls.Add(Me.lvWorkingList)
+        Me.GroupBox1.Controls.Add(Me.dgvWorkingListView)
         Me.GroupBox1.Location = New System.Drawing.Point(6, 27)
         Me.GroupBox1.Name = "GroupBox1"
         Me.GroupBox1.Size = New System.Drawing.Size(886, 549)
         Me.GroupBox1.TabIndex = 0
         Me.GroupBox1.TabStop = False
         Me.GroupBox1.Text = "Aufträge"
-        '
-        'lvWorkingList
-        '
-        Me.lvWorkingList.FullRowSelect = True
-        Me.lvWorkingList.Location = New System.Drawing.Point(6, 19)
-        Me.lvWorkingList.MultiSelect = False
-        Me.lvWorkingList.Name = "lvWorkingList"
-        Me.lvWorkingList.Size = New System.Drawing.Size(874, 523)
-        Me.lvWorkingList.TabIndex = 0
-        Me.lvWorkingList.UseCompatibleStateImageBehavior = False
-        Me.lvWorkingList.View = System.Windows.Forms.View.Details
         '
         'MenuStrip1
         '
@@ -106,6 +96,17 @@ Partial Class WorkingList
         'Timer1
         '
         '
+        'dgvWorkingListView
+        '
+        Me.dgvWorkingListView.AllowUserToAddRows = False
+        Me.dgvWorkingListView.AllowUserToDeleteRows = False
+        Me.dgvWorkingListView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvWorkingListView.Location = New System.Drawing.Point(10, 19)
+        Me.dgvWorkingListView.Name = "dgvWorkingListView"
+        Me.dgvWorkingListView.ReadOnly = True
+        Me.dgvWorkingListView.Size = New System.Drawing.Size(865, 523)
+        Me.dgvWorkingListView.TabIndex = 1
+        '
         'WorkingList
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -120,13 +121,13 @@ Partial Class WorkingList
         Me.GroupBox1.ResumeLayout(False)
         Me.MenuStrip1.ResumeLayout(False)
         Me.MenuStrip1.PerformLayout()
+        CType(Me.dgvWorkingListView, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
     End Sub
 
     Friend WithEvents GroupBox1 As GroupBox
-    Friend WithEvents lvWorkingList As ListView
     Friend WithEvents MenuStrip1 As MenuStrip
     Friend WithEvents ListeToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents FertigeAufträgeEntfernenToolStripMenuItem As ToolStripMenuItem
@@ -135,4 +136,5 @@ Partial Class WorkingList
     Friend WithEvents PauseToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents BgWffmpeg As System.ComponentModel.BackgroundWorker
     Friend WithEvents Timer1 As Timer
+    Friend WithEvents dgvWorkingListView As DataGridView
 End Class

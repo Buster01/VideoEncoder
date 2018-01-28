@@ -155,7 +155,7 @@ Public Class WorkingList
                         pos = InStr(stdout, "size=")
                         If pos > 0 Then
                             'Quality
-                            ffmpeg_out(2) = Mid(stdout, 6, pos - 6).Trim
+                            ffmpeg_out(2) = Mid(stdout, 3, pos - 3).Trim
                             stdout = Mid(stdout, pos)
                             pos = InStr(stdout, "time=")
                             If pos > 0 Then
@@ -210,21 +210,68 @@ Public Class WorkingList
         End If
         GroupBox1.Height = Me.Size.Height - 75
         GroupBox1.Width = Me.Size.Width - 30
-        lvWorkingList.Height = GroupBox1.Size.Height - 30
-        lvWorkingList.Width = GroupBox1.Size.Width - 15
+        dgvWorkingListView.Height = GroupBox1.Size.Height - 30
+        dgvWorkingListView.Width = GroupBox1.Size.Width - 15
 
-        With lvWorkingList
-            .Columns.Add("ID", 30, HorizontalAlignment.Left)
-            .Columns.Add("Quelle", 240, HorizontalAlignment.Left)
-            .Columns.Add("Ziel", 120, HorizontalAlignment.Left)
-            .Columns.Add("Video", 150, HorizontalAlignment.Left)
-            .Columns.Add("Audio", 150, HorizontalAlignment.Left)
-            .Columns.Add("Untertitel", 120, HorizontalAlignment.Left)
-            .Columns.Add("HW Decoder", 90, HorizontalAlignment.Center)
-            .Columns.Add("Deinterlace", 80, HorizontalAlignment.Center)
-            .Columns.Add("Status", 80, HorizontalAlignment.Center)
-            .Font = New System.Drawing.Font("Microsoft Sans Serif", 9, System.Drawing.FontStyle.Regular)
+        Dim btn As New DataGridViewButtonColumn
+
+        With dgvWorkingListView
+            .ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single
+            .CellBorderStyle = DataGridViewCellBorderStyle.Single
+            .RowHeadersVisible = False
+            .SelectionMode = DataGridViewSelectionMode.FullRowSelect
+            .MultiSelect = False
+
+            .Columns.Add("ID", "ID")
+            .Columns(0).Width = 30
+            .Columns.Add("Quelle", "Quelle")
+            .Columns(0).HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+            .Columns(0).SortMode = DataGridViewColumnSortMode.NotSortable
+            .Columns(1).Width = 280
+            .Columns(1).HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+            .Columns(1).SortMode = DataGridViewColumnSortMode.NotSortable
+            .Columns.Add("Ziel", "Ziel")
+            .Columns(2).HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+            .Columns(2).Width = 100
+            .Columns(2).SortMode = DataGridViewColumnSortMode.NotSortable
+            .Columns.Add("Video", "Video")
+            .Columns(3).Width = 140
+            .Columns(3).HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+            .Columns(3).SortMode = DataGridViewColumnSortMode.NotSortable
+            .Columns.Add("Audio", "Audio")
+            .Columns(4).HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+            .Columns(4).Width = 100
+            .Columns(4).SortMode = DataGridViewColumnSortMode.NotSortable
+            .Columns.Add("Untertitel", "Untertitel")
+            .Columns(5).HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+            .Columns(5).Width = 100
+            .Columns(5).SortMode = DataGridViewColumnSortMode.NotSortable
+            .Columns.Add("HW Decoder", "HW Decoder")
+            .Columns(6).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+            .Columns(6).HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+            .Columns(6).SortMode = DataGridViewColumnSortMode.NotSortable
+            .Columns(6).Width = 95
+            .Columns.Add("Deinterlace", "Deinterlace")
+            .Columns(7).HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+            .Columns(7).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+            .Columns(7).SortMode = DataGridViewColumnSortMode.NotSortable
+            .Columns(7).Width = 90
+            .Columns.Add("Status", "Status")
+            .Columns(8).HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+            .Columns(8).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+            .Columns(8).SortMode = DataGridViewColumnSortMode.NotSortable
+            .Columns(8).Width = 70
+            .Font = New System.Drawing.Font("Microsoft Sans Serif", 8, System.Drawing.FontStyle.Regular)
+            .DefaultCellStyle.WrapMode = DataGridViewTriState.True
+            .AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells
+            .Columns(0).SortMode = DataGridViewColumnSortMode.NotSortable
+            .Columns.Add(btn) 'Button Col zum löschen
+            .Columns(9).Width = 70
         End With
+
+        btn.HeaderText = ""
+        btn.Text = "löschen"
+        btn.UseColumnTextForButtonValue = True
 
         Call UpdateWorkingList()
     End Sub
@@ -233,29 +280,27 @@ Public Class WorkingList
         My.Settings.WorkingListSize = Me.Size
         GroupBox1.Height = Me.Size.Height - 75
         GroupBox1.Width = Me.Size.Width - 30
-        lvWorkingList.Height = GroupBox1.Size.Height - 30
-        lvWorkingList.Width = GroupBox1.Size.Width - 15
+        dgvWorkingListView.Height = GroupBox1.Size.Height - 30
+        dgvWorkingListView.Width = GroupBox1.Size.Width - 15
     End Sub
 
     Private Sub WorkingList_Resize(sender As Object, e As EventArgs) Handles Me.Resize
         GroupBox1.Height = Me.Size.Height - 75
         GroupBox1.Width = Me.Size.Width - 30
-        lvWorkingList.Height = GroupBox1.Size.Height - 30
-        lvWorkingList.Width = GroupBox1.Size.Width - 15
+        dgvWorkingListView.Height = GroupBox1.Size.Height - 30
+        dgvWorkingListView.Width = GroupBox1.Size.Width - 15
     End Sub
 
     Public Sub UpdateWorkingList()
-        lvWorkingList.Items.Clear()
-        lvWorkingList.Controls.Clear()
+        dgvWorkingListView.Rows.Clear()
+        dgvWorkingListView.Controls.Clear()
 
         Dim order As Xml.XmlNode = Main.CodecQueue.SelectSingleNode("WorkingQueue")
         Dim z As Long = 0
+        Dim uid As Integer = 0
 
         For Each CodingOrder As Xml.XmlNode In order.ChildNodes
             Dim WorkingListInfo(8) As String
-            Dim item As New ListViewItem
-            Dim btnStopDelete As New Button
-            AddHandler btnStopDelete.Click, AddressOf btnStopDelete_SelectedIndexChanged
 
             WorkingListInfo(0) = CodingOrder.Attributes("id").Value
             WorkingListInfo(1) = CodingOrder.Attributes("InputFile").Value
@@ -274,20 +319,20 @@ Public Class WorkingList
                 'Audio Stream
                 If stream.Attributes("StreamType").Value = "Audio" Then
                     If stream.Attributes("StreamCodec").Value <> "copy" Then
-                        WorkingListInfo(4) = WorkingListInfo(4) & stream.Attributes("StreamID").Value & "." & stream.Attributes("StreamCodec").Value & " (" & stream.Attributes("StreamBitrate").Value & ") | "
+                        WorkingListInfo(4) = WorkingListInfo(4) & stream.Attributes("StreamID").Value & "." & stream.Attributes("StreamCodec").Value & " (" & stream.Attributes("StreamBitrate").Value & ")" & vbCrLf
                     Else
-                        WorkingListInfo(4) = WorkingListInfo(4) & stream.Attributes("StreamID").Value & "." & stream.Attributes("StreamCodec").Value & " | "
+                        WorkingListInfo(4) = WorkingListInfo(4) & stream.Attributes("StreamID").Value & "." & stream.Attributes("StreamCodec").Value & vbCrLf
                     End If
                 End If
                 'Untertitel
                 If stream.Attributes("StreamType").Value = "Untertitel" Then
                     If stream.Attributes("StreamCodec").Value = "copy" And stream.Attributes("StreamDefault").Value = "True" Then
-                        WorkingListInfo(5) = WorkingListInfo(5) & "copy(X) | "
+                        WorkingListInfo(5) = WorkingListInfo(5) & uid.ToString.Trim & "." & "copy(X)" & vbCrLf
                     End If
                     If stream.Attributes("StreamCodec").Value = "copy" And stream.Attributes("StreamDefault").Value = "False" Then
-                        WorkingListInfo(5) = WorkingListInfo(5) & "copy | "
+                        WorkingListInfo(5) = WorkingListInfo(5) & uid.ToString.Trim & "." & "copy" & vbCrLf
                     End If
-
+                    uid += 1
                 End If
             Next
             'HW Decoding
@@ -302,70 +347,9 @@ Public Class WorkingList
 
             If WorkingListInfo(4).Length > 0 Then WorkingListInfo(4) = Strings.Left(WorkingListInfo(4), WorkingListInfo(4).Length - 2).Trim
             If IsNothing(WorkingListInfo(5)) = False Then If WorkingListInfo(5).Length > 0 Then WorkingListInfo(5) = Strings.Left(WorkingListInfo(5), WorkingListInfo(5).Length - 2).Trim
-            item = New ListViewItem(WorkingListInfo)
 
             If CodingOrder.Attributes("State").Value <> "delete" Then
-                lvWorkingList.Items.Add(item)
-                btnStopDelete.Text = "X"
-                btnStopDelete.TextAlign = ContentAlignment.TopCenter
-                btnStopDelete.Height = item.Bounds.Height
-                btnStopDelete.Width = item.SubItems(8).Bounds.Width
-                btnStopDelete.Name = "btnStopDelete" & CodingOrder.Attributes("id").Value.ToString.Trim
-                btnStopDelete.Location = New Point(item.SubItems(7).Bounds.Right, item.SubItems(7).Bounds.Y)
-                btnStopDelete.Font = New System.Drawing.Font("Microsoft Sans Serif", 7, System.Drawing.FontStyle.Regular)
-                lvWorkingList.Controls.Add(btnStopDelete)
-                z += 1
-            End If
-        Next
-    End Sub
-
-    Private Sub lvWorkingList_ColumnWidthChanging(sender As Object, e As ColumnWidthChangingEventArgs) Handles lvWorkingList.ColumnWidthChanging
-        Dim btnStopDelete As New Button
-        Dim z As Long = 0
-
-        For Each lvWorkingListItem As ListViewItem In lvWorkingList.Items
-            For Each lvi_ctrl In lvWorkingList.Controls.Find("btnStopDelete" & z.ToString, True)
-                btnStopDelete = lvi_ctrl
-                btnStopDelete.Width = lvWorkingListItem.SubItems(8).Bounds.Width
-                btnStopDelete.Location = New Point(lvWorkingListItem.SubItems(7).Bounds.Right, lvWorkingListItem.SubItems(7).Bounds.Y)
-                Exit For
-            Next
-            z += 1
-        Next
-    End Sub
-
-    Public Sub btnStopDelete_SelectedIndexChanged(sender As Object, e As EventArgs)
-        Dim btnStopDelete As Button = sender
-        If btnStopDelete.Name = "" Then Exit Sub
-
-        Dim row As ListViewItem
-        Dim OrderID As Long = CLng(Replace(btnStopDelete.Name, "btnStopDelete", ""))
-        Dim order As Xml.XmlNode = Main.CodecQueue.SelectSingleNode("WorkingQueue")
-
-        'Eintrag löschen
-        For Each row In lvWorkingList.Items
-            If CLng(row.Text.ToString) = OrderID Then
-                lvWorkingList.Controls.Remove(btnStopDelete)
-                row.Remove()
-                Exit For
-            End If
-        Next
-
-        'Button an richtig stelle
-        For Each lvWorkingListItem As ListViewItem In lvWorkingList.Items
-            For Each lvi_ctrl In lvWorkingList.Controls.Find("btnStopDelete" & lvWorkingListItem.SubItems(0).Text.ToString.Trim, True)
-                btnStopDelete = lvi_ctrl
-                btnStopDelete.Width = lvWorkingListItem.SubItems(8).Bounds.Width
-                btnStopDelete.Location = New Point(lvWorkingListItem.SubItems(7).Bounds.Right, lvWorkingListItem.SubItems(7).Bounds.Y)
-                Exit For
-            Next
-        Next
-
-        'Encoding Auftrag löschen
-        For Each CodingOrder As Xml.XmlNode In order.ChildNodes
-            If CodingOrder.Attributes("id").Value = OrderID Then
-                order.RemoveChild(CodingOrder)
-                Exit For
+                dgvWorkingListView.Rows.Add(WorkingListInfo)
             End If
         Next
 
@@ -447,5 +431,21 @@ Public Class WorkingList
         t = DirectCast(e.UserState(0), String())
 
         t = t
+    End Sub
+
+    Private Sub dgvWorkingListView_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvWorkingListView.CellClick
+        If e.ColumnIndex = 9 Then
+            Dim OrderID As String = dgvWorkingListView.Rows(e.RowIndex).Cells(0).Value
+            Dim order As Xml.XmlNode = Main.CodecQueue.SelectSingleNode("WorkingQueue")
+
+            For Each CodingOrder As Xml.XmlNode In order.ChildNodes
+                If CodingOrder.Attributes("id").Value = OrderID Then
+                    order.RemoveChild(CodingOrder)
+                    Exit For
+                End If
+            Next
+
+            UpdateWorkingList()
+        End If
     End Sub
 End Class

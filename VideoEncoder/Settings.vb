@@ -1,4 +1,4 @@
-﻿Public Class Einstellungen
+﻿Public Class Settings
     Private Sub Einstellungen_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Label1.Text = My.Settings.FFmpegPath
     End Sub
