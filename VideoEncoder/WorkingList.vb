@@ -30,6 +30,9 @@ Public Class WorkingList
         Dim prozent As Decimal = 0.0
         Dim old_prozent As Decimal = 0.0
 
+        'Logfile
+        Dim LogFileWriter As System.IO.StreamWriter
+
         Dim p_ffmpeg As New Process
         Dim ffmpeg_arguments As String = ""
         Dim ProcessProperties As New ProcessStartInfo
@@ -49,6 +52,12 @@ Public Class WorkingList
             OutputFile = OutputFile & System.IO.Path.GetFileNameWithoutExtension(VideoFile) & ".mkv"
         Else
             OutputFile = OutputFile & "\" & System.IO.Path.GetFileNameWithoutExtension(VideoFile) & ".mkv"
+        End If
+
+        ' Logfile
+        If My.Settings.FFmpegLog = True Then
+            Dim logfs As New System.IO.FileStream(OrderNode.Attributes("OutputPath").Value & "\" & System.IO.Path.GetFileNameWithoutExtension(VideoFile) & ".txt", System.IO.FileMode.OpenOrCreate, System.IO.FileAccess.Write)
+            LogFileWriter = New System.IO.StreamWriter(logfs)
         End If
 
         OrderID = OrderNode.Attributes("id").Value
@@ -102,7 +111,6 @@ Public Class WorkingList
                     End If
                     AudioStreamID += 1
 
-
                 Case "Untertitel"
                     FFSubtitleParameter = FFSubtitleParameter & "-c:s:" & SubtitleStreamID.ToString.Trim & " copy "
                     If streams.Attributes("StreamDefault").Value Then
@@ -119,6 +127,10 @@ Public Class WorkingList
 
         'FFMpeg Prozess
         ProcessProperties.FileName = ffmpeg_path & "ffmpeg.exe"
+        'Logfile schreiben
+        If My.Settings.FFmpegLog = True Then
+            LogFileWriter.WriteLine("FFmpeg Pfad: " & ffmpeg_path & "ffmpeg.exe")
+        End If
         ProcessProperties.WorkingDirectory = ffmpeg_path
         ProcessProperties.UseShellExecute = False
         ProcessProperties.RedirectStandardOutput = False
@@ -135,11 +147,23 @@ Public Class WorkingList
         ffmpeg_arguments = ffmpeg_arguments & Chr(34) & OutputFile & Chr(34)
         ProcessProperties.Arguments = ffmpeg_arguments
 
+        'Logfile schreiben
+        If My.Settings.FFmpegLog = True Then
+            LogFileWriter.WriteLine("FFmpeg Argumente: " & ffmpeg_arguments)
+            LogFileWriter.WriteLine("-".PadRight(40, "-"c))
+        End If
+
         Dim ffmpeg_out(8) As String
         Dim myProcess As New Process
         myProcess = Process.Start(ProcessProperties)
         Do While Not myProcess.HasExited
             stdout = myProcess.StandardError.ReadLine
+
+            'Logfile schreiben
+            If My.Settings.FFmpegLog = True Then
+                LogFileWriter.WriteLine(stdout)
+            End If
+
             'stderr = myProcess.StandardOutput.ReadLine
             If Strings.Left(stdout, 5).ToString.ToLower = "frame" Then
                 pos = InStr(stdout, "fps=")
@@ -193,7 +217,12 @@ Public Class WorkingList
                 End If
             End If
         Loop
-        stdout = stdout & myProcess.StandardError.ReadLine
+        stdout = stdout & myProcess.StandardError.ReadToEnd
+        'Logfile schreiben
+        If My.Settings.FFmpegLog = True Then
+            LogFileWriter.WriteLine(stdout)
+            LogFileWriter.Close()
+        End If
         ' stderr = myProcess.StandardOutput.ReadLine
         myProcess.WaitForExit()
         BgWffmpeg.CancelAsync()
@@ -405,7 +434,6 @@ Public Class WorkingList
         Dim order As Xml.XmlNode = Main.CodecQueue.SelectSingleNode("WorkingQueue")
         Dim z As Long = 0
 
-
         For Each CodingOrder As Xml.XmlNode In order.ChildNodes
             If CodingOrder.Attributes("State").Value = "waiting" Then
                 'BGW Starten und mit parameter versorgen
@@ -426,11 +454,11 @@ Public Class WorkingList
     End Sub
 
     Private Sub BgWffmpeg_ProgressChanged(sender As Object, e As ProgressChangedEventArgs) Handles BgWffmpeg.ProgressChanged
-        Dim t() As String
+        Dim t() As String = DirectCast(e.UserState(0), String())
 
-        t = DirectCast(e.UserState(0), String())
 
-        t = t
+
+
     End Sub
 
     Private Sub dgvWorkingListView_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvWorkingListView.CellClick

@@ -1,6 +1,7 @@
 ﻿Public Class Settings
     Private Sub Einstellungen_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Label1.Text = My.Settings.FFmpegPath
+        cbFFmpegLog.Checked = My.Settings.FFmpegLog
     End Sub
 
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
@@ -16,7 +17,8 @@
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        My.Settings.Item("FFmpegPath") = Label1.Text.ToString
+        My.Settings.FFmpegPath = Label1.Text.ToString
+        My.Settings.FFmpegLog = cbFFmpegLog.Checked
         My.Settings.Save()
         Me.Close()
     End Sub

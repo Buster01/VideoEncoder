@@ -89,6 +89,18 @@ Namespace My
                 Me("WorkingListSize") = value
             End Set
         End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("False")>  _
+        Public Property FFmpegLog() As Boolean
+            Get
+                Return CType(Me("FFmpegLog"),Boolean)
+            End Get
+            Set
+                Me("FFmpegLog") = value
+            End Set
+        End Property
     End Class
 End Namespace
 
