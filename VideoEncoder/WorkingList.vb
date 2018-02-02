@@ -143,7 +143,7 @@ Public Class WorkingList
 
         ffmpeg_arguments = ffmpeg_arguments & FFSubtitleParameter
 
-        ffmpeg_arguments = ffmpeg_arguments & FFVideoParameter
+        ffmpeg_arguments = ffmpeg_arguments & FFVideoParameter & DeInterlace
         ffmpeg_arguments = ffmpeg_arguments & Chr(34) & OutputFile & Chr(34)
         ProcessProperties.Arguments = ffmpeg_arguments
 
@@ -364,6 +364,7 @@ Public Class WorkingList
                     uid += 1
                 End If
             Next
+            uid = 0
             'HW Decoding
             If CodingOrder.Attributes("HWdecoding").Value = "True" Then
                 WorkingListInfo(6) = "DirectX VA"
@@ -372,7 +373,7 @@ Public Class WorkingList
             End If
             'DeInterlace
             WorkingListInfo(7) = CodingOrder.Attributes("CodecDeinterlace").Value
-            WorkingListInfo(8) = " "
+            WorkingListInfo(8) = CodingOrder.Attributes("State").Value
 
             If WorkingListInfo(4).Length > 0 Then WorkingListInfo(4) = Strings.Left(WorkingListInfo(4), WorkingListInfo(4).Length - 2).Trim
             If IsNothing(WorkingListInfo(5)) = False Then If WorkingListInfo(5).Length > 0 Then WorkingListInfo(5) = Strings.Left(WorkingListInfo(5), WorkingListInfo(5).Length - 2).Trim
@@ -454,11 +455,31 @@ Public Class WorkingList
     End Sub
 
     Private Sub BgWffmpeg_ProgressChanged(sender As Object, e As ProgressChangedEventArgs) Handles BgWffmpeg.ProgressChanged
-        Dim t() As String = DirectCast(e.UserState(0), String())
+        Dim ffmpeg_state() As String = DirectCast(e.UserState(0), String())
+        Dim order As Xml.XmlNode = Main.CodecQueue.SelectSingleNode("WorkingQueue")
 
+        Dim time() As String
+        Dim EncPos As Long = 0
+        Dim Progress As Double = 0.0
+        Dim id As String = ""
 
-
-
+        For Each dgRow As DataGridViewRow In dgvWorkingListView.Rows
+            If dgRow.Cells(0).Value = ffmpeg_state(8) Then
+                time = Split(ffmpeg_state(4), ":")
+                EncPos = (CLng(time(0)) * 3600) + (CLng(time(1)) * 60) + CLng(Replace(time(2), ".", ","))
+                Progress = Math.Round((EncPos / CLng(ffmpeg_state(7))) * 100, 2)
+                If Progress > 99.9 Then
+                    dgRow.Cells(8).Value = "finished"
+                    For Each CodingOrder As Xml.XmlNode In order.ChildNodes
+                        If CodingOrder.Attributes("id").Value = ffmpeg_state(8) Then
+                            CodingOrder.Attributes("State").Value = "finished"
+                        End If
+                    Next
+                Else
+                    dgRow.Cells(8).Value = Progress & " %"
+                End If
+            End If
+        Next
     End Sub
 
     Private Sub dgvWorkingListView_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvWorkingListView.CellClick
