@@ -144,7 +144,7 @@ Public Class WorkingList
         ffmpeg_arguments = ffmpeg_arguments & FFSubtitleParameter
 
         ffmpeg_arguments = ffmpeg_arguments & FFVideoParameter & DeInterlace
-        ffmpeg_arguments = ffmpeg_arguments & Chr(34) & OutputFile & Chr(34)
+        ffmpeg_arguments = ffmpeg_arguments & "-map 0 " & Chr(34) & OutputFile & Chr(34)
         ProcessProperties.Arguments = ffmpeg_arguments
 
         'Logfile schreiben
@@ -328,7 +328,7 @@ Public Class WorkingList
 
         Dim order As Xml.XmlNode = Main.CodecQueue.SelectSingleNode("WorkingQueue")
         Dim z As Long = 0
-        Dim uid As Integer = 0
+        Dim uid As Integer = 1
 
         For Each CodingOrder As Xml.XmlNode In order.ChildNodes
             Dim WorkingListInfo(8) As String
@@ -366,7 +366,7 @@ Public Class WorkingList
                     uid += 1
                 End If
             Next
-            uid = 0
+            uid = 1
             'HW Decoding
             If CodingOrder.Attributes("HWdecoding").Value = "True" Then
                 WorkingListInfo(6) = "DirectX VA"
@@ -461,16 +461,16 @@ Public Class WorkingList
         Dim order As Xml.XmlNode = Main.CodecQueue.SelectSingleNode("WorkingQueue")
 
         Dim time() As String
-        Dim EncPos As Long = 0
+        Dim EncPos As Double = 0
         Dim Progress As Double = 0.0
         Dim id As String = ""
 
         For Each dgRow As DataGridViewRow In dgvWorkingListView.Rows
             If dgRow.Cells(0).Value = ffmpeg_state(8) Then
                 time = Split(ffmpeg_state(4), ":")
-                EncPos = (CLng(time(0)) * 3600) + (CLng(time(1)) * 60) + CLng(Replace(time(2), ".", ","))
-                Progress = Math.Round((EncPos / CLng(ffmpeg_state(7))) * 100, 2)
-                If Progress > 99.9 Then
+                EncPos = (CDbl(time(0)) * 3600) + (CDbl(time(1)) * 60) + CDbl(Replace(time(2), ".", ","))
+                Progress = (EncPos / CLng(ffmpeg_state(7)))
+                If Progress > 0.99 Then
                     dgRow.Cells(8).Value = "finished"
                     For Each CodingOrder As Xml.XmlNode In order.ChildNodes
                         If CodingOrder.Attributes("id").Value = ffmpeg_state(8) Then
@@ -478,7 +478,7 @@ Public Class WorkingList
                         End If
                     Next
                 Else
-                    dgRow.Cells(8).Value = Progress & " %"
+                    dgRow.Cells(8).Value = Format(Progress, "#0.00 %")
                 End If
             End If
         Next

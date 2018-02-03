@@ -28,6 +28,14 @@ Public Class Main
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        ffmpeg_path = My.Settings.FFmpegPath
+        If ffmpeg_path.Length = 0 Then
+            MsgBox("Bitte definieren Sie den Pfad zu FFmpeg!", vbCritical, "Fehler!")
+            Settings.Show()
+            Exit Sub
+        End If
+        If Strings.Right(ffmpeg_path, 1) <> "\" Then ffmpeg_path = ffmpeg_path & "\"
+
         Dim file_count As Double = 0
         Dim folder_size As Double = 0
         cbFiles.Items.Clear()
