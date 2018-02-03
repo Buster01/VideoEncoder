@@ -201,16 +201,18 @@ Public Class WorkingList
                                         'Speed
                                         ffmpeg_out(6) = Mid(stdout, 7).Trim
                                         ffmpeg_out(6) = Replace(ffmpeg_out(6), "x", "")
-                                        coder_pos = (CDec(Mid(ffmpeg_out(4), 1, 2)) * 3600) + (CDec(Mid(ffmpeg_out(4), 4, 2) * 60)) + CDec(Replace(Strings.Mid(ffmpeg_out(4), 7), ".", ","))
+                                        If CDbl(Mid(ffmpeg_out(4), 1, 2)) >= 0 Then
+                                            coder_pos = (CDbl(Mid(ffmpeg_out(4), 1, 2)) * 3600) + (CDec(Mid(ffmpeg_out(4), 4, 2) * 60)) + CDec(Replace(Strings.Mid(ffmpeg_out(4), 7), ".", ","))
+                                        End If
                                         prozent = (coder_pos / duration) * 100
-                                        If Math.Round(prozent, 1) > Math.Round(old_prozent, 1) Then
-                                            ffmpeg_out(7) = duration
-                                            ffmpeg_out(8) = OrderID
-                                            BgWffmpeg.ReportProgress(Nothing, {ffmpeg_out})
-                                            old_prozent = prozent
+                                            If Math.Round(prozent, 1) > Math.Round(old_prozent, 1) Then
+                                                ffmpeg_out(7) = duration
+                                                ffmpeg_out(8) = OrderID
+                                                BgWffmpeg.ReportProgress(Nothing, {ffmpeg_out})
+                                                old_prozent = prozent
+                                            End If
                                         End If
                                     End If
-                                End If
                             End If
                         End If
                     End If
