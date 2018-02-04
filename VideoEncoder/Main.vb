@@ -148,6 +148,7 @@ Public Class Main
         Else
             ffmpeg_path = ffmpeg_path & "\"
         End If
+        Me.Text = "Video Encoder [" & My.Application.Info.Version.Major & "." & My.Application.Info.Version.Minor & "." & My.Application.Info.Version.Revision & "]"
 
     End Sub
 
