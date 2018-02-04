@@ -13,5 +13,5 @@
 
 
 ## Build
-Visual Studio 2017
-.Net Framework 4.6.1
+Visual Studio 2017<br />
+.Net Framework 4.6.1<br />
