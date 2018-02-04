@@ -534,12 +534,32 @@ Public Class WorkingList
 
     Private Sub FertigeAufträgeEntfernenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FertigeAufträgeEntfernenToolStripMenuItem.Click
         Dim order As Xml.XmlNode = Main.CodecQueue.SelectSingleNode("WorkingQueue")
+        Dim za As Integer = 0
 
-        For Each CodingOrder As Xml.XmlNode In order.ChildNodes
-            If CodingOrder.Attributes("State").Value = "finished" Then
-                order.RemoveChild(CodingOrder)
+        Do While Not order.ChildNodes.Count = 0
+            If order.ChildNodes(za).Attributes("State").Value = "finished" Then
+                order.RemoveChild(order.ChildNodes(za))
+                za = 0
+            Else
+                za += 1
             End If
-        Next
+        Loop
+
+        UpdateWorkingList()
+    End Sub
+
+    Private Sub AlleAufträgeEntfernenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AlleAufträgeEntfernenToolStripMenuItem.Click
+        Dim order As Xml.XmlNode = Main.CodecQueue.SelectSingleNode("WorkingQueue")
+        Dim za As Integer = 0
+
+        Do While Not za = order.ChildNodes.Count
+            If order.ChildNodes(za).Attributes("State").Value <> "in progress" Then
+                order.RemoveChild(order.ChildNodes(za))
+                za = 0
+            Else
+                za += 1
+            End If
+        Loop
 
         UpdateWorkingList()
     End Sub

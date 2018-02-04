@@ -38,8 +38,8 @@ Partial Class WorkingList
         Me.ToolStripStatusLabel2 = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel3 = New System.Windows.Forms.ToolStripStatusLabel()
         Me.ToolStripStatusLabel4 = New System.Windows.Forms.ToolStripStatusLabel()
-        Me.ToolStripProgressBar1 = New System.Windows.Forms.ToolStripProgressBar()
         Me.ToolStripStatusLabel5 = New System.Windows.Forms.ToolStripStatusLabel()
+        Me.ToolStripProgressBar1 = New System.Windows.Forms.ToolStripProgressBar()
         Me.GroupBox1.SuspendLayout()
         CType(Me.dgvWorkingListView, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MenuStrip1.SuspendLayout()
@@ -153,19 +153,19 @@ Partial Class WorkingList
         Me.ToolStripStatusLabel4.Size = New System.Drawing.Size(124, 19)
         Me.ToolStripStatusLabel4.Text = "ToolStripStatusLabel4"
         '
-        'ToolStripProgressBar1
-        '
-        Me.ToolStripProgressBar1.Name = "ToolStripProgressBar1"
-        Me.ToolStripProgressBar1.Size = New System.Drawing.Size(100, 18)
-        Me.ToolStripProgressBar1.Step = 1
-        Me.ToolStripProgressBar1.Style = System.Windows.Forms.ProgressBarStyle.Continuous
-        '
         'ToolStripStatusLabel5
         '
         Me.ToolStripStatusLabel5.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Right
         Me.ToolStripStatusLabel5.Name = "ToolStripStatusLabel5"
         Me.ToolStripStatusLabel5.Size = New System.Drawing.Size(124, 19)
         Me.ToolStripStatusLabel5.Text = "ToolStripStatusLabel5"
+        '
+        'ToolStripProgressBar1
+        '
+        Me.ToolStripProgressBar1.Name = "ToolStripProgressBar1"
+        Me.ToolStripProgressBar1.Size = New System.Drawing.Size(100, 18)
+        Me.ToolStripProgressBar1.Step = 1
+        Me.ToolStripProgressBar1.Style = System.Windows.Forms.ProgressBarStyle.Continuous
         '
         'WorkingList
         '
