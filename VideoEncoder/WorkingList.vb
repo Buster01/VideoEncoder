@@ -239,7 +239,7 @@ Public Class WorkingList
         If My.Settings.WorkingListSize.Height > 100 And My.Settings.WorkingListSize.Width > 100 Then
             Me.Size = My.Settings.WorkingListSize
         End If
-        GroupBox1.Height = Me.Size.Height - 75
+        GroupBox1.Height = Me.Size.Height - 95
         GroupBox1.Width = Me.Size.Width - 30
         dgvWorkingListView.Height = GroupBox1.Size.Height - 30
         dgvWorkingListView.Width = GroupBox1.Size.Width - 15
@@ -304,19 +304,26 @@ Public Class WorkingList
         btn.Text = "löschen"
         btn.UseColumnTextForButtonValue = True
 
+        ToolStripProgressBar1.Value = 0
+        ToolStripStatusLabel1.Text = "Zeitindex:"
+        ToolStripStatusLabel2.Text = "FPS:"
+        ToolStripStatusLabel3.Text = "Qualität:"
+        ToolStripStatusLabel4.Text = "Dateigröße:"
+        ToolStripStatusLabel5.Text = "Bitrate:"
+
         Call UpdateWorkingList()
     End Sub
 
     Private Sub WorkingList_ResizeEnd(sender As Object, e As EventArgs) Handles Me.ResizeEnd
         My.Settings.WorkingListSize = Me.Size
-        GroupBox1.Height = Me.Size.Height - 75
+        GroupBox1.Height = Me.Size.Height - 95
         GroupBox1.Width = Me.Size.Width - 30
         dgvWorkingListView.Height = GroupBox1.Size.Height - 30
         dgvWorkingListView.Width = GroupBox1.Size.Width - 15
     End Sub
 
     Private Sub WorkingList_Resize(sender As Object, e As EventArgs) Handles Me.Resize
-        GroupBox1.Height = Me.Size.Height - 75
+        GroupBox1.Height = Me.Size.Height - 95
         GroupBox1.Width = Me.Size.Width - 30
         dgvWorkingListView.Height = GroupBox1.Size.Height - 30
         dgvWorkingListView.Width = GroupBox1.Size.Width - 15
@@ -464,6 +471,7 @@ Public Class WorkingList
         Dim EncPos As Double = 0
         Dim Progress As Double = 0.0
         Dim id As String = ""
+        Dim filesize As Long = 0
 
         For Each dgRow As DataGridViewRow In dgvWorkingListView.Rows
             If dgRow.Cells(0).Value = ffmpeg_state(8) Then
@@ -475,13 +483,37 @@ Public Class WorkingList
                     For Each CodingOrder As Xml.XmlNode In order.ChildNodes
                         If CodingOrder.Attributes("id").Value = ffmpeg_state(8) Then
                             CodingOrder.Attributes("State").Value = "finished"
+                            ToolStripProgressBar1.Value = 0
+                            ToolStripStatusLabel1.Text = "Zeitindex:"
+                            ToolStripStatusLabel2.Text = "FPS:"
+                            ToolStripStatusLabel3.Text = "Qualität:"
+                            ToolStripStatusLabel4.Text = "Dateigröße:"
+                            ToolStripStatusLabel5.Text = "Bitrate:"
+                            Exit For
                         End If
                     Next
                 Else
                     dgRow.Cells(8).Value = Format(Progress, "#0.00 %")
+                    ToolStripStatusLabel1.Text = "Zeitindex: " & ffmpeg_state(4)
+                    ToolStripStatusLabel2.Text = "FPS: " & ffmpeg_state(1)
+                    ToolStripStatusLabel3.Text = "Qualität: " & ffmpeg_state(2)
+                    filesize = Val(ffmpeg_state(3))
+                    If filesize < 1024 Then ToolStripStatusLabel4.Text = "Dateigröße: " & filesize & "kByte"
+                    If filesize > 1024 And filesize < 1048576 Then
+                        ToolStripStatusLabel4.Text = "Dateigröße: " & Format(filesize / 1024, "#.##") & " MByte"
+                    End If
+                    If filesize > 1048576 Then
+                        ToolStripStatusLabel4.Text = "Dateigröße: " & Format(filesize / 1048576, "#.##") & " GByte"
+                    End If
+                    ToolStripStatusLabel5.Text = "Bitrate: " & ffmpeg_state(5) & " kBit/s"
+                    ToolStripProgressBar1.Value = Progress * 100
+                    ToolStripProgressBar1.Minimum = 0
+                    ToolStripProgressBar1.Maximum = 100
+                    Exit For
                 End If
             End If
         Next
+
     End Sub
 
     Private Sub dgvWorkingListView_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvWorkingListView.CellClick
@@ -498,5 +530,17 @@ Public Class WorkingList
 
             UpdateWorkingList()
         End If
+    End Sub
+
+    Private Sub FertigeAufträgeEntfernenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FertigeAufträgeEntfernenToolStripMenuItem.Click
+        Dim order As Xml.XmlNode = Main.CodecQueue.SelectSingleNode("WorkingQueue")
+
+        For Each CodingOrder As Xml.XmlNode In order.ChildNodes
+            If CodingOrder.Attributes("State").Value = "finished" Then
+                order.RemoveChild(CodingOrder)
+            End If
+        Next
+
+        UpdateWorkingList()
     End Sub
 End Class
