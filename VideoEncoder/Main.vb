@@ -131,7 +131,7 @@ Public Class Main
             .Columns.Add("Codec", 120, HorizontalAlignment.Left)
             .Columns.Add("Sprache", 80, HorizontalAlignment.Center)
             .Columns.Add("Frames", 70, HorizontalAlignment.Right)
-            .Columns.Add("Standard", 100, HorizontalAlignment.Left)
+            .Columns.Add("Standard", 70, HorizontalAlignment.Center)
             .Columns.Add("Encoder", 130, HorizontalAlignment.Left)
             .Columns.Add("Bitrate", 100, HorizontalAlignment.Left)
         End With
@@ -372,7 +372,7 @@ Public Class Main
                 vcCombo.Width = lvFileStreams.Columns(6).Width - 2
                 brCombo.Height = item.Bounds.Height
                 brCombo.Width = lvFileStreams.Columns(7).Width - 2
-                defcheck.Location = New Point(lvFileStreams.Items(z).SubItems(4).Bounds.Right + 40, lvFileStreams.Items(z).SubItems(4).Bounds.Y)
+                defcheck.Location = New Point(lvFileStreams.Items(z).SubItems(4).Bounds.Right + 30, lvFileStreams.Items(z).SubItems(4).Bounds.Y)
                 vcCombo.Location = New Point(lvFileStreams.Items(z).SubItems(5).Bounds.Right, lvFileStreams.Items(z).SubItems(5).Bounds.Y)
                 brCombo.Location = New Point(lvFileStreams.Items(z).SubItems(6).Bounds.Right, lvFileStreams.Items(z).SubItems(6).Bounds.Y)
                 vcCombo.Parent = lvFileStreams

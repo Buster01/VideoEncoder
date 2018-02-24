@@ -14,6 +14,15 @@
                 Label1.Text = FolderBrowserDialog1.SelectedPath
             End If
         End If
+
+        If System.IO.File.Exists(FolderBrowserDialog1.SelectedPath & "\ffmpeg.exe") = False Then
+            MsgBox("FFmpeg wurde nicht im Pfad gefunden!", vbCritical, "FFmpeg")
+            Exit Sub
+        End If
+        If System.IO.File.Exists(FolderBrowserDialog1.SelectedPath & "\ffprobe.exe") = False Then
+            MsgBox("FFprobe wurde nicht im Pfad gefunden!", vbCritical, "FFprobe")
+            Exit Sub
+        End If
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
