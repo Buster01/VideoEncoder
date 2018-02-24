@@ -94,8 +94,11 @@ Public Class WorkingList
                                 FFVideoParameter = "-c:v hevc_nvenc "
                         End Select
                     End If
-                    FFVideoParameter = FFVideoParameter & "-b:v " & Strings.Mid(streams.Attributes("StreamBitrate").Value, 1, 4).Trim & "k "
-
+                    If streams.Attributes("StreamBitrate").Value = "------" Then
+                        FFVideoParameter = FFVideoParameter & " "
+                    Else
+                        FFVideoParameter = FFVideoParameter & "-b:v " & Strings.Mid(streams.Attributes("StreamBitrate").Value, 1, 4).Trim & "k "
+                    End If
 
                 Case "Audio"
                     Dim ACodec As String = streams.Attributes("StreamCodec").Value
@@ -144,7 +147,7 @@ Public Class WorkingList
         ffmpeg_arguments = ffmpeg_arguments & FFSubtitleParameter
 
         ffmpeg_arguments = ffmpeg_arguments & FFVideoParameter & DeInterlace
-        ffmpeg_arguments = ffmpeg_arguments & "-map 0 " & Chr(34) & OutputFile & Chr(34)
+        ffmpeg_arguments = ffmpeg_arguments & "-map 0 " & DTSFix & Chr(34) & OutputFile & Chr(34)
         ProcessProperties.Arguments = ffmpeg_arguments
 
         'Logfile schreiben
