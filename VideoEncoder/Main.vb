@@ -7,9 +7,8 @@ Public Class Main
     Dim folder As Boolean = False
     Dim ffmpeg_path As String = My.Settings.FFmpegPath
     Dim ffmpeg_out(7) As String
+    Public file_change As Boolean = False
     Public CodecQueue As New Xml.XmlDocument
-
-
 
     Private Sub CheckBox1_CheckedChanged(sender As Object, e As EventArgs) Handles CheckBox1.CheckedChanged
         folder = CheckBox1.Checked
@@ -45,6 +44,22 @@ Public Class Main
                 input_folder = FolderBrowserDialog1.SelectedPath
                 If System.IO.Directory.Exists(input_folder) = True Then
                     lblInputDirectory.Text = input_folder
+
+                    'File System Wathcer für Input Verzeichnis
+                    With FSW_Inputdir
+                        .BeginInit()
+                        .Filter = "*.*"
+                        .NotifyFilter = IO.NotifyFilters.FileName Or IO.NotifyFilters.Size
+                        .Path = input_folder
+                        .EnableRaisingEvents = True
+                        .EndInit()
+                    End With
+
+                    'AddHandler FSW_Inputdir.Changed, AddressOf File_System_Change
+                    AddHandler FSW_Inputdir.Created, AddressOf File_System_Change
+                    AddHandler FSW_Inputdir.Deleted, AddressOf File_System_Change
+                    AddHandler FSW_Inputdir.Renamed, AddressOf File_System_Change
+
                     For Each file In New IO.DirectoryInfo(input_folder).GetFiles.OrderBy(Function(s) s.FullName)
                         If file.Extension = ".mkv" Or file.Extension = ".ts" Then
                             cbFiles.Items.Add(file.Name)
@@ -81,6 +96,7 @@ Public Class Main
             End If
         End If
         If cbFiles.Items.Count > 0 Then cbFiles.SelectedIndex = 0
+
     End Sub
 
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
@@ -103,6 +119,7 @@ Public Class Main
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ' Encoding Queue erzeugen
+
         Dim FirstNode As Xml.XmlNode
         CodecQueue.CreateXmlDeclaration("1.0", "UTF-8", "")
         FirstNode = CodecQueue.CreateElement("WorkingQueue")
@@ -296,12 +313,25 @@ Public Class Main
     End Sub
 
     Private Sub ComboBox7_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbFiles.SelectedIndexChanged
+        If file_change = True Then
+            file_change = False
+            Exit Sub
+        End If
         If cbFiles.Items.Count > 0 Then
+            Cursor.Current = Cursors.WaitCursor
             lvFileStreams.Items.Clear()
             lvFileStreams.Controls.Clear()
             Dim file As String = lblInputDirectory.Text & "\" & cbFiles.SelectedItem
+
+            While IsFileOpen(file) = True
+                Threading.Thread.Sleep(100)
+            End While
+
             Dim streams As Xml.XmlNode = VideoFileStreams(file, ffmpeg_path)
-            If IsNothing(streams) = True Then Exit Sub
+            If IsNothing(streams) = True Then
+                Cursor.Current = Cursors.Default
+                Exit Sub
+            End If
 
             For z = 0 To streams.ChildNodes.Count - 1
                 Dim item As New ListViewItem
@@ -388,6 +418,7 @@ Public Class Main
                 lvFileStreams.Items(z).SubItems(6).Text = ""
             Next z
         End If
+        Cursor.Current = Cursors.Default
     End Sub
 
     Private Sub vcCombo_SelectedIndexChanged(sender As Object, e As EventArgs)
@@ -567,6 +598,61 @@ Public Class Main
         WorkingList.Location = My.Settings.WorkingListPosition
         WorkingList.Show()
     End Sub
+
+    Private Sub File_System_Change(ByVal source As Object, ByVal e As System.IO.FileSystemEventArgs)
+        Dim selected_file As String = cbFiles.SelectedItem
+        If selected_file = Nothing Then selected_file = ""
+        cbFiles.Items.Clear()
+        Dim file_count As Double = 0
+        Dim folder_size As Double = 0
+        Dim found As Boolean = False
+
+        If IO.Path.GetExtension(e.FullPath) = ".ts" Or IO.Path.GetExtension(e.FullPath) = ".mkv" Then
+            For Each file In New IO.DirectoryInfo(input_folder).GetFiles.OrderBy(Function(s) s.FullName)
+                If file.Extension = ".mkv" Or file.Extension = ".ts" Then
+                    cbFiles.Items.Add(file.Name)
+                    file_count += 1
+                    folder_size = folder_size + file.Length
+                End If
+            Next
+            If folder_size > 1200 And folder_size < 1048000 Then Label2.Text = file_count & " Dateien (" & Math.Round(folder_size / 1024, 2) & " kBytes)"
+            If folder_size > 1048000 And folder_size < 1073741000 Then Label2.Text = file_count & " Dateien (" & Math.Round(folder_size / 1048576, 2) & " MBytes)"
+            If folder_size > 1073741000 Then Label2.Text = file_count & " Dateien (" & Math.Round(folder_size / 1073741824, 2) & " GBytes)"
+
+            For Each filename As String In cbFiles.Items
+                If filename = selected_file Then
+                    found = True
+                    Exit For
+                End If
+            Next
+
+            If found = True Then
+                file_change = True
+                cbFiles.SelectedItem = selected_file
+            Else
+                If cbFiles.Items.Count > 0 Then
+                    cbFiles.SelectedIndex = 0
+                Else
+                    lvFileStreams.Items.Clear()
+                    lvFileStreams.Controls.Clear()
+                    Label2.Text = ""
+                End If
+            End If
+        End If
+    End Sub
+
+    Private Function IsFileOpen(ByVal fileName As String) As Boolean
+        Try
+            If IO.File.Exists(fileName) Then
+                Dim stream As IO.FileStream = IO.File.Open(fileName, IO.FileMode.Open, IO.FileAccess.Read, IO.FileShare.None)
+                stream.Dispose()
+            End If
+            Return False
+        Catch ex As io.IOException
+            ex = Nothing
+            Return True
+        End Try
+    End Function
 
 End Class
 

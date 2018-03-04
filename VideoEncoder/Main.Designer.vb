@@ -52,11 +52,13 @@ Partial Class Main
         Me.GroupBox3 = New System.Windows.Forms.GroupBox()
         Me.lvFileStreams = New System.Windows.Forms.ListView()
         Me.Button4 = New System.Windows.Forms.Button()
+        Me.FSW_Inputdir = New System.IO.FileSystemWatcher()
         Me.GroupBox1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
         Me.GroupBox5.SuspendLayout()
         Me.GroupBox3.SuspendLayout()
+        CType(Me.FSW_Inputdir, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'GroupBox1
@@ -140,13 +142,13 @@ Partial Class Main
         'EinstellungenToolStripMenuItem
         '
         Me.EinstellungenToolStripMenuItem.Name = "EinstellungenToolStripMenuItem"
-        Me.EinstellungenToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.EinstellungenToolStripMenuItem.Size = New System.Drawing.Size(145, 22)
         Me.EinstellungenToolStripMenuItem.Text = "Einstellungen"
         '
         'BeendenToolStripMenuItem
         '
         Me.BeendenToolStripMenuItem.Name = "BeendenToolStripMenuItem"
-        Me.BeendenToolStripMenuItem.Size = New System.Drawing.Size(152, 22)
+        Me.BeendenToolStripMenuItem.Size = New System.Drawing.Size(145, 22)
         Me.BeendenToolStripMenuItem.Text = "Beenden"
         '
         'OpenFileDialog1
@@ -329,6 +331,11 @@ Partial Class Main
         Me.Button4.Text = "Auftragsliste anzeigen"
         Me.Button4.UseVisualStyleBackColor = True
         '
+        'FSW_Inputdir
+        '
+        Me.FSW_Inputdir.EnableRaisingEvents = True
+        Me.FSW_Inputdir.SynchronizingObject = Me
+        '
         'Main
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
@@ -356,6 +363,7 @@ Partial Class Main
         Me.GroupBox5.ResumeLayout(False)
         Me.GroupBox5.PerformLayout()
         Me.GroupBox3.ResumeLayout(False)
+        CType(Me.FSW_Inputdir, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -391,4 +399,5 @@ Partial Class Main
     Friend WithEvents cbDeInterlace As ComboBox
     Friend WithEvents Label1 As Label
     Friend WithEvents Button4 As Button
+    Friend WithEvents FSW_Inputdir As IO.FileSystemWatcher
 End Class
