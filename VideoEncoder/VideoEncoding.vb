@@ -27,7 +27,7 @@
         out_tmp = ffprobeProcess.StandardOutput.ReadToEnd()
         stderr = ffprobeProcess.StandardError.ReadToEnd()
 
-        If String.IsNullOrEmpty(stderr) = False Then Return 0
+        If String.IsNullOrEmpty(out_tmp) = True Then Return 0
         Dim stdout As Xml.XmlDocument = New Xml.XmlDocument()
         stdout.LoadXml(out_tmp)
 
@@ -70,6 +70,40 @@
 
     End Function
 
+    Public Function InputVideoFileCodec(ByRef file As String, ffmpeg_path As String) As String
+        Dim ProcessProperties As New ProcessStartInfo
+        Dim ffprobeProcess As New Process
+        Dim VideoCodec As String = ""
+
+        Dim ffprobe_arguments As String = "-v error -select_streams v:0 -show_entries stream=codec_name -of default=noprint_wrappers=1:nokey=1 -i " & Chr(34) & file & Chr(34)
+
+        Dim out_tmp As String = ""
+        Dim stderr As String = ""
+
+
+        ProcessProperties.FileName = ffmpeg_path & "ffprobe.exe"
+        ProcessProperties.WorkingDirectory = ffmpeg_path
+        ProcessProperties.UseShellExecute = False
+        ProcessProperties.RedirectStandardOutput = True
+        ProcessProperties.RedirectStandardError = True
+        ProcessProperties.WindowStyle = ProcessWindowStyle.Normal
+        ProcessProperties.Arguments = ffprobe_arguments
+        ProcessProperties.CreateNoWindow = True
+
+        ffprobeProcess = Process.Start(ProcessProperties)
+        out_tmp = ffprobeProcess.StandardOutput.ReadToEnd()
+        stderr = ffprobeProcess.StandardError.ReadToEnd()
+
+        out_tmp = Replace(out_tmp, vbCrLf, "")
+        If Len(out_tmp) > 0 Then
+            VideoCodec = out_tmp
+        Else
+            VideoCodec = "ERROR"
+        End If
+
+        Return VideoCodec
+    End Function
+
     Public Function XMLStreamAnalyse(ByVal stream As Xml.XmlNode) As ListViewItem
         Dim StreamData(6) As String
 
@@ -94,6 +128,9 @@
         'Stream Codec ermitteln
         If stream.Attributes.ItemOf("codec_name") IsNot Nothing Then
             Select Case stream.Attributes("codec_name").Value
+                Case "vc1"
+                    StreamData(2) = "VC-1"
+
                 Case "h264"
                     StreamData(2) = "H.264"
 

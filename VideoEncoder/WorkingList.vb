@@ -14,6 +14,7 @@ Public Class WorkingList
         Dim HWEncoding As String = ""
         Dim DeInterlace As String = ""
         Dim DTSFix As String = ""
+        Dim vbrHQ As String = ""
         Dim CodecProfile As String = ""
         Dim CodecLevel As String = ""
         Dim FFVideoParameter As String = ""
@@ -27,8 +28,8 @@ Public Class WorkingList
         Dim pos As String = 0
         Dim duration As Long = 0
         Dim coder_pos As Long = 0
-        Dim prozent As Decimal = 0.0
-        Dim old_prozent As Decimal = 0.0
+        Dim prozent As Double = 0.0
+        Dim old_prozent As Double = 0.0
 
         'Logfile
         Dim LogFileWriter As System.IO.StreamWriter
@@ -45,6 +46,7 @@ Public Class WorkingList
             VideoFile = VideoFile & "\" & OrderNode.Attributes("InputFile").Value
         End If
         duration = VideoDuration(VideoFile, ffmpeg_path)
+        Dim InputVideoCodec As String = InputVideoFileCodec(VideoFile, ffmpeg_path)
 
         'OutputFile
         Dim OutputFile As String = OrderNode.Attributes("OutputPath").Value
@@ -61,7 +63,16 @@ Public Class WorkingList
         End If
 
         OrderID = OrderNode.Attributes("id").Value
-        If OrderNode.Attributes("CodecHQEncoding").Value = True Then HWEncoding = "-hwaccel dxva2 " Else HWEncoding = ""
+        If OrderNode.Attributes("CodecHQEncoding").Value = True Then vbrHQ = "-rc vbr_hq " Else vbrHQ = ""
+        If OrderNode.Attributes("HWdecoding").Value = True Then
+            HWEncoding = "-hwaccel dxva "
+            If InputVideoCodec = "mpeg2video" Then HWEncoding = "-hwaccel nvdec -c:v mpeg2_cuvid "
+            If InputVideoCodec = "h264" Then HWEncoding = "-hwaccel nvdec -c:v h264_cuvid "
+            If InputVideoCodec = "hevc" Then HWEncoding = "-hwaccel nvdec -c:v hevc_cuvid "
+            If InputVideoCodec = "vc1" Then HWEncoding = "-hwaccel nvdec -c:v vc1_cuvid "
+        Else
+            HWEncoding = ""
+        End If
         If OrderNode.Attributes("CodecDeinterlace").Value = "yadif" Then DeInterlace = "-vf yadif=1 " Else DeInterlace = ""
         If OrderNode.Attributes("CodecDTSFix").Value = True Then DTSFix = "-max_muxing_queue_size 3000 " Else DTSFix = ""
         If OrderNode.Attributes("CodecProfil").Value = "------" Then CodecProfile = "" Else CodecProfile = "-profile:v " & OrderNode.Attributes("CodecProfil").Value.ToLower & " "
@@ -147,7 +158,7 @@ Public Class WorkingList
         ffmpeg_arguments = ffmpeg_arguments & FFSubtitleParameter
 
         ffmpeg_arguments = ffmpeg_arguments & FFVideoParameter & DeInterlace
-        ffmpeg_arguments = ffmpeg_arguments & "-map 0 " & DTSFix & Chr(34) & OutputFile & Chr(34)
+        ffmpeg_arguments = ffmpeg_arguments & "-map 0 " & DTSFix & vbrHQ & Chr(34) & OutputFile & Chr(34)
         ProcessProperties.Arguments = ffmpeg_arguments
 
         'Logfile schreiben
