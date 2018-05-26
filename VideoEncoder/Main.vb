@@ -262,6 +262,9 @@ Public Class Main
         EncoderDTSfix.Value = CheckBox4.Checked
         EncOrder.Attributes.Append(EncoderDTSfix)
 
+        Dim OutputFileSize As Xml.XmlAttribute = CodecQueue.CreateAttribute("OutputFileSize")
+        EncOrder.Attributes.Append(OutputFileSize)
+
         'Listview mit Streams auslesen
         For Each stream_item As ListViewItem In lvFileStreams.Items
             Dim EncOrderStream As Xml.XmlNode = CodecQueue.CreateElement("Stream")

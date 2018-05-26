@@ -94,9 +94,9 @@
         out_tmp = ffprobeProcess.StandardOutput.ReadToEnd()
         stderr = ffprobeProcess.StandardError.ReadToEnd()
 
-        out_tmp = Replace(out_tmp, vbCrLf, "")
-        If Len(out_tmp) > 0 Then
-            VideoCodec = out_tmp
+        Dim output() As String = Split(out_tmp, vbCrLf)
+        If Len(out_tmp(0)) > 0 Then
+            VideoCodec = output(0)
         Else
             VideoCodec = "ERROR"
         End If

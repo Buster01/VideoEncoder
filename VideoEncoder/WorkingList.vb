@@ -65,7 +65,7 @@ Public Class WorkingList
         OrderID = OrderNode.Attributes("id").Value
         If OrderNode.Attributes("CodecHQEncoding").Value = True Then vbrHQ = "-rc vbr_hq " Else vbrHQ = ""
         If OrderNode.Attributes("HWdecoding").Value = True Then
-            HWEncoding = "-hwaccel dxva "
+            HWEncoding = "-hwaccel dxva2 "
             If InputVideoCodec = "mpeg2video" Then HWEncoding = "-hwaccel nvdec -c:v mpeg2_cuvid "
             If InputVideoCodec = "h264" Then HWEncoding = "-hwaccel nvdec -c:v h264_cuvid "
             If InputVideoCodec = "hevc" Then HWEncoding = "-hwaccel nvdec -c:v hevc_cuvid "
@@ -167,7 +167,9 @@ Public Class WorkingList
             LogFileWriter.WriteLine("-".PadRight(40, "-"c))
         End If
 
-        Dim ffmpeg_out(8) As String
+        Dim ffmpeg_out(9) As String
+
+        Dim OutputFileLength As Long = 0
         Dim myProcess As New Process
         myProcess = Process.Start(ProcessProperties)
         Do While Not myProcess.HasExited
@@ -219,14 +221,22 @@ Public Class WorkingList
                                             coder_pos = (CDbl(Mid(ffmpeg_out(4), 1, 2)) * 3600) + (CDec(Mid(ffmpeg_out(4), 4, 2) * 60)) + CDec(Replace(Strings.Mid(ffmpeg_out(4), 7), ".", ","))
                                         End If
                                         prozent = (coder_pos / duration) * 100
-                                            If Math.Round(prozent, 1) > Math.Round(old_prozent, 1) Then
-                                                ffmpeg_out(7) = duration
-                                                ffmpeg_out(8) = OrderID
-                                                BgWffmpeg.ReportProgress(Nothing, {ffmpeg_out})
-                                                old_prozent = prozent
-                                            End If
+                                        If Math.Round(prozent, 1) > Math.Round(old_prozent, 1) Then
+                                            ffmpeg_out(7) = duration
+                                            ffmpeg_out(8) = OrderID
+
+                                            'OutputFileInfo
+                                            Dim OutputFileInfo As New IO.FileInfo(OutputFile)
+                                            OutputFileLength = OutputFileInfo.Length
+                                            If OutputFileLength > 1200 And OutputFileLength < 1048000 Then ffmpeg_out(9) = Math.Round(OutputFileLength / 1024, 2) & " kB"
+                                            If OutputFileLength > 1048000 And OutputFileLength < 1073741000 Then ffmpeg_out(9) = Math.Round(OutputFileLength / 1048576, 2) & " MB"
+                                            If OutputFileLength > 1073741000 Then ffmpeg_out(9) = Math.Round(OutputFileLength / 1073741824, 2) & " GB"
+
+                                            BgWffmpeg.ReportProgress(Nothing, {ffmpeg_out})
+                                            old_prozent = prozent
                                         End If
                                     End If
+                                End If
                             End If
                         End If
                     End If
@@ -306,12 +316,17 @@ Public Class WorkingList
             .Columns(8).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
             .Columns(8).SortMode = DataGridViewColumnSortMode.NotSortable
             .Columns(8).Width = 70
+            .Columns.Add("Größe", "Größe")
+            .Columns(9).HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
+            .Columns(9).DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+            .Columns(9).SortMode = DataGridViewColumnSortMode.NotSortable
+            .Columns(9).Width = 70
             .Font = New System.Drawing.Font("Microsoft Sans Serif", 8, System.Drawing.FontStyle.Regular)
             .DefaultCellStyle.WrapMode = DataGridViewTriState.True
             .AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells
             .Columns(0).SortMode = DataGridViewColumnSortMode.NotSortable
             .Columns.Add(btn) 'Button Col zum löschen
-            .Columns(9).Width = 70
+            .Columns(10).Width = 70
         End With
 
         btn.HeaderText = ""
@@ -352,7 +367,7 @@ Public Class WorkingList
         Dim uid As Integer = 1
 
         For Each CodingOrder As Xml.XmlNode In order.ChildNodes
-            Dim WorkingListInfo(8) As String
+            Dim WorkingListInfo(9) As String
 
             WorkingListInfo(0) = CodingOrder.Attributes("id").Value
             WorkingListInfo(1) = CodingOrder.Attributes("InputFile").Value
@@ -397,6 +412,13 @@ Public Class WorkingList
             'DeInterlace
             WorkingListInfo(7) = CodingOrder.Attributes("CodecDeinterlace").Value
             WorkingListInfo(8) = CodingOrder.Attributes("State").Value
+            'Dateigröße nach beenden des Codingungsprozesses
+            If CodingOrder.Attributes("OutputFileSize").Value <> "" Then
+                WorkingListInfo(9) = CodingOrder.Attributes("OutputFileSize").Value & " Byte"
+                If CodingOrder.Attributes("OutputFileSize").Value > 1200 And CodingOrder.Attributes("OutputFileSize").Value < 1048000 Then WorkingListInfo(9) = Math.Round(CodingOrder.Attributes("OutputFileSize").Value / 1024, 2) & " kB"
+                If CodingOrder.Attributes("OutputFileSize").Value > 1048000 And CodingOrder.Attributes("OutputFileSize").Value < 1073741000 Then WorkingListInfo(9) = Math.Round(CodingOrder.Attributes("OutputFileSize").Value / 1048576, 2) & " MB"
+                If CodingOrder.Attributes("OutputFileSize").Value > 1073741000 Then WorkingListInfo(9) = Math.Round(CodingOrder.Attributes("OutputFileSize").Value / 1073741824, 2) & " GB"
+            End If
 
             If WorkingListInfo(4).Length > 0 Then WorkingListInfo(4) = Strings.Left(WorkingListInfo(4), WorkingListInfo(4).Length - 2).Trim
             If IsNothing(WorkingListInfo(5)) = False Then If WorkingListInfo(5).Length > 0 Then WorkingListInfo(5) = Strings.Left(WorkingListInfo(5), WorkingListInfo(5).Length - 2).Trim
@@ -486,6 +508,7 @@ Public Class WorkingList
         Dim Progress As Double = 0.0
         Dim id As String = ""
         Dim filesize As Long = 0
+        Dim OutputFile As String = ""
 
         For Each dgRow As DataGridViewRow In dgvWorkingListView.Rows
             If dgRow.Cells(0).Value = ffmpeg_state(8) Then
@@ -497,6 +520,14 @@ Public Class WorkingList
                     For Each CodingOrder As Xml.XmlNode In order.ChildNodes
                         If CodingOrder.Attributes("id").Value = ffmpeg_state(8) Then
                             CodingOrder.Attributes("State").Value = "finished"
+                            'OutputFile Size
+                            OutputFile = CodingOrder.Attributes("OutputPath").Value & "\" & System.IO.Path.GetFileNameWithoutExtension(CodingOrder.Attributes("OutputPath").Value & "\" & CodingOrder.Attributes("InputFile").Value) & ".mkv"
+                            Dim OutPutFileInfo As New IO.FileInfo(OutputFile)
+                            CodingOrder.Attributes("OutputFileSize").Value = OutPutFileInfo.Length
+                            If CodingOrder.Attributes("OutputFileSize").Value > 1200 And CodingOrder.Attributes("OutputFileSize").Value < 1048000 Then dgRow.Cells(9).Value = Math.Round(CodingOrder.Attributes("OutputFileSize").Value / 1024, 2) & " kB"
+                            If CodingOrder.Attributes("OutputFileSize").Value > 1048000 And CodingOrder.Attributes("OutputFileSize").Value < 1073741000 Then dgRow.Cells(9).Value = Math.Round(CodingOrder.Attributes("OutputFileSize").Value / 1048576, 2) & " MB"
+                            If CodingOrder.Attributes("OutputFileSize").Value > 1073741000 Then dgRow.Cells(9).Value = Math.Round(CodingOrder.Attributes("OutputFileSize").Value / 1073741824, 2) & " GB"
+
                             ToolStripProgressBar1.Value = 0
                             ToolStripStatusLabel1.Text = "Zeitindex:"
                             ToolStripStatusLabel2.Text = "FPS:"
@@ -508,6 +539,7 @@ Public Class WorkingList
                     Next
                 Else
                     dgRow.Cells(8).Value = Format(Progress, "#0.00 %")
+                    dgRow.Cells(9).Value = ffmpeg_state(9)
                     ToolStripStatusLabel1.Text = "Zeitindex: " & ffmpeg_state(4)
                     ToolStripStatusLabel2.Text = "FPS: " & ffmpeg_state(1)
                     ToolStripStatusLabel3.Text = "Qualität: " & ffmpeg_state(2)
@@ -531,7 +563,7 @@ Public Class WorkingList
     End Sub
 
     Private Sub dgvWorkingListView_CellClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvWorkingListView.CellClick
-        If e.ColumnIndex = 9 Then
+        If e.ColumnIndex = 10 Then
             Dim OrderID As String = dgvWorkingListView.Rows(e.RowIndex).Cells(0).Value
             Dim order As Xml.XmlNode = Main.CodecQueue.SelectSingleNode("WorkingQueue")
 
