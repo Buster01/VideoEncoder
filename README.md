@@ -6,7 +6,7 @@
 * Videocodec Hardware (bei geeigneter Hardware): 
     * Intel Quick Sync h.264 und h.265
     * NVidia Encode h.264 und h.265
-* Audiocodec: copy, AAC
+* Audiocodec: copy, AAC, AC-3
 * Videodecoder: DXVA oder Software
 * Deinterlace: yadif
 * Outputfiles: *.mkv
