@@ -370,6 +370,7 @@ Public Class Main
                         With vcCombo
                             .Items.Add("copy")
                             .Items.Add("AAC")
+                            .Items.Add("AC-3")
                             .SelectedIndex = 0
                         End With
 
@@ -451,6 +452,16 @@ Public Class Main
                     End If
 
                 Case "AAC"
+                    brCombo.Items.Add("128 kBit/s")
+                    brCombo.Items.Add("192 kBit/s")
+                    brCombo.Items.Add("256 kBit/s")
+                    brCombo.Items.Add("320 kBit/s")
+                    brCombo.Items.Add("384 kBit/s")
+                    brCombo.Items.Add("448 kBit/s")
+                    brCombo.Items.Add("512 kBit/s")
+                    brCombo.SelectedIndex = 1
+
+                Case "AC-3"
                     brCombo.Items.Add("128 kBit/s")
                     brCombo.Items.Add("192 kBit/s")
                     brCombo.Items.Add("256 kBit/s")

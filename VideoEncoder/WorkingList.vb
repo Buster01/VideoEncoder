@@ -113,11 +113,18 @@ Public Class WorkingList
 
                 Case "Audio"
                     Dim ACodec As String = streams.Attributes("StreamCodec").Value
-                    If ACodec = "copy" Then
-                        FFAdudioParameter = FFAdudioParameter & "-c:a:" & AudioStreamID.ToString.Trim & " copy "
-                    Else
-                        FFAdudioParameter = FFAdudioParameter & "-c:a:" & AudioStreamID.ToString.Trim & " " & ACodec.ToLower & " -b:a:" & AudioStreamID.ToString.Trim & " " & Strings.Mid(streams.Attributes("StreamBitrate").Value, 1, 3).ToString & "k "
-                    End If
+
+                    Select Case ACodec
+                        Case "copy"
+                            FFAdudioParameter = FFAdudioParameter & "-c:a:" & AudioStreamID.ToString.Trim & " copy "
+
+                        Case "AC-3"
+                            FFAdudioParameter = FFAdudioParameter & "-c:a:" & AudioStreamID.ToString.Trim & " ac3 " & "-b:a:" & AudioStreamID.ToString.Trim & " " & Strings.Mid(streams.Attributes("StreamBitrate").Value, 1, 3).ToString & "k "
+
+                        Case "AAC"
+                            FFAdudioParameter = FFAdudioParameter & "-c:a:" & AudioStreamID.ToString.Trim & " aac " & "-b:a:" & AudioStreamID.ToString.Trim & " " & Strings.Mid(streams.Attributes("StreamBitrate").Value, 1, 3).ToString & "k "
+
+                    End Select
                     If streams.Attributes("StreamDefault").Value Then
                         FFAdudioParameter = FFAdudioParameter & "-disposition:a:" & AudioStreamID.ToString.Trim & " default "
                     Else
