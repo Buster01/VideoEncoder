@@ -1,4 +1,5 @@
 # VideoEncoder
+Eine GUI für FFMPEG
 
 ## Features
 * Inputfiles: *.ts, *.mkv
