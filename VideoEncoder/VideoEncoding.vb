@@ -147,19 +147,59 @@
                     StreamData(2) = "MP2 Audio"
 
                 Case "ac3"
-                    StreamData(2) = "Dolby Digital"
+                    If stream.Attributes.ItemOf("profile") IsNot Nothing Then
+                        If Len(stream.Attributes("profile").Value) > 3 Then
+                            StreamData(2) = stream.Attributes("profile").Value
+                        Else
+                            StreamData(2) = "Dolby Digital"
+                        End If
+                    Else
+                        StreamData(2) = "Dolby Digital"
+                    End If
 
                 Case "eac3"
-                    StreamData(2) = "Dolby Digital+"
+                    If stream.Attributes.ItemOf("profile") IsNot Nothing Then
+                        If Len(stream.Attributes("profile").Value) > 3 Then
+                            StreamData(2) = stream.Attributes("profile").Value
+                        Else
+                            StreamData(2) = "Dolby Digital+"
+                        End If
+                    Else
+                        StreamData(2) = "Dolby Digital+"
+                    End If
 
                 Case "aac"
-                    StreamData(2) = "AAC"
+                    If stream.Attributes.ItemOf("profile") IsNot Nothing Then
+                        If Len(stream.Attributes("profile").Value) > 3 Then
+                            StreamData(2) = stream.Attributes("profile").Value
+                        Else
+                            StreamData(2) = "AAC"
+                        End If
+                    Else
+                        StreamData(2) = "AAC"
+                    End If
 
                 Case "dts"
-                    StreamData(2) = "DTS"
+                    If stream.Attributes.ItemOf("profile") IsNot Nothing Then
+                        If Len(stream.Attributes("profile").Value) > 3 Then
+                            StreamData(2) = stream.Attributes("profile").Value
+                        Else
+                            StreamData(2) = "DTS"
+                        End If
+                    Else
+                        StreamData(2) = "DTS"
+                    End If
 
                 Case "truehd"
-                    StreamData(2) = "DTS TrueHD"
+                    If stream.Attributes.ItemOf("profile") IsNot Nothing Then
+                        If Len(stream.Attributes("profile").Value) > 3 Then
+                            StreamData(2) = stream.Attributes("profile").Value
+                        Else
+                            StreamData(2) = "DTS TrueHD"
+                        End If
+                    Else
+                        StreamData(2) = "DTS TrueHD"
+                    End If
 
                 Case "hdmv_pgs_subtitle"
                     StreamData(2) = "PGS"
@@ -195,6 +235,7 @@
             If tag.Attributes.ItemOf("key") IsNot Nothing Then
                 If tag.Attributes("key").Value.ToLower = "language" Then
                     StreamData(3) = tag.Attributes("value").Value
+                    Exit For
                 End If
             End If
         Next
@@ -204,6 +245,7 @@
             If tag.Attributes.ItemOf("key") IsNot Nothing Then
                 If tag.Attributes("key").Value.ToLower = "number_of_frames-eng" Then
                     StreamData(4) = Format(Val(tag.Attributes("value").Value), "#,##0")
+                    Exit For
                 End If
             End If
         Next
@@ -212,6 +254,7 @@
         For Each tag As Xml.XmlNode In stream.ChildNodes
             If tag.Attributes.ItemOf("default") IsNot Nothing Then
                 If tag.Attributes("default").Value = "1" Then StreamData(5) = "True" Else StreamData(5) = "False"
+                Exit For
             End If
         Next
 

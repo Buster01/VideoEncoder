@@ -121,8 +121,14 @@ Public Class WorkingList
                         Case "AC-3"
                             FFAdudioParameter = FFAdudioParameter & "-c:a:" & AudioStreamID.ToString.Trim & " ac3 " & "-b:a:" & AudioStreamID.ToString.Trim & " " & Strings.Mid(streams.Attributes("StreamBitrate").Value, 1, 3).ToString & "k "
 
+                        Case "EAC-3"
+                            FFAdudioParameter = FFAdudioParameter & "-c:a:" & AudioStreamID.ToString.Trim & " eac3 " & "-b:a:" & AudioStreamID.ToString.Trim & " " & Strings.Mid(streams.Attributes("StreamBitrate").Value, 1, 3).ToString & "k "
+
                         Case "AAC"
                             FFAdudioParameter = FFAdudioParameter & "-c:a:" & AudioStreamID.ToString.Trim & " aac " & "-b:a:" & AudioStreamID.ToString.Trim & " " & Strings.Mid(streams.Attributes("StreamBitrate").Value, 1, 3).ToString & "k "
+
+                        Case "DTS"
+                            FFAdudioParameter = FFAdudioParameter & "-strict -2 -c:a:" & AudioStreamID.ToString.Trim & " dts " & "-b:a:" & AudioStreamID.ToString.Trim & " " & Strings.Mid(streams.Attributes("StreamBitrate").Value, 1, 4).ToString & "k "
 
                     End Select
                     If streams.Attributes("StreamDefault").Value Then
@@ -286,10 +292,10 @@ Public Class WorkingList
 
             .Columns.Add("ID", "ID")
             .Columns(0).Width = 30
-            .Columns.Add("Quelle", "Quelle")
             .Columns(0).HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
             .Columns(0).SortMode = DataGridViewColumnSortMode.NotSortable
-            .Columns(1).Width = 280
+            .Columns.Add("Quelle", "Quelle")
+            .Columns(1).Width = 270
             .Columns(1).HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
             .Columns(1).SortMode = DataGridViewColumnSortMode.NotSortable
             .Columns.Add("Ziel", "Ziel")
@@ -302,7 +308,7 @@ Public Class WorkingList
             .Columns(3).SortMode = DataGridViewColumnSortMode.NotSortable
             .Columns.Add("Audio", "Audio")
             .Columns(4).HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-            .Columns(4).Width = 100
+            .Columns(4).Width = 110
             .Columns(4).SortMode = DataGridViewColumnSortMode.NotSortable
             .Columns.Add("Untertitel", "Untertitel")
             .Columns(5).HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter

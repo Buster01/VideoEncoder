@@ -371,6 +371,8 @@ Public Class Main
                             .Items.Add("copy")
                             .Items.Add("AAC")
                             .Items.Add("AC-3")
+                            .Items.Add("EAC-3")
+                            .Items.Add("DTS")
                             .SelectedIndex = 0
                         End With
 
@@ -469,6 +471,23 @@ Public Class Main
                     brCombo.Items.Add("384 kBit/s")
                     brCombo.Items.Add("448 kBit/s")
                     brCombo.Items.Add("512 kBit/s")
+                    brCombo.Items.Add("640 kBit/s")
+                    brCombo.SelectedIndex = 1
+
+                Case "EAC-3"
+                    brCombo.Items.Add("128 kBit/s")
+                    brCombo.Items.Add("192 kBit/s")
+                    brCombo.Items.Add("256 kBit/s")
+                    brCombo.Items.Add("320 kBit/s")
+                    brCombo.Items.Add("384 kBit/s")
+                    brCombo.Items.Add("448 kBit/s")
+                    brCombo.Items.Add("512 kBit/s")
+                    brCombo.Items.Add("640 kBit/s")
+                    brCombo.SelectedIndex = 1
+
+                Case "DTS"
+                    brCombo.Items.Add("768 kBit/s")
+                    brCombo.Items.Add("1536 kBit/s")
                     brCombo.SelectedIndex = 1
 
                 Case "x264", "Intel QSV H.264", "NVidia NVenc H.264"
