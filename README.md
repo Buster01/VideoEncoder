@@ -7,7 +7,7 @@ Eine GUI für FFMPEG
 * Videocodec Hardware (bei geeigneter Hardware): 
     * Intel Quick Sync h.264 und h.265
     * NVidia Encode h.264 und h.265
-* Audiocodec: copy, AAC, AC-3
+* Audiocodec: copy, AAC, AC-3, EAC-3, DTS
 * Videodecoder: DXVA oder Software
 * Deinterlace: yadif
 * Outputfiles: *.mkv
