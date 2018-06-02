@@ -35,7 +35,7 @@ Partial Class Main
         Me.OpenFileDialog1 = New System.Windows.Forms.OpenFileDialog()
         Me.FolderBrowserDialog1 = New System.Windows.Forms.FolderBrowserDialog()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
-        Me.Label3 = New System.Windows.Forms.Label()
+        Me.lblOutputDirectory = New System.Windows.Forms.Label()
         Me.Button2 = New System.Windows.Forms.Button()
         Me.FolderBrowserDialog2 = New System.Windows.Forms.FolderBrowserDialog()
         Me.Button3 = New System.Windows.Forms.Button()
@@ -157,7 +157,7 @@ Partial Class Main
         '
         'GroupBox2
         '
-        Me.GroupBox2.Controls.Add(Me.Label3)
+        Me.GroupBox2.Controls.Add(Me.lblOutputDirectory)
         Me.GroupBox2.Controls.Add(Me.Button2)
         Me.GroupBox2.Location = New System.Drawing.Point(6, 114)
         Me.GroupBox2.Name = "GroupBox2"
@@ -166,14 +166,14 @@ Partial Class Main
         Me.GroupBox2.TabStop = False
         Me.GroupBox2.Text = "Ziel"
         '
-        'Label3
+        'lblOutputDirectory
         '
-        Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(68, 30)
-        Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(32, 13)
-        Me.Label3.TabIndex = 1
-        Me.Label3.Text = "Pfad:"
+        Me.lblOutputDirectory.AutoSize = True
+        Me.lblOutputDirectory.Location = New System.Drawing.Point(68, 30)
+        Me.lblOutputDirectory.Name = "lblOutputDirectory"
+        Me.lblOutputDirectory.Size = New System.Drawing.Size(32, 13)
+        Me.lblOutputDirectory.TabIndex = 1
+        Me.lblOutputDirectory.Text = "Pfad:"
         '
         'Button2
         '
@@ -380,7 +380,7 @@ Partial Class Main
     Friend WithEvents OpenFileDialog1 As OpenFileDialog
     Friend WithEvents FolderBrowserDialog1 As FolderBrowserDialog
     Friend WithEvents GroupBox2 As GroupBox
-    Friend WithEvents Label3 As Label
+    Friend WithEvents lblOutputDirectory As Label
     Friend WithEvents Button2 As Button
     Friend WithEvents FolderBrowserDialog2 As FolderBrowserDialog
     Friend WithEvents Button3 As Button

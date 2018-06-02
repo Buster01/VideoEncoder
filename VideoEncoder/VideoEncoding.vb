@@ -38,6 +38,7 @@
     End Function
 
     Public Function VideoFileStreams(file As String, ffmpeg_path As String) As Xml.XmlNode
+        If Right(ffmpeg_path, 1) <> "\" Then ffmpeg_path = ffmpeg_path & "\"
         Dim ProcessProperties As New ProcessStartInfo
         Dim ffprobeProcess As New Process
 

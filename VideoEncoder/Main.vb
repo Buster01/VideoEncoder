@@ -2,8 +2,8 @@
 
 Public Class Main
     Dim input_file As String = ""
-    Dim input_folder As String = ""
-    Dim output_folder As String = ""
+    Dim input_folder As String = My.Settings.InputPath
+    Dim output_folder As String = My.Settings.OutputPath
     Dim folder As Boolean = False
     Dim ffmpeg_path As String = My.Settings.FFmpegPath
     Dim ffmpeg_out(7) As String
@@ -35,41 +35,15 @@ Public Class Main
         End If
         If Strings.Right(ffmpeg_path, 1) <> "\" Then ffmpeg_path = ffmpeg_path & "\"
 
-        Dim file_count As Double = 0
-        Dim folder_size As Double = 0
         cbFiles.Items.Clear()
 
         If folder = True Then
             If FolderBrowserDialog1.ShowDialog() = DialogResult.OK Then
                 input_folder = FolderBrowserDialog1.SelectedPath
+                My.Settings.InputPath = input_folder
                 If System.IO.Directory.Exists(input_folder) = True Then
                     lblInputDirectory.Text = input_folder
-
-                    'File System Wathcer für Input Verzeichnis
-                    With FSW_Inputdir
-                        .BeginInit()
-                        .Filter = "*.*"
-                        .NotifyFilter = IO.NotifyFilters.FileName Or IO.NotifyFilters.Size
-                        .Path = input_folder
-                        .EnableRaisingEvents = True
-                        .EndInit()
-                    End With
-
-                    'AddHandler FSW_Inputdir.Changed, AddressOf File_System_Change
-                    AddHandler FSW_Inputdir.Created, AddressOf File_System_Change
-                    AddHandler FSW_Inputdir.Deleted, AddressOf File_System_Change
-                    AddHandler FSW_Inputdir.Renamed, AddressOf File_System_Change
-
-                    For Each file In New IO.DirectoryInfo(input_folder).GetFiles.OrderBy(Function(s) s.FullName)
-                        If file.Extension = ".mkv" Or file.Extension = ".ts" Then
-                            cbFiles.Items.Add(file.Name)
-                            file_count += 1
-                            folder_size = folder_size + file.Length
-                        End If
-                    Next
-                    If folder_size > 1200 And folder_size < 1048000 Then Label2.Text = file_count & " Dateien (" & Math.Round(folder_size / 1024, 2) & " kBytes)"
-                    If folder_size > 1048000 And folder_size < 1073741000 Then Label2.Text = file_count & " Dateien (" & Math.Round(folder_size / 1048576, 2) & " MBytes)"
-                    If folder_size > 1073741000 Then Label2.Text = file_count & " Dateien (" & Math.Round(folder_size / 1073741824, 2) & " GBytes)"
+                    Read_Input_Directory(input_folder)
                 End If
             End If
         Else
@@ -102,8 +76,9 @@ Public Class Main
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
         If FolderBrowserDialog2.ShowDialog() = DialogResult.OK Then
             output_folder = FolderBrowserDialog2.SelectedPath
+            My.Settings.OutputPath = output_folder
             If System.IO.Directory.Exists(output_folder) = True Then
-                Label3.Text = output_folder
+                lblOutputDirectory.Text = output_folder
             End If
         End If
     End Sub
@@ -118,6 +93,9 @@ Public Class Main
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        lblInputDirectory.Text = input_folder
+        lblOutputDirectory.Text = output_folder
+
         ' Encoding Queue erzeugen
 
         Dim FirstNode As Xml.XmlNode
@@ -136,10 +114,6 @@ Public Class Main
             .Items.Add("------")
             .SelectedIndex = 0
             .Enabled = False
-        End With
-
-        With cbFiles
-            .Items.Clear()
         End With
 
         With lvFileStreams
@@ -324,7 +298,7 @@ Public Class Main
             Cursor.Current = Cursors.WaitCursor
             lvFileStreams.Items.Clear()
             lvFileStreams.Controls.Clear()
-            Dim file As String = lblInputDirectory.Text & "\" & cbFiles.SelectedItem
+            Dim file As String = input_folder & "\" & cbFiles.SelectedItem
 
             While IsFileOpen(file) = True
                 Threading.Thread.Sleep(100)
@@ -686,6 +660,47 @@ Public Class Main
             Return True
         End Try
     End Function
+
+    Private Sub Read_Input_Directory(ByVal input_folder As String)
+        Dim file_count As Double = 0
+        Dim folder_size As Double = 0
+
+        With cbFiles
+            .Items.Clear()
+        End With
+
+        'File System Wathcer für Input Verzeichnis
+        With FSW_Inputdir
+            .BeginInit()
+            .Filter = "*.*"
+            .NotifyFilter = IO.NotifyFilters.FileName Or IO.NotifyFilters.Size
+            .Path = input_folder
+            .EnableRaisingEvents = True
+            .EndInit()
+        End With
+
+        'AddHandler FSW_Inputdir.Changed, AddressOf File_System_Change
+        AddHandler FSW_Inputdir.Created, AddressOf File_System_Change
+        AddHandler FSW_Inputdir.Deleted, AddressOf File_System_Change
+        AddHandler FSW_Inputdir.Renamed, AddressOf File_System_Change
+
+        For Each file In New IO.DirectoryInfo(input_folder).GetFiles.OrderBy(Function(s) s.FullName)
+            If file.Extension = ".mkv" Or file.Extension = ".ts" Then
+                cbFiles.Items.Add(file.Name)
+                file_count += 1
+                folder_size = folder_size + file.Length
+            End If
+        Next
+        If folder_size > 1200 And folder_size < 1048000 Then Label2.Text = file_count & " Dateien (" & Math.Round(folder_size / 1024, 2) & " kBytes)"
+        If folder_size > 1048000 And folder_size < 1073741000 Then Label2.Text = file_count & " Dateien (" & Math.Round(folder_size / 1048576, 2) & " MBytes)"
+        If folder_size > 1073741000 Then Label2.Text = file_count & " Dateien (" & Math.Round(folder_size / 1073741824, 2) & " GBytes)"
+
+        If cbFiles.Items.Count > 0 Then cbFiles.SelectedIndex = 0
+    End Sub
+
+    Private Sub Main_Shown(sender As Object, e As EventArgs) Handles Me.Shown
+        If IO.Directory.Exists(input_folder) = True Then Read_Input_Directory(input_folder)
+    End Sub
 
 End Class
 
