@@ -38,16 +38,17 @@ Public Class Main
         cbFiles.Items.Clear()
 
         If folder = True Then
+            If IsNothing(input_folder) = False Then FolderBrowserDialog1.SelectedPath = input_folder
             If FolderBrowserDialog1.ShowDialog() = DialogResult.OK Then
-                input_folder = FolderBrowserDialog1.SelectedPath
-                My.Settings.InputPath = input_folder
-                If System.IO.Directory.Exists(input_folder) = True Then
-                    lblInputDirectory.Text = input_folder
-                    Read_Input_Directory(input_folder)
+                    input_folder = FolderBrowserDialog1.SelectedPath
+                    My.Settings.InputPath = input_folder
+                    If System.IO.Directory.Exists(input_folder) = True Then
+                        lblInputDirectory.Text = input_folder
+                        Read_Input_Directory(input_folder)
+                    End If
                 End If
-            End If
-        Else
-            OpenFileDialog1.Filter = "Video Dateien|*.mkv;*.ts"
+            Else
+                OpenFileDialog1.Filter = "Video Dateien|*.mkv;*.ts"
             OpenFileDialog1.Title = "Videodatei auswählen"
             OpenFileDialog1.FileName = ""
             If OpenFileDialog1.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
@@ -74,6 +75,7 @@ Public Class Main
     End Sub
 
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
+        If IsNothing(output_folder) = False Then FolderBrowserDialog2.SelectedPath = output_folder
         If FolderBrowserDialog2.ShowDialog() = DialogResult.OK Then
             output_folder = FolderBrowserDialog2.SelectedPath
             My.Settings.OutputPath = output_folder
