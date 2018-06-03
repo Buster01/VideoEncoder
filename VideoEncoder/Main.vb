@@ -410,6 +410,7 @@ Public Class Main
         Dim brC As String = "br" & Mid(vcCombo.Name, 3)
         Dim si As String = vcCombo.SelectedItem
         Dim typ As String = lvFileStreams.Items(CInt(Replace(vcCombo.Name.ToString, "vcCombo", ""))).SubItems(1).Text
+        Dim codec As String = lvFileStreams.Items(CInt(Replace(vcCombo.Name.ToString, "vcCombo", ""))).SubItems(2).Text
 
         For Each ctrl In lvFileStreams.Controls.Find(brC, True)
 
@@ -429,17 +430,7 @@ Public Class Main
                         End With
                     End If
 
-                Case "AAC"
-                    brCombo.Items.Add("128 kBit/s")
-                    brCombo.Items.Add("192 kBit/s")
-                    brCombo.Items.Add("256 kBit/s")
-                    brCombo.Items.Add("320 kBit/s")
-                    brCombo.Items.Add("384 kBit/s")
-                    brCombo.Items.Add("448 kBit/s")
-                    brCombo.Items.Add("512 kBit/s")
-                    brCombo.SelectedIndex = 1
-
-                Case "AC-3"
+                Case "AAC", "AC-3", "EAC-3"
                     brCombo.Items.Add("128 kBit/s")
                     brCombo.Items.Add("192 kBit/s")
                     brCombo.Items.Add("256 kBit/s")
@@ -448,18 +439,36 @@ Public Class Main
                     brCombo.Items.Add("448 kBit/s")
                     brCombo.Items.Add("512 kBit/s")
                     brCombo.Items.Add("640 kBit/s")
-                    brCombo.SelectedIndex = 1
 
-                Case "EAC-3"
-                    brCombo.Items.Add("128 kBit/s")
-                    brCombo.Items.Add("192 kBit/s")
-                    brCombo.Items.Add("256 kBit/s")
-                    brCombo.Items.Add("320 kBit/s")
-                    brCombo.Items.Add("384 kBit/s")
-                    brCombo.Items.Add("448 kBit/s")
-                    brCombo.Items.Add("512 kBit/s")
-                    brCombo.Items.Add("640 kBit/s")
-                    brCombo.SelectedIndex = 1
+                    Select Case codec
+                        Case "Dolby Digital (Stereo)"
+                            brCombo.SelectedIndex = 1
+
+                        Case "Dolby Digital (5.1)"
+                            brCombo.SelectedIndex = 4
+
+                        Case "DTS (5.1)"
+                            brCombo.SelectedIndex = 4
+
+                        Case "DTS-HD MA (5.1)"
+                            brCombo.SelectedIndex = 5
+
+                        Case "DTS TrueHD (5.1)"
+                            brCombo.SelectedIndex = 5
+
+                        Case "DTS-HD HRA (7.1)"
+                            brCombo.SelectedIndex = 6
+
+                        Case "AAC (7.1)"
+                            brCombo.SelectedIndex = 6
+
+                        Case "DTS TrueHD (7.1)"
+                            brCombo.SelectedIndex = 7
+
+                        Case Else
+                            brCombo.SelectedIndex = 1
+
+                    End Select
 
                 Case "DTS"
                     brCombo.Items.Add("768 kBit/s")
@@ -529,7 +538,17 @@ Public Class Main
                     brCombo.Items.Add("8500 kBit/s")
                     brCombo.Items.Add("9000 kBit/s")
                     brCombo.Items.Add("9500 kBit/s")
-                    brCombo.SelectedIndex = 4
+
+                    Select Case codec
+                        Case "MPEG2"
+                            brCombo.SelectedIndex = 2
+
+                        Case Else
+                            brCombo.SelectedIndex = 4
+
+                    End Select
+
+
                     'profle h.265
                     With ComboBox5
                         .Items.Clear()
