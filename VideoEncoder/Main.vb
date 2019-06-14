@@ -254,7 +254,11 @@ Public Class Main
             EncoderStreamAttrType.Value = stream_item.SubItems(1).Text
             EncOrderStream.Attributes.Append(EncoderStreamAttrType)
 
-            'Codec, Bitrate,default
+            ' old Codec, Codec, Bitrate,default
+            Dim EncoderStreamOrgCodec As Xml.XmlAttribute = CodecQueue.CreateAttribute("StreamCodec")
+            EncoderStreamOrgCodec.Value = stream_item.SubItems(2).Text
+            EncOrderStream.Attributes.Append(EncoderStreamOrgCodec)
+
             Dim vcCombo As New ComboBox
             Dim EncoderStreamAttrCodec As Xml.XmlAttribute = CodecQueue.CreateAttribute("StreamCodec")
             Dim brCombo As New ComboBox
