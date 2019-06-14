@@ -255,7 +255,7 @@ Public Class Main
             EncOrderStream.Attributes.Append(EncoderStreamAttrType)
 
             ' old Codec, Codec, Bitrate,default
-            Dim EncoderStreamOrgCodec As Xml.XmlAttribute = CodecQueue.CreateAttribute("StreamCodec")
+            Dim EncoderStreamOrgCodec As Xml.XmlAttribute = CodecQueue.CreateAttribute("StreamOrgCodec")
             EncoderStreamOrgCodec.Value = stream_item.SubItems(2).Text
             EncOrderStream.Attributes.Append(EncoderStreamOrgCodec)
 
@@ -548,7 +548,7 @@ Public Class Main
                             brCombo.SelectedIndex = 2
 
                         Case Else
-                            brCombo.SelectedIndex = 4
+                            brCombo.SelectedIndex = 5
 
                     End Select
 

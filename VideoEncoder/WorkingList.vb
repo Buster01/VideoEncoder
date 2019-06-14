@@ -125,7 +125,11 @@ Public Class WorkingList
                             FFAdudioParameter = FFAdudioParameter & "-c:a:" & AudioStreamID.ToString.Trim & " eac3 " & "-b:a:" & AudioStreamID.ToString.Trim & " " & Strings.Mid(streams.Attributes("StreamBitrate").Value, 1, 3).ToString & "k "
 
                         Case "AAC"
-                            FFAdudioParameter = FFAdudioParameter & "-c:a:" & AudioStreamID.ToString.Trim & " aac "
+                            If streams.Attributes("StreamOrgCodec").Value = "Dolby Digital (5.1)" Then
+                                FFAdudioParameter = FFAdudioParameter & "-c:a:" & AudioStreamID.ToString.Trim & " aac -ac 6 "
+                            Else
+                                FFAdudioParameter = FFAdudioParameter & "-c:a:" & AudioStreamID.ToString.Trim & " aac "
+                            End If
                             FFAdudioParameter = FFAdudioParameter & "-b:a:" & AudioStreamID.ToString.Trim & " " & Strings.Mid(streams.Attributes("StreamBitrate").Value, 1, 3).ToString & "k "
 
                         Case "DTS"
