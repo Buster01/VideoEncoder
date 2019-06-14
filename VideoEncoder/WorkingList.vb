@@ -125,7 +125,8 @@ Public Class WorkingList
                             FFAdudioParameter = FFAdudioParameter & "-c:a:" & AudioStreamID.ToString.Trim & " eac3 " & "-b:a:" & AudioStreamID.ToString.Trim & " " & Strings.Mid(streams.Attributes("StreamBitrate").Value, 1, 3).ToString & "k "
 
                         Case "AAC"
-                            FFAdudioParameter = FFAdudioParameter & "-c:a:" & AudioStreamID.ToString.Trim & " aac " & "-b:a:" & AudioStreamID.ToString.Trim & " " & Strings.Mid(streams.Attributes("StreamBitrate").Value, 1, 3).ToString & "k "
+                            FFAdudioParameter = FFAdudioParameter & "-c:a:" & AudioStreamID.ToString.Trim & " aac "
+                            FFAdudioParameter = FFAdudioParameter & "-b:a:" & AudioStreamID.ToString.Trim & " " & Strings.Mid(streams.Attributes("StreamBitrate").Value, 1, 3).ToString & "k "
 
                         Case "DTS"
                             FFAdudioParameter = FFAdudioParameter & "-strict -2 -c:a:" & AudioStreamID.ToString.Trim & " dts " & "-b:a:" & AudioStreamID.ToString.Trim & " " & Strings.Mid(streams.Attributes("StreamBitrate").Value, 1, 4).ToString & "k "
