@@ -11,6 +11,7 @@ Public Class WorkingList
 
         Dim ffmpeg_path As String = My.Settings.FFmpegPath
         If Strings.Right(ffmpeg_path, 1) <> "\" Then ffmpeg_path = ffmpeg_path & "\"
+
         Dim HWEncoding As String = ""
         Dim DeInterlace As String = ""
         Dim DTSFix As String = ""
@@ -129,6 +130,9 @@ Public Class WorkingList
                             Dim OrgCodec As String = streams.Attributes("StreamOrgCodec").Value
 
                             Select Case OrgCodec
+                                Case "Dolby Digital (Mono)"
+                                    FFAdudioParameter = FFAdudioParameter & "-c:a:" & AudioStreamID.ToString.Trim & " aac -ac 1 "
+
                                 Case "Dolby Digital (Stereo)"
                                     FFAdudioParameter = FFAdudioParameter & "-c:a:" & AudioStreamID.ToString.Trim & " aac -ac 2 "
 
