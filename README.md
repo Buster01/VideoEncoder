@@ -15,5 +15,5 @@ Eine GUI für FFMPEG
 
 
 ## Build
-Visual Studio 2017<br />
-.Net Framework 4.6.1<br />
+Visual Studio 2019<br />
+.Net Framework 4.7.2<br />
