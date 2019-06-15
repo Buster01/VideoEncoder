@@ -135,6 +135,9 @@ Public Class WorkingList
                                 Case "Dolby Digital (5.1)"
                                     FFAdudioParameter = FFAdudioParameter & "-c:a:" & AudioStreamID.ToString.Trim & " aac -ac 6 "
 
+                                Case "DTS TrueHD (5.1)"
+                                    FFAdudioParameter = FFAdudioParameter & "-c:a:" & AudioStreamID.ToString.Trim & " aac -ac 6 "
+
                                 Case "DTS TrueHD (7.1)"
                                     FFAdudioParameter = FFAdudioParameter & "-c:a:" & AudioStreamID.ToString.Trim & " aac -ac 8 "
 
