@@ -125,7 +125,13 @@ Public Class WorkingList
                             FFAdudioParameter = FFAdudioParameter & "-c:a:" & AudioStreamID.ToString.Trim & " eac3 " & "-b:a:" & AudioStreamID.ToString.Trim & " " & Strings.Mid(streams.Attributes("StreamBitrate").Value, 1, 3).ToString & "k "
 
                         Case "AAC"
-                            Select Case streams.Attributes("StreamOrgCodec").Value
+                            ' Channellayout festlegen, je nach original Chan.Layout
+                            Dim OrgCodec As String = streams.Attributes("StreamOrgCodec").Value
+
+                            Select Case OrgCodec
+                                Case "Dolby Digital (Stereo)"
+                                    FFAdudioParameter = FFAdudioParameter & "-c:a:" & AudioStreamID.ToString.Trim & " aac -ac 2 "
+
                                 Case "Dolby Digital (5.1)"
                                     FFAdudioParameter = FFAdudioParameter & "-c:a:" & AudioStreamID.ToString.Trim & " aac -ac 6 "
 
