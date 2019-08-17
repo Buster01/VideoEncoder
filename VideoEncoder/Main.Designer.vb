@@ -44,7 +44,6 @@ Partial Class Main
         Me.Label1 = New System.Windows.Forms.Label()
         Me.CheckBox4 = New System.Windows.Forms.CheckBox()
         Me.CheckBox3 = New System.Windows.Forms.CheckBox()
-        Me.CheckBox2 = New System.Windows.Forms.CheckBox()
         Me.ComboBox6 = New System.Windows.Forms.ComboBox()
         Me.ComboBox5 = New System.Windows.Forms.ComboBox()
         Me.Label10 = New System.Windows.Forms.Label()
@@ -53,6 +52,8 @@ Partial Class Main
         Me.lvFileStreams = New System.Windows.Forms.ListView()
         Me.Button4 = New System.Windows.Forms.Button()
         Me.FSW_Inputdir = New System.IO.FileSystemWatcher()
+        Me.cbQualitaet = New System.Windows.Forms.ComboBox()
+        Me.Label3 = New System.Windows.Forms.Label()
         Me.GroupBox1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -195,11 +196,12 @@ Partial Class Main
         '
         'GroupBox5
         '
+        Me.GroupBox5.Controls.Add(Me.Label3)
+        Me.GroupBox5.Controls.Add(Me.cbQualitaet)
         Me.GroupBox5.Controls.Add(Me.cbDeInterlace)
         Me.GroupBox5.Controls.Add(Me.Label1)
         Me.GroupBox5.Controls.Add(Me.CheckBox4)
         Me.GroupBox5.Controls.Add(Me.CheckBox3)
-        Me.GroupBox5.Controls.Add(Me.CheckBox2)
         Me.GroupBox5.Controls.Add(Me.ComboBox6)
         Me.GroupBox5.Controls.Add(Me.ComboBox5)
         Me.GroupBox5.Controls.Add(Me.Label10)
@@ -252,24 +254,12 @@ Partial Class Main
         Me.CheckBox3.Text = "Hardware Decoder"
         Me.CheckBox3.UseVisualStyleBackColor = True
         '
-        'CheckBox2
-        '
-        Me.CheckBox2.AutoSize = True
-        Me.CheckBox2.Checked = True
-        Me.CheckBox2.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.CheckBox2.Location = New System.Drawing.Point(360, 57)
-        Me.CheckBox2.Name = "CheckBox2"
-        Me.CheckBox2.Size = New System.Drawing.Size(156, 17)
-        Me.CheckBox2.TabIndex = 8
-        Me.CheckBox2.Text = "VBR High Quality Encoding"
-        Me.CheckBox2.UseVisualStyleBackColor = True
-        '
         'ComboBox6
         '
         Me.ComboBox6.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
         Me.ComboBox6.Font = New System.Drawing.Font("Courier New", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.ComboBox6.FormattingEnabled = True
-        Me.ComboBox6.Location = New System.Drawing.Point(284, 19)
+        Me.ComboBox6.Location = New System.Drawing.Point(295, 19)
         Me.ComboBox6.Name = "ComboBox6"
         Me.ComboBox6.Size = New System.Drawing.Size(51, 23)
         Me.ComboBox6.TabIndex = 7
@@ -314,6 +304,7 @@ Partial Class Main
         '
         'lvFileStreams
         '
+        Me.lvFileStreams.HideSelection = False
         Me.lvFileStreams.HoverSelection = True
         Me.lvFileStreams.Location = New System.Drawing.Point(24, 19)
         Me.lvFileStreams.Name = "lvFileStreams"
@@ -335,6 +326,24 @@ Partial Class Main
         '
         Me.FSW_Inputdir.EnableRaisingEvents = True
         Me.FSW_Inputdir.SynchronizingObject = Me
+        '
+        'cbQualitaet
+        '
+        Me.cbQualitaet.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cbQualitaet.FormattingEnabled = True
+        Me.cbQualitaet.Location = New System.Drawing.Point(295, 54)
+        Me.cbQualitaet.Name = "cbQualitaet"
+        Me.cbQualitaet.Size = New System.Drawing.Size(154, 21)
+        Me.cbQualitaet.TabIndex = 13
+        '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Location = New System.Drawing.Point(242, 58)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(46, 13)
+        Me.Label3.TabIndex = 12
+        Me.Label3.Text = "Qualität:"
         '
         'Main
         '
@@ -393,11 +402,12 @@ Partial Class Main
     Friend WithEvents cbFiles As ComboBox
     Friend WithEvents GroupBox3 As GroupBox
     Friend WithEvents lvFileStreams As ListView
-    Friend WithEvents CheckBox2 As CheckBox
     Friend WithEvents CheckBox3 As CheckBox
     Friend WithEvents CheckBox4 As CheckBox
     Friend WithEvents cbDeInterlace As ComboBox
     Friend WithEvents Label1 As Label
     Friend WithEvents Button4 As Button
     Friend WithEvents FSW_Inputdir As IO.FileSystemWatcher
+    Friend WithEvents Label3 As Label
+    Friend WithEvents cbQualitaet As ComboBox
 End Class

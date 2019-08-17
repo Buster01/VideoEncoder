@@ -109,7 +109,11 @@ Public Class WorkingList
                     If streams.Attributes("StreamBitrate").Value = "------" Then
                         FFVideoParameter = FFVideoParameter & " "
                     Else
-                        FFVideoParameter = FFVideoParameter & "-b:v " & Strings.Mid(streams.Attributes("StreamBitrate").Value, 1, 4).Trim & "k "
+                        If InStr(streams.Attributes("StreamBitrate").Value, "CRF") > 0 Then
+                            FFVideoParameter = FFVideoParameter & "-preset llhq -rc constqp " & "-qp" & Mid(streams.Attributes("StreamBitrate").Value.ToLower, 4) & " "
+                        Else
+                            FFVideoParameter = FFVideoParameter & "-b:v " & Strings.Mid(streams.Attributes("StreamBitrate").Value, 1, 4).Trim & "k "
+                        End If
                     End If
 
                 Case "Audio"

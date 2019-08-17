@@ -1,6 +1,7 @@
 ﻿Imports System.ComponentModel
 
 Public Class Main
+    Dim start As Boolean = True
     Dim input_file As String = ""
     Dim input_folder As String = My.Settings.InputPath
     Dim output_folder As String = My.Settings.OutputPath
@@ -40,15 +41,15 @@ Public Class Main
         If folder = True Then
             If IsNothing(input_folder) = False Then FolderBrowserDialog1.SelectedPath = input_folder
             If FolderBrowserDialog1.ShowDialog() = DialogResult.OK Then
-                    input_folder = FolderBrowserDialog1.SelectedPath
-                    My.Settings.InputPath = input_folder
-                    If System.IO.Directory.Exists(input_folder) = True Then
-                        lblInputDirectory.Text = input_folder
-                        Read_Input_Directory(input_folder)
-                    End If
+                input_folder = FolderBrowserDialog1.SelectedPath
+                My.Settings.InputPath = input_folder
+                If System.IO.Directory.Exists(input_folder) = True Then
+                    lblInputDirectory.Text = input_folder
+                    Read_Input_Directory(input_folder)
                 End If
-            Else
-                OpenFileDialog1.Filter = "Video Dateien|*.mkv;*.ts"
+            End If
+        Else
+            OpenFileDialog1.Filter = "Video Dateien|*.mkv;*.ts"
             OpenFileDialog1.Title = "Videodatei auswählen"
             OpenFileDialog1.FileName = ""
             If OpenFileDialog1.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
@@ -135,6 +136,12 @@ Public Class Main
             .SelectedIndex = 0
         End With
 
+        With cbQualitaet
+            .Items.Add("VBR High Quality Encoding")
+            .Items.Add("Constant Quality Encoding")
+            .SelectedIndex = 0
+        End With
+
         If ffmpeg_path = "" Then
             MsgBox("Bitte wählen Sie ein Pfad zum FFmpeg!", vbCritical, "FFmpeg Pfad")
             Settings.Show()
@@ -143,6 +150,7 @@ Public Class Main
         End If
         Me.Text = "Video Encoder [" & My.Application.Info.Version.Major & "." & My.Application.Info.Version.Minor & "." & My.Application.Info.Version.Revision & "]"
 
+        start = False
     End Sub
 
     Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
@@ -225,7 +233,7 @@ Public Class Main
 
         ' VBR HQ Encoding
         Dim EncoderVBRhqEncoding As Xml.XmlAttribute = CodecQueue.CreateAttribute("CodecHQEncoding")
-        EncoderVBRhqEncoding.Value = CheckBox2.Checked
+        If cbQualitaet.SelectedIndex = 0 Then EncoderVBRhqEncoding.Value = True Else EncoderVBRhqEncoding.Value = False
         EncOrder.Attributes.Append(EncoderVBRhqEncoding)
 
         'Codec Filter DeInterlace
@@ -403,6 +411,7 @@ Public Class Main
                 lvFileStreams.Items(z).SubItems(5).Text = ""
                 lvFileStreams.Items(z).SubItems(6).Text = ""
             Next z
+
         End If
         Cursor.Current = Cursors.Default
     End Sub
@@ -480,24 +489,40 @@ Public Class Main
                     brCombo.SelectedIndex = 1
 
                 Case "x264", "Intel QSV H.264", "NVidia NVenc H.264"
-                    brCombo.Items.Add("1000 kBit/s")
-                    brCombo.Items.Add("2000 kBit/s")
-                    brCombo.Items.Add("2500 kBit/s")
-                    brCombo.Items.Add("3000 kBit/s")
-                    brCombo.Items.Add("3500 kBit/s")
-                    brCombo.Items.Add("4000 kBit/s")
-                    brCombo.Items.Add("4500 kBit/s")
-                    brCombo.Items.Add("5000 kBit/s")
-                    brCombo.Items.Add("5500 kBit/s")
-                    brCombo.Items.Add("6000 kBit/s")
-                    brCombo.Items.Add("6500 kBit/s")
-                    brCombo.Items.Add("7000 kBit/s")
-                    brCombo.Items.Add("7500 kBit/s")
-                    brCombo.Items.Add("8000 kBit/s")
-                    brCombo.Items.Add("8500 kBit/s")
-                    brCombo.Items.Add("9000 kBit/s")
-                    brCombo.Items.Add("9500 kBit/s")
-                    brCombo.SelectedIndex = 8
+                    If cbQualitaet.SelectedIndex = 0 Then
+                        brCombo.Items.Add("1000 kBit/s")
+                        brCombo.Items.Add("2000 kBit/s")
+                        brCombo.Items.Add("2500 kBit/s")
+                        brCombo.Items.Add("3000 kBit/s")
+                        brCombo.Items.Add("3500 kBit/s")
+                        brCombo.Items.Add("4000 kBit/s")
+                        brCombo.Items.Add("4500 kBit/s")
+                        brCombo.Items.Add("5000 kBit/s")
+                        brCombo.Items.Add("5500 kBit/s")
+                        brCombo.Items.Add("6000 kBit/s")
+                        brCombo.Items.Add("6500 kBit/s")
+                        brCombo.Items.Add("7000 kBit/s")
+                        brCombo.Items.Add("7500 kBit/s")
+                        brCombo.Items.Add("8000 kBit/s")
+                        brCombo.Items.Add("8500 kBit/s")
+                        brCombo.Items.Add("9000 kBit/s")
+                        brCombo.Items.Add("9500 kBit/s")
+                        brCombo.SelectedIndex = 8
+                    Else
+                        brCombo.Items.Add("CRF 14")
+                        brCombo.Items.Add("CRF 16")
+                        brCombo.Items.Add("CRF 18")
+                        brCombo.Items.Add("CRF 20")
+                        brCombo.Items.Add("CRF 21")
+                        brCombo.Items.Add("CRF 22")
+                        brCombo.Items.Add("CRF 23")
+                        brCombo.Items.Add("CRF 24")
+                        brCombo.Items.Add("CRF 25")
+                        brCombo.Items.Add("CRF 26")
+                        brCombo.SelectedIndex = 5
+                    End If
+
+
                     'h.264 Profile
                     With ComboBox5
                         .Items.Clear()
@@ -525,23 +550,36 @@ Public Class Main
                     End With
 
                 Case "x265", "Intel QSV H.265", "NVidia NVenc H.265"
-                    brCombo.Items.Add("1000 kBit/s")
-                    brCombo.Items.Add("2000 kBit/s")
-                    brCombo.Items.Add("2500 kBit/s")
-                    brCombo.Items.Add("3000 kBit/s")
-                    brCombo.Items.Add("3500 kBit/s")
-                    brCombo.Items.Add("4000 kBit/s")
-                    brCombo.Items.Add("4500 kBit/s")
-                    brCombo.Items.Add("5000 kBit/s")
-                    brCombo.Items.Add("5500 kBit/s")
-                    brCombo.Items.Add("6000 kBit/s")
-                    brCombo.Items.Add("6500 kBit/s")
-                    brCombo.Items.Add("7000 kBit/s")
-                    brCombo.Items.Add("7500 kBit/s")
-                    brCombo.Items.Add("8000 kBit/s")
-                    brCombo.Items.Add("8500 kBit/s")
-                    brCombo.Items.Add("9000 kBit/s")
-                    brCombo.Items.Add("9500 kBit/s")
+                    If cbQualitaet.SelectedIndex = 0 Then
+                        brCombo.Items.Add("1000 kBit/s")
+                        brCombo.Items.Add("2000 kBit/s")
+                        brCombo.Items.Add("2500 kBit/s")
+                        brCombo.Items.Add("3000 kBit/s")
+                        brCombo.Items.Add("3500 kBit/s")
+                        brCombo.Items.Add("4000 kBit/s")
+                        brCombo.Items.Add("4500 kBit/s")
+                        brCombo.Items.Add("5000 kBit/s")
+                        brCombo.Items.Add("5500 kBit/s")
+                        brCombo.Items.Add("6000 kBit/s")
+                        brCombo.Items.Add("6500 kBit/s")
+                        brCombo.Items.Add("7000 kBit/s")
+                        brCombo.Items.Add("7500 kBit/s")
+                        brCombo.Items.Add("8000 kBit/s")
+                        brCombo.Items.Add("8500 kBit/s")
+                        brCombo.Items.Add("9000 kBit/s")
+                        brCombo.Items.Add("9500 kBit/s")
+                    Else
+                        brCombo.Items.Add("CRF 14")
+                        brCombo.Items.Add("CRF 16")
+                        brCombo.Items.Add("CRF 18")
+                        brCombo.Items.Add("CRF 20")
+                        brCombo.Items.Add("CRF 21")
+                        brCombo.Items.Add("CRF 22")
+                        brCombo.Items.Add("CRF 23")
+                        brCombo.Items.Add("CRF 24")
+                        brCombo.Items.Add("CRF 25")
+                        brCombo.Items.Add("CRF 26")
+                    End If
 
                     Select Case codec
                         Case "MPEG2"
@@ -680,7 +718,7 @@ Public Class Main
                 stream.Dispose()
             End If
             Return False
-        Catch ex As io.IOException
+        Catch ex As IO.IOException
             ex = Nothing
             Return True
         End Try
@@ -726,6 +764,17 @@ Public Class Main
     Private Sub Main_Shown(sender As Object, e As EventArgs) Handles Me.Shown
         If IO.Directory.Exists(input_folder) = True Then Read_Input_Directory(input_folder)
     End Sub
+
+    Private Sub CbQualitaet_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbQualitaet.SelectedIndexChanged
+        If start = False Then
+            Dim si As Integer = cbFiles.SelectedIndex
+            cbFiles.SelectedIndex = -1
+            cbFiles.SelectedIndex = si
+        End If
+
+
+    End Sub
+
 
 End Class
 

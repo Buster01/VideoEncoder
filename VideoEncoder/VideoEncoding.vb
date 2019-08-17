@@ -148,6 +148,8 @@
                             Else
                                 StreamData(2) = "H.265"
                             End If
+                        Else
+                            StreamData(2) = "H.265"
                         End If
                     End If
 
@@ -181,9 +183,21 @@
                         End If
                     Else
                         StreamData(2) = "Dolby Digital+"
+                        If stream.Attributes.ItemOf("channels") IsNot Nothing Then
+                            Dim channels As String = stream.Attributes("channels").Value
+
+                            Select Case channels
+                                Case 6
+                                    StreamData(2) = StreamData(2) + " (5.1)"
+
+                                Case 8
+                                    StreamData(2) = StreamData(2) + " (7.1)"
+
+                            End Select
+                        End If
                     End If
 
-                Case "aac"
+                        Case "aac"
                     If stream.Attributes.ItemOf("profile") IsNot Nothing Then
                         If Len(stream.Attributes("profile").Value) > 3 Then
                             StreamData(2) = stream.Attributes("profile").Value
@@ -275,4 +289,5 @@
 
         Return New ListViewItem(StreamData)
     End Function
+
 End Module
