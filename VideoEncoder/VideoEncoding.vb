@@ -136,7 +136,21 @@
                     StreamData(2) = "H.264"
 
                 Case "hevc"
-                    StreamData(2) = "H.265"
+                    If stream.Attributes.ItemOf("width") IsNot Nothing Then
+                        If Val(stream.Attributes("width").Value) > 3500 Then
+                            If stream.Attributes.ItemOf("pix_fmt") IsNot Nothing Then
+                                If stream.Attributes.ItemOf("pix_fmt").Value = "yuv420p10le" Then
+                                    StreamData(2) = "H.265 (4K HDR10)"
+                                Else
+                                    StreamData(2) = "H.265 (4K)"
+                                End If
+
+                            Else
+                                StreamData(2) = "H.265"
+                            End If
+                        End If
+                    End If
+
 
                 Case "mpeg2video"
                     StreamData(2) = "MPEG2"
