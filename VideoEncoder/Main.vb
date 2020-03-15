@@ -638,7 +638,7 @@ Public Class Main
                         .Items.Clear()
                         .Items.Add("Main")
                         .Items.Add("Main10")
-                        .SelectedIndex = 0
+                        If codec = "H.265 (4K HDR10)" Then .SelectedIndex = 1 Else .SelectedIndex = 0
                         .Enabled = True
                     End With
                     'level h.265
@@ -654,7 +654,7 @@ Public Class Main
                         .Items.Add("6")
                         .Items.Add("6.1")
                         .Items.Add("6.2")
-                        .SelectedIndex = 4
+                        If codec = "H.265 (4K HDR10)" Then .SelectedIndex = 5 Else .SelectedIndex = 4
                         .Enabled = True
                     End With
 
