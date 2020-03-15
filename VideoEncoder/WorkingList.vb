@@ -21,6 +21,7 @@ Public Class WorkingList
         Dim FFVideoParameter As String = ""
         Dim FFAdudioParameter As String = ""
         Dim FFSubtitleParameter As String = ""
+        Dim EncPresets As String = ""
         Dim AudioStreamID As Integer = 0
         Dim SubtitleStreamID As Integer = 0
 
@@ -71,6 +72,7 @@ Public Class WorkingList
             If InputVideoCodec = "h264" Then HWEncoding = "-hwaccel nvdec -c:v h264_cuvid "
             If InputVideoCodec = "hevc" Then HWEncoding = "-hwaccel nvdec -c:v hevc_cuvid "
             If InputVideoCodec = "vc1" Then HWEncoding = "-hwaccel nvdec -c:v vc1_cuvid "
+            If InputVideoCodec = "hevc hdr" Then HWEncoding = "-hwaccel dxva2 "
         Else
             HWEncoding = ""
         End If
@@ -78,6 +80,7 @@ Public Class WorkingList
         If OrderNode.Attributes("CodecDTSFix").Value = True Then DTSFix = "-max_muxing_queue_size 3000 " Else DTSFix = ""
         If OrderNode.Attributes("CodecProfil").Value = "------" Then CodecProfile = "" Else CodecProfile = "-profile:v " & OrderNode.Attributes("CodecProfil").Value.ToLower & " "
         If OrderNode.Attributes("CodecLevel").Value = "------" Then CodecLevel = "" Else CodecLevel = "-level " & OrderNode.Attributes("CodecLevel").Value & " "
+        If OrderNode.Attributes("EncPresets").Value = "------" Then EncPresets = "" Else EncPresets = "-preset " & OrderNode.Attributes("EncPresets").Value & " "
 
         For Each streams As Xml.XmlNode In OrderNode.ChildNodes
             Select Case streams.Attributes("StreamType").Value
@@ -110,11 +113,15 @@ Public Class WorkingList
                         FFVideoParameter = FFVideoParameter & " "
                     Else
                         If InStr(streams.Attributes("StreamBitrate").Value, "CRF") > 0 Then
-                            FFVideoParameter = FFVideoParameter & "-preset llhq -rc constqp " & "-qp" & Mid(streams.Attributes("StreamBitrate").Value.ToLower, 4) & " "
+                            FFVideoParameter = FFVideoParameter & EncPresets & "-rc constqp " & "-qp" & Mid(streams.Attributes("StreamBitrate").Value.ToLower, 4) & " "
                         Else
-                            FFVideoParameter = FFVideoParameter & "-b:v " & Strings.Mid(streams.Attributes("StreamBitrate").Value, 1, 4).Trim & "k "
+                            FFVideoParameter = FFVideoParameter & EncPresets & "-b:v " & Strings.Mid(streams.Attributes("StreamBitrate").Value, 1, 4).Trim & "k "
                         End If
                     End If
+                    If streams.Attributes.ItemOf("FixFMT") IsNot Nothing Then
+                        FFVideoParameter = FFVideoParameter & streams.Attributes("FixFMT").Value & " "
+                    End If
+
 
                 Case "Audio"
                     Dim ACodec As String = streams.Attributes("StreamCodec").Value

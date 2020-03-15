@@ -76,7 +76,7 @@
         Dim ffprobeProcess As New Process
         Dim VideoCodec As String = ""
 
-        Dim ffprobe_arguments As String = "-v error -select_streams v:0 -show_entries stream=codec_name -of default=noprint_wrappers=1:nokey=1 -i " & Chr(34) & file & Chr(34)
+        Dim ffprobe_arguments As String = "-v error -select_streams v:0 -show_entries stream=codec_name,pix_fmt -of default=noprint_wrappers=1:nokey=1 -i " & Chr(34) & file & Chr(34)
 
         Dim out_tmp As String = ""
         Dim stderr As String = ""
@@ -97,7 +97,13 @@
 
         Dim output() As String = Split(out_tmp, vbCrLf)
         If Len(out_tmp(0)) > 0 Then
-            VideoCodec = output(0)
+            If output.Count > 2 Then
+                If output(1) = "yuv420p10le" Then
+                    VideoCodec = output(0) + " hdr"
+                End If
+            Else
+                VideoCodec = output(0)
+            End If
         Else
             VideoCodec = "ERROR"
         End If

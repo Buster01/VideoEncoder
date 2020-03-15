@@ -134,12 +134,23 @@ Public Class Main
             .Items.Add("------")
             .Items.Add("yadif")
             .SelectedIndex = 0
+            .Enabled = False
+        End With
+
+        With cbEncPresets
+            .Items.Add("slow")
+            .Items.Add("medium")
+            .Items.Add("fast")
+            .Items.Add("llhq")
+            .SelectedIndex = 0
+            .Enabled = False
         End With
 
         With cbQualitaet
             .Items.Add("VBR High Quality Encoding")
             .Items.Add("Constant Quality Encoding")
             .SelectedIndex = 0
+            .Enabled = False
         End With
 
         If ffmpeg_path = "" Then
@@ -241,6 +252,11 @@ Public Class Main
         EncoderDeinterlace.Value = cbDeInterlace.SelectedItem.ToString
         EncOrder.Attributes.Append(EncoderDeinterlace)
 
+        'Encoding Presets
+        Dim EncPresets As Xml.XmlAttribute = CodecQueue.CreateAttribute("EncPresets")
+        EncPresets.Value = cbEncPresets.SelectedItem.ToString
+        EncOrder.Attributes.Append(EncPresets)
+
         'DTS Fix
         Dim EncoderDTSfix As Xml.XmlAttribute = CodecQueue.CreateAttribute("CodecDTSFix")
         EncoderDTSfix.Value = CheckBox4.Checked
@@ -266,6 +282,13 @@ Public Class Main
             Dim EncoderStreamOrgCodec As Xml.XmlAttribute = CodecQueue.CreateAttribute("StreamOrgCodec")
             EncoderStreamOrgCodec.Value = stream_item.SubItems(2).Text
             EncOrderStream.Attributes.Append(EncoderStreamOrgCodec)
+
+            'FixPMT bei 4K HDR
+            Dim FixFMT As Xml.XmlAttribute = CodecQueue.CreateAttribute("FixFMT")
+            If stream_item.SubItems(2).Text = "H.265 (4K HDR10)" Then
+                FixFMT.Value = "-color_primaries 9 -color_trc 16 -colorspace 9 -color_range 2 -pix_fmt p010le"
+                EncOrderStream.Attributes.Append(FixFMT)
+            End If
 
             Dim vcCombo As New ComboBox
             Dim EncoderStreamAttrCodec As Xml.XmlAttribute = CodecQueue.CreateAttribute("StreamCodec")
@@ -441,6 +464,19 @@ Public Class Main
                             .SelectedIndex = 0
                             .Enabled = False
                         End With
+
+                        With ComboBox6
+                            .Items.Clear()
+                            .Items.Add("------")
+                            .SelectedIndex = 0
+                            .Enabled = False
+                        End With
+
+                        cbEncPresets.Enabled = False
+                        cbEncPresets.SelectedIndex = 0
+                        cbDeInterlace.Enabled = False
+                        cbDeInterlace.SelectedIndex = 0
+                        cbQualitaet.Enabled = False
                     End If
 
                 Case "AAC", "AC-3", "EAC-3"
@@ -549,6 +585,12 @@ Public Class Main
                         .Enabled = True
                     End With
 
+                    cbEncPresets.Enabled = True
+                    cbEncPresets.SelectedIndex = 3
+                    cbDeInterlace.Enabled = True
+                    cbQualitaet.Enabled = True
+
+
                 Case "x265", "Intel QSV H.265", "NVidia NVenc H.265"
                     If cbQualitaet.SelectedIndex = 0 Then
                         brCombo.Items.Add("1000 kBit/s")
@@ -615,6 +657,11 @@ Public Class Main
                         .SelectedIndex = 4
                         .Enabled = True
                     End With
+
+                    cbEncPresets.Enabled = True
+                    cbEncPresets.SelectedIndex = 3
+                    cbDeInterlace.Enabled = True
+                    cbQualitaet.Enabled = True
 
             End Select
             Exit For

@@ -40,6 +40,8 @@ Partial Class Main
         Me.FolderBrowserDialog2 = New System.Windows.Forms.FolderBrowserDialog()
         Me.Button3 = New System.Windows.Forms.Button()
         Me.GroupBox5 = New System.Windows.Forms.GroupBox()
+        Me.Label3 = New System.Windows.Forms.Label()
+        Me.cbQualitaet = New System.Windows.Forms.ComboBox()
         Me.cbDeInterlace = New System.Windows.Forms.ComboBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.CheckBox4 = New System.Windows.Forms.CheckBox()
@@ -52,8 +54,7 @@ Partial Class Main
         Me.lvFileStreams = New System.Windows.Forms.ListView()
         Me.Button4 = New System.Windows.Forms.Button()
         Me.FSW_Inputdir = New System.IO.FileSystemWatcher()
-        Me.cbQualitaet = New System.Windows.Forms.ComboBox()
-        Me.Label3 = New System.Windows.Forms.Label()
+        Me.cbEncPresets = New System.Windows.Forms.ComboBox()
         Me.GroupBox1.SuspendLayout()
         Me.MenuStrip1.SuspendLayout()
         Me.GroupBox2.SuspendLayout()
@@ -196,6 +197,7 @@ Partial Class Main
         '
         'GroupBox5
         '
+        Me.GroupBox5.Controls.Add(Me.cbEncPresets)
         Me.GroupBox5.Controls.Add(Me.Label3)
         Me.GroupBox5.Controls.Add(Me.cbQualitaet)
         Me.GroupBox5.Controls.Add(Me.cbDeInterlace)
@@ -212,6 +214,24 @@ Partial Class Main
         Me.GroupBox5.TabIndex = 8
         Me.GroupBox5.TabStop = False
         Me.GroupBox5.Text = "Video Optionen"
+        '
+        'Label3
+        '
+        Me.Label3.AutoSize = True
+        Me.Label3.Location = New System.Drawing.Point(242, 58)
+        Me.Label3.Name = "Label3"
+        Me.Label3.Size = New System.Drawing.Size(46, 13)
+        Me.Label3.TabIndex = 12
+        Me.Label3.Text = "Qualität:"
+        '
+        'cbQualitaet
+        '
+        Me.cbQualitaet.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cbQualitaet.FormattingEnabled = True
+        Me.cbQualitaet.Location = New System.Drawing.Point(295, 54)
+        Me.cbQualitaet.Name = "cbQualitaet"
+        Me.cbQualitaet.Size = New System.Drawing.Size(178, 21)
+        Me.cbQualitaet.TabIndex = 13
         '
         'cbDeInterlace
         '
@@ -327,23 +347,15 @@ Partial Class Main
         Me.FSW_Inputdir.EnableRaisingEvents = True
         Me.FSW_Inputdir.SynchronizingObject = Me
         '
-        'cbQualitaet
+        'cbEncPresets
         '
-        Me.cbQualitaet.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
-        Me.cbQualitaet.FormattingEnabled = True
-        Me.cbQualitaet.Location = New System.Drawing.Point(295, 54)
-        Me.cbQualitaet.Name = "cbQualitaet"
-        Me.cbQualitaet.Size = New System.Drawing.Size(154, 21)
-        Me.cbQualitaet.TabIndex = 13
-        '
-        'Label3
-        '
-        Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(242, 58)
-        Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(46, 13)
-        Me.Label3.TabIndex = 12
-        Me.Label3.Text = "Qualität:"
+        Me.cbEncPresets.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList
+        Me.cbEncPresets.Font = New System.Drawing.Font("Courier New", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.cbEncPresets.FormattingEnabled = True
+        Me.cbEncPresets.Location = New System.Drawing.Point(352, 20)
+        Me.cbEncPresets.Name = "cbEncPresets"
+        Me.cbEncPresets.Size = New System.Drawing.Size(121, 23)
+        Me.cbEncPresets.TabIndex = 14
         '
         'Main
         '
@@ -410,4 +422,5 @@ Partial Class Main
     Friend WithEvents FSW_Inputdir As IO.FileSystemWatcher
     Friend WithEvents Label3 As Label
     Friend WithEvents cbQualitaet As ComboBox
+    Friend WithEvents cbEncPresets As ComboBox
 End Class
