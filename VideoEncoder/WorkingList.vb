@@ -109,6 +109,11 @@ Public Class WorkingList
                                 FFVideoParameter = "-c:v hevc_nvenc "
                         End Select
                     End If
+
+                    'Encoding Profil und Level
+                    FFVideoParameter = FFVideoParameter & CodecLevel & CodecProfile
+
+                    'Qualität
                     If streams.Attributes("StreamBitrate").Value = "------" Then
                         FFVideoParameter = FFVideoParameter & " "
                     Else
@@ -118,6 +123,7 @@ Public Class WorkingList
                             FFVideoParameter = FFVideoParameter & EncPresets & "-b:v " & Strings.Mid(streams.Attributes("StreamBitrate").Value, 1, 4).Trim & "k "
                         End If
                     End If
+
                     If streams.Attributes.ItemOf("FixFMT") IsNot Nothing Then
                         FFVideoParameter = FFVideoParameter & streams.Attributes("FixFMT").Value & " "
                     End If
