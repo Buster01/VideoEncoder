@@ -49,7 +49,7 @@ Public Class Main
                 End If
             End If
         Else
-            OpenFileDialog1.Filter = "Video Dateien|*.mkv;*.ts"
+            OpenFileDialog1.Filter = "Video Dateien|*.mkv;*.ts;*.avi"
             OpenFileDialog1.Title = "Videodatei auswählen"
             OpenFileDialog1.FileName = ""
             If OpenFileDialog1.ShowDialog() = System.Windows.Forms.DialogResult.OK Then
