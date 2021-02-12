@@ -795,7 +795,7 @@ Public Class Main
         AddHandler FSW_Inputdir.Renamed, AddressOf File_System_Change
 
         For Each file In New IO.DirectoryInfo(input_folder).GetFiles.OrderBy(Function(s) s.FullName)
-            If file.Extension = ".mkv" Or file.Extension = ".ts" Then
+            If file.Extension = ".mkv" Or file.Extension = ".ts" Or file.Extension = ".avi" Then
                 cbFiles.Items.Add(file.Name)
                 file_count += 1
                 folder_size = folder_size + file.Length

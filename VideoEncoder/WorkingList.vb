@@ -76,11 +76,11 @@ Public Class WorkingList
         Else
             HWEncoding = ""
         End If
-        If OrderNode.Attributes("CodecDeinterlace").Value = "yadif" Then DeInterlace = "-vf yadif=1 " Else DeInterlace = ""
+        If OrderNode.Attributes("CodecDeinterlace").Value = "yadif" Then DeInterlace = "-vf yadif=1 -flags +ilme " Else DeInterlace = ""
         If OrderNode.Attributes("CodecDTSFix").Value = True Then DTSFix = "-max_muxing_queue_size 3000 " Else DTSFix = ""
         If OrderNode.Attributes("CodecProfil").Value = "------" Then CodecProfile = "" Else CodecProfile = "-profile:v " & OrderNode.Attributes("CodecProfil").Value.ToLower & " "
         If OrderNode.Attributes("CodecLevel").Value = "------" Then CodecLevel = "" Else CodecLevel = "-level " & OrderNode.Attributes("CodecLevel").Value & " "
-        If OrderNode.Attributes("EncPresets").Value = "------" Then EncPresets = "" Else EncPresets = "-preset " & OrderNode.Attributes("EncPresets").Value & " "
+        If OrderNode.Attributes("EncPresets").Value = "------" Then EncPresets = "" Else EncPresets = "-preset " & OrderNode.Attributes("EncPresets").Value & " vbr_hq -rc-lookahead:v 32 -spatial_aq:v 1 -aq-strength:v 15 "
 
         For Each streams As Xml.XmlNode In OrderNode.ChildNodes
             Select Case streams.Attributes("StreamType").Value
